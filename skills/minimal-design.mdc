@@ -1,0 +1,39 @@
+---
+description: MINIMAL 디자인 문법 — UI/스타일 작업 시 mn- 컴포넌트와 토큰을 강제하는 규칙
+globs:
+alwaysApply: true
+---
+
+# MINIMAL 디자인 규칙
+
+UI를 만들거나 고칠 때(화면 · 컴포넌트 · 스타일 · 차트 · 다크모드) 아래를 따른다.
+
+## 작업 전
+
+- MINIMAL 패키지(`DESIGN.md` + `dist/minimal.css`가 있는 폴더, 이하 `<MN>`)를 찾는다. 클래스 이름을 기억에서 꺼내지 않는다.
+- `<MN>/DESIGN.md`를 읽는다. 컴포넌트는 `<MN>/COMPONENTS.md`의 해당 절만, 차트는 `<MN>/CHARTS.md`.
+- 화면 단위면 `<MN>/templates/instrument.html`(조작 화면) · `console.html`(한 화면 운영 툴) · `shell.html`(여러 페이지 툴) · `list.html`(목록 관리) · `master-detail.html`(목록+상세) · `agent.html`(에이전트 채팅)을 복사해 시작한다.
+- 로드: `<link rel="stylesheet" href="<MN>/dist/minimal.css">`, `<body class="mn">`, 선택적으로 `<script src="<MN>/js/minimal.js">`.
+
+## 가드레일
+
+- `.mn-*` 컴포넌트를 먼저 쓰고, 없을 때만 `--mn-*` 시맨틱 토큰으로 커스텀 CSS. 프리미티브 `--mn-color-*` 직접 참조 금지.
+- hex/rgb 색 · 그림자 · 리터럴 border-radius · 그라디언트 · 임의 px 간격 금지. 비활성을 `opacity`로 표현하지 않는다. 스크롤바는 `_base.css`가 그린다 — 따로 스타일하지 않는다. 등장 애니메이션 금지; 실시간 모니터만 `MN.monitor()`로 프레임마다 다시 그린다.
+- 옵션 선택 = 반전(`aria-pressed`/`aria-selected`/checked). 대상 선택(표의 행·플롯 구간) = 시그널 워시.
+- 시그널 색은 살아 있는 것에만: 눈금자 바늘(포인터·`--fill`·밴드, 항상 시그널)·플레이헤드·모듈레이션 중이거나 기준을 넘은 값(`.is-live`)·엔게이지 모드(`.mn-btn--signal`, 화면당 하나)·대상 선택·포커스. 한 화면에 시그널 하나.
+- 조작하는 값은 `.mn-param`(라벨 · 리드아웃 · 눈금자 + 진짜 range input · 의미 캡션), 보기만 하는 KPI는 `.mn-stats > .mn-stat`.
+- 상태는 단어 칩(`OK` `WARN` `OFF`) — 초록/빨강 팔레트 없음. 파괴적 액션은 `.mn-btn--signal-line` + 동사 라벨, 되돌릴 수 없으면 `.mn-dialog`로 확인.
+- 라벨은 대문자 명사, 구분자 ` · ` ` / `. 숨은 조작은 `.mn-footer__hints`에 한 줄.
+- 한글 라벨은 `.mn-ko`. 테마는 `<html data-theme|data-signal|data-paper|data-dialect>` — 색 하드코딩 금지.
+- 카드는 위 룰로 잘린 `.mn-card`(고르는 타일만 `--framed`). 화면 전환은 `.mn-tabs`, 마법사는 `.mn-stages`, 폼은 `.mn-form`(필수 = `REQUIRED` 단어). 아바타는 `.mn-initials`.
+- 목록은 `.mn-toolbar`·`.mn-chip`·`.mn-bulkbar`·`table[data-mn-select]`(`.mn-sort` `.mn-expand` `⋯`)·`.mn-table-foot`. 마스터-디테일은 `.mn-split`+`.mn-index`.
+- 에이전트 채팅은 `.mn-chat`: `.mn-reason`(접힘) · `.mn-tool`+`.mn-result` · `.mn-approve`(운영 변경 전) · `.mn-composer`+`.mn-model`. diff는 +/− · 취소선 · 추가 줄 잉크 막대, 글자색 없음(옅은 배경은 `data-diff="hue"` + blue 시그널에서만).
+- 파이·도넛 대신 `.mn-ratio`, 진행 호 대신 눈금자 게이지, 추세는 `svg.mn-spark[data-values]`.
+- 차트 라이브러리를 쓰면 `charts/echarts.js` / `charts/recharts.js` 헬퍼만, 직접 그리면 `.mn-s-*`/`.mn-f-*` 페인트 클래스만. 초점 시리즈 하나.
+- 상태 표현은 표준 속성(`disabled`, `aria-invalid`, `aria-selected`, `aria-pressed`).
+
+## 완료 전
+
+- `node <MN>/scripts/check-usage.mjs <작업 폴더> --css <MN>/dist/minimal.css` 를 돌려 `unknown`·`raw`를 0으로 만든다.
+- 토큰을 고쳤으면 `<MN>`에서 `npm run build`(가드레일 + 대비 검사) 통과.
+- 결과 보고에 check-usage 출력과, 시스템에 없어서 커스텀으로 만든 것을 적는다.

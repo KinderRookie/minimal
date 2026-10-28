@@ -1,0 +1,130 @@
+/**
+ * MINIMAL — cell grids.
+ *   .mn-heat / .mn-cell    heat cells: hairline boxes filled with signal at --mn-heat (0–1)
+ *   .mn-steps / .mn-step   step sequencer: dashed = empty, ink = on, signal number = accented
+ */
+
+/* ---- heat ---------------------------------------------------------------- */
+.mn-heat {
+  display: grid;
+  gap: var(--mn-space-1);
+  min-width: 0;
+}
+.mn-heat__row {
+  display: grid;
+  grid-template-columns: var(--mn-heat-label, 96px) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--mn-space-2);
+}
+.mn-heat__label {
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mn-cells {
+  display: grid;
+  grid-template-columns: repeat(var(--mn-cols, 12), minmax(0, 1fr));
+  gap: var(--mn-space-1);
+  min-width: 0;
+}
+.mn-cell {
+  --mn-heat: 0;
+  display: block;
+  aspect-ratio: var(--mn-cell-ratio, 2 / 1);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  background: color-mix(in srgb, var(--mn-signal-mark) calc(var(--mn-heat) * 88%), var(--mn-bg-canvas));
+}
+button.mn-cell {
+  cursor: pointer;
+}
+.mn-cell.is-current {
+  outline: var(--mn-stroke-rule) solid var(--mn-line-strong);
+  outline-offset: 1px;
+}
+.mn-cell.is-off {
+  border-color: var(--mn-line-default);
+  background: var(--mn-bg-canvas);
+}
+
+/* ---- steps --------------------------------------------------------------- */
+.mn-steps {
+  display: grid;
+  grid-template-columns: repeat(var(--mn-cols, 16), minmax(0, 1fr));
+  gap: var(--mn-space-1);
+  min-width: 0;
+}
+.mn-step {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto;
+  place-items: center;
+  align-content: center;
+  min-width: 0;
+  height: var(--mn-step-h, 34px);
+  margin: 0;
+  padding: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.mn-step:hover {
+  background: var(--mn-bg-hover);
+}
+.mn-step__n {
+  color: var(--mn-ink-secondary);
+}
+.mn-step.is-empty {
+  border-style: dashed;
+  color: var(--mn-ink-disabled);
+}
+.mn-step.is-empty .mn-step__n {
+  color: var(--mn-ink-tertiary);
+}
+.mn-step.is-on,
+.mn-step[aria-pressed="true"] {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-step.is-on .mn-step__n,
+.mn-step[aria-pressed="true"] .mn-step__n {
+  color: var(--mn-inverse-ink);
+}
+.mn-step.is-accent .mn-step__n {
+  color: var(--mn-signal-text);
+}
+.mn-step.is-current {
+  outline: var(--mn-stroke-rule) solid var(--mn-signal-mark);
+  outline-offset: 1px;
+}
+.mn-steps--sm .mn-step {
+  --mn-step-h: 20px;
+  border-color: var(--mn-line-default);
+  color: var(--mn-ink-tertiary);
+}
+/* small row: "on" is a strong outline, not a fill (FIELD's FREE row) */
+.mn-steps--sm .mn-step.is-on,
+.mn-steps--sm .mn-step[aria-pressed="true"] {
+  background: var(--mn-bg-canvas);
+  border-color: var(--mn-line-strong);
+  color: var(--mn-ink-primary);
+}
+.mn-steps--sm .mn-step.is-on .mn-step__n,
+.mn-steps--sm .mn-step[aria-pressed="true"] .mn-step__n {
+  color: var(--mn-ink-primary);
+}

@@ -1,0 +1,156 @@
+/**
+ * MINIMAL — text entry.
+ *   .mn-field          label + control + hint/error, stacked
+ *   .mn-input          hairline box, mono value
+ *   .mn-select         native select with a ▾ drawn in text
+ *   .mn-textarea
+ * Errors are words first ("REQUIRED", "OUT OF RANGE"), then signal color.
+ */
+
+.mn-field {
+  display: grid;
+  gap: var(--mn-space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.mn-field__label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mn-space-3);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+}
+.mn-field__hint {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+.mn-field__error {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-signal-text);
+}
+.mn-field__error::before {
+  content: "↳ ";
+}
+
+.mn-input,
+.mn-select,
+.mn-textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--mn-size-control-md);
+  margin: 0;
+  padding: 0 var(--mn-space-3);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  appearance: none;
+}
+.mn-input::placeholder,
+.mn-textarea::placeholder {
+  color: var(--mn-ink-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--mn-font-tracking-label);
+}
+.mn-input:hover,
+.mn-select:hover,
+.mn-textarea:hover {
+  background: var(--mn-bg-sunken);
+}
+.mn-input:focus-visible,
+.mn-select:focus-visible,
+.mn-textarea:focus-visible,
+.mn-input:focus,
+.mn-select:focus,
+.mn-textarea:focus {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 2px;
+  background: var(--mn-bg-canvas);
+}
+.mn-input[aria-invalid="true"],
+.mn-select[aria-invalid="true"],
+.mn-textarea[aria-invalid="true"] {
+  border-color: var(--mn-signal-mark);
+}
+.mn-input:disabled,
+.mn-select:disabled,
+.mn-textarea:disabled {
+  border-color: var(--mn-ink-disabled);
+  color: var(--mn-ink-disabled);
+  background: var(--mn-bg-canvas);
+  cursor: not-allowed;
+}
+
+.mn-input--sm {
+  height: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-2);
+  font-size: var(--mn-font-size-2xs);
+}
+.mn-input--lg {
+  height: var(--mn-size-control-lg);
+}
+/* A readout you can type into */
+.mn-input--readout {
+  height: auto;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-readout-md);
+  font-weight: var(--mn-font-weight-light);
+  letter-spacing: var(--mn-font-tracking-tight);
+  line-height: 1;
+}
+.mn-input--readout:hover {
+  background: transparent;
+  border-bottom-color: var(--mn-line-default);
+}
+
+.mn-select-wrap {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.mn-select {
+  padding-right: calc(var(--mn-space-3) * 2 + 1ch);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: var(--mn-font-tracking-label);
+}
+.mn-select-wrap::after {
+  content: "▾";
+  position: absolute;
+  right: var(--mn-space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  color: var(--mn-ink-primary);
+  pointer-events: none;
+}
+
+.mn-textarea {
+  height: auto;
+  min-height: 96px;
+  padding: var(--mn-space-2) var(--mn-space-3);
+  line-height: var(--mn-font-leading-normal);
+  resize: vertical;
+}

@@ -1,0 +1,135 @@
+/**
+ * MINIMAL — forms: long entry, grouped by rules, finished by an action bar.
+ *
+ *   .mn-form             stack of sections
+ *   .mn-form__section    <fieldset> whose <legend> reads like a .mn-section head (rule above)
+ *   .mn-form__grid       2-column field grid; .mn-field--full spans both
+ *   .mn-form__actions    rule above · note on the left · buttons on the right
+ *   .mn-form-error       summary of what is wrong, words first, linking to fields
+ *   .mn-field--required  adds "REQUIRED" to the label — a word, not an asterisk
+ * Wizard steps are .mn-stages (nav.css).
+ */
+
+.mn-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mn-space-8);
+  min-width: 0;
+}
+.mn-form--narrow {
+  max-width: 640px;
+}
+
+.mn-form__section {
+  display: grid;
+  gap: var(--mn-space-5);
+  min-width: 0;
+  margin: 0;
+  padding: var(--mn-space-3) 0 0;
+  border: 0;
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-strong);
+}
+.mn-form__legend {
+  float: left; /* lets the legend sit inside the fieldset's padding like a normal block */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mn-space-4);
+  margin: 0;
+  padding: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+}
+.mn-form__legend + * {
+  clear: both;
+}
+.mn-form__hint {
+  margin: 0;
+  max-width: 64ch;
+  font-size: var(--mn-font-size-sm);
+  color: var(--mn-ink-tertiary);
+}
+
+.mn-form__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mn-cols, 2), minmax(0, 1fr));
+  gap: var(--mn-space-5) var(--mn-space-6);
+}
+.mn-field--full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 720px) {
+  .mn-form__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.mn-field--required > .mn-field__label::after {
+  content: "Required";
+  margin-left: auto;
+  color: var(--mn-ink-tertiary);
+}
+
+.mn-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--mn-space-2);
+  padding-top: var(--mn-space-4);
+  border-top: var(--mn-stroke-rule) solid var(--mn-line-strong);
+}
+.mn-form__actions-note {
+  margin: 0 auto 0 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+/* sticky variant for long forms inside .mn-shell__content */
+.mn-form__actions--sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding-bottom: var(--mn-space-4);
+  background: var(--mn-bg-canvas);
+}
+
+.mn-form-error {
+  display: grid;
+  gap: var(--mn-space-2);
+  padding: var(--mn-space-3) var(--mn-space-4);
+  border: var(--mn-stroke-hair) solid var(--mn-signal-mark);
+  border-radius: var(--mn-radius-panel);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+}
+.mn-form-error__title {
+  margin: 0;
+  font-size: var(--mn-font-size-xs);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-signal-text);
+}
+.mn-form-error__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--mn-space-1);
+}
+.mn-form-error__list a {
+  color: var(--mn-ink-primary);
+  text-decoration: underline;
+  text-decoration-thickness: var(--mn-stroke-hair);
+  text-underline-offset: 0.25em;
+}
+.mn-form-error__list li::before {
+  content: "↳ ";
+  color: var(--mn-signal-text);
+}

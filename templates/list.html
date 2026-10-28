@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Players · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+</head>
+<body class="mn">
+<div class="mn-shell">
+
+  <nav class="mn-side" aria-label="Main">
+    <div class="mn-side__head">
+      <span class="mn-wordmark">Shard</span>
+      <span class="mn-subtitle">Ops <span class="mn-sep">/</span> Asia</span>
+    </div>
+    <div class="mn-side__nav">
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Run</li>
+        <li><a class="mn-side__item" href="shell.html"><span class="mn-side__n">01</span><span class="mn-side__label">Shards</span></a></li>
+        <li><a class="mn-side__item" href="list.html" aria-current="page"><span class="mn-side__n">02</span><span class="mn-side__label">Players</span><span class="mn-side__count">1,204</span></a></li>
+        <li><a class="mn-side__item" href="master-detail.html"><span class="mn-side__n">03</span><span class="mn-side__label">Reports</span><span class="mn-side__count is-live">7</span></a></li>
+        <li><a class="mn-side__item" href="agent.html"><span class="mn-side__n">04</span><span class="mn-side__label">Agent</span></a></li>
+      </ul>
+    </div>
+    <div class="mn-side__foot">
+      <span class="mn-initials">JL</span>
+      <span class="mn-side__who"><span>J. Lee</span><span>Ops · Asia</span></span>
+    </div>
+  </nav>
+
+  <header class="mn-top">
+    <div class="mn-top__start">
+      <button class="mn-btn mn-btn--icon mn-btn--sm mn-shell__toggle" type="button" data-mn-nav-toggle aria-label="Menu">≡</button>
+      <ol class="mn-crumbs" aria-label="Breadcrumb"><li><a href="#">Ops</a></li><li><a href="#">Asia</a></li><li aria-current="page">Players</li></ol>
+    </div>
+    <div class="mn-top__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+    </div>
+  </header>
+
+  <main class="mn-shell__content">
+    <div class="mn-page">
+      <!-- 1) page head: title · description · primary action -->
+      <div class="mn-page__head">
+        <div class="mn-page__heading">
+          <h1 class="mn-page__title">Players</h1>
+          <p class="mn-page__desc">Accounts in Asia. Find a player, check reports, act on one or many.</p>
+        </div>
+        <div class="mn-page__actions">
+          <button class="mn-btn" type="button" id="reload">Reload</button>
+          <button class="mn-btn mn-btn--solid" type="button">+ Invite tester</button>
+        </div>
+      </div>
+
+      <!-- 2) tabs with counts — counts and the footer total come from one source -->
+      <div class="mn-tabs__list" role="tablist" aria-label="Player status" id="tabs">
+        <button class="mn-tabs__tab" role="tab" aria-selected="true" data-status="">All<sup class="mn-count" data-count=""></sup></button>
+        <button class="mn-tabs__tab" role="tab" aria-selected="false" data-status="ACTIVE">Active<sup class="mn-count" data-count="ACTIVE"></sup></button>
+        <button class="mn-tabs__tab" role="tab" aria-selected="false" data-status="FLAGGED">Flagged<sup class="mn-count is-live" data-count="FLAGGED"></sup></button>
+        <button class="mn-tabs__tab" role="tab" aria-selected="false" data-status="BANNED">Banned<sup class="mn-count" data-count="BANNED"></sup></button>
+      </div>
+
+      <div class="mn-stack" style="--mn-gap: var(--mn-space-3)">
+        <!-- 3-1) toolbar: search · filter chips · columns / export -->
+        <div class="mn-toolbar">
+          <label class="mn-toolbar__search"><span class="mn-sr-only">Search players</span><input class="mn-input mn-input--sm" type="search" id="q" placeholder="Name or ID"></label>
+          <div class="mn-toolbar__filters" aria-label="Region filter">
+            <button class="mn-chip" type="button" aria-pressed="false" data-region="KR">KR</button>
+            <button class="mn-chip" type="button" aria-pressed="false" data-region="JP">JP</button>
+            <button class="mn-chip" type="button" aria-pressed="false" data-region="SEA">SEA</button>
+            <span class="mn-chip is-on" id="levelChip">Level <span class="mn-chip__value">≥ 20</span><button class="mn-chip__clear" type="button" aria-label="Clear level filter">×</button></span>
+            <button class="mn-chip mn-chip--add" type="button">+ Filter</button>
+          </div>
+          <div class="mn-toolbar__end">
+            <div class="mn-dropdown mn-dropdown--end">
+              <button class="mn-btn mn-btn--sm" type="button" data-mn-menu aria-controls="colMenu">Columns</button>
+              <ul class="mn-menu" id="colMenu" role="menu">
+                <li class="mn-menu__label" role="presentation">Show</li>
+                <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true" data-col="region">Region</button></li>
+                <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true" data-col="level">Level</button></li>
+                <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true" data-col="spend">Spend</button></li>
+                <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true" data-col="seen">Last seen</button></li>
+              </ul>
+            </div>
+            <button class="mn-btn mn-btn--sm" type="button">Export</button>
+          </div>
+        </div>
+
+        <!-- 3-2) bulk bar: appears with a selection -->
+        <div class="mn-bulkbar" data-mn-bulk-for="players" hidden>
+          <span class="mn-bulkbar__count">0 selected</span>
+          <button class="mn-btn" type="button">Message</button>
+          <button class="mn-btn" type="button">Suspend 24 h</button>
+          <button class="mn-btn mn-btn--signal-line" type="button" id="bulkBan">Ban</button>
+          <span class="mn-bulkbar__end"><button class="mn-btn mn-btn--ghost" type="button" data-mn-bulk-clear>Clear</button></span>
+        </div>
+
+        <!-- 3-3) the table: select · expand · sort · row menu -->
+        <div class="mn-table-wrap">
+          <table class="mn-table mn-table--hover" id="players" data-mn-select data-mn-sort="local" aria-describedby="foot">
+            <thead>
+              <tr>
+                <th class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select all"></label></th>
+                <th class="mn-table__expand"><span class="mn-sr-only">Details</span></th>
+                <th aria-sort="none"><button class="mn-sort" type="button">Player</button></th>
+                <th>Status</th>
+                <th data-col="region" aria-sort="none"><button class="mn-sort" type="button">Region</button></th>
+                <th data-col="level" class="is-num" aria-sort="descending"><button class="mn-sort" type="button">Level</button></th>
+                <th class="is-num" aria-sort="none"><button class="mn-sort" type="button">Reports</button></th>
+                <th data-col="spend" class="is-num" aria-sort="none"><button class="mn-sort" type="button">Spend</button></th>
+                <th data-col="seen" aria-sort="none"><button class="mn-sort" type="button">Last seen</button></th>
+                <th class="mn-table__actions"><span class="mn-sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+
+        <!-- 3-4) footer: summary · page size · pager -->
+        <div class="mn-table-foot" id="foot">
+          <span id="summary">—</span>
+          <div class="mn-table-foot__end">
+            <label class="mn-row" style="--mn-gap: var(--mn-space-2)">Rows
+              <span class="mn-select-wrap"><select class="mn-select" aria-label="Rows per page"><option>20</option><option>50</option><option>100</option></select></span>
+            </label>
+            <nav class="mn-pager" aria-label="Pages">
+              <ul class="mn-pager__pages">
+                <li><button class="mn-pager__item" type="button" aria-label="Previous page" disabled>&lt;</button></li>
+                <li><a class="mn-pager__item" href="#" aria-current="page">01</a></li>
+                <li><a class="mn-pager__item" href="#">02</a></li>
+                <li><a class="mn-pager__item" href="#">03</a></li>
+                <li class="mn-pager__gap">…</li>
+                <li><a class="mn-pager__item" href="#">61</a></li>
+                <li><button class="mn-pager__item" type="button" aria-label="Next page">&gt;</button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<dialog class="mn-dialog" id="banDlg" aria-labelledby="ban-t" style="--mn-dialog-w: 440px">
+  <div class="mn-dialog__head"><h3 class="mn-dialog__title" id="ban-t">Ban players</h3></div>
+  <div class="mn-dialog__body"><p id="banText">—</p></div>
+  <div class="mn-dialog__foot">
+    <button class="mn-btn mn-btn--ghost" type="button" autofocus onclick="banDlg.close()">Cancel</button>
+    <button class="mn-btn mn-btn--signal-line" type="button" id="banGo">Ban</button>
+  </div>
+</dialog>
+
+<script src="../js/minimal.js" data-manual></script>
+<script>
+(() => {
+  // ---- data (fake, deterministic) ----------------------------------------
+  let s = 9; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const names = ["dark_fox", "minjun.k", "sakura_99", "lowtide", "kai.sg", "neon-owl", "haru", "rook_7", "jiyoo", "tanaka.r", "pixel_ash", "mint", "solace", "yuna_b", "ghost.pepper", "kenji", "quietstorm", "bora", "ace_of_seoul", "lin.w", "moss", "ryu_s", "orbit", "eun.ji"];
+  const regions = ["KR", "JP", "SEA"];
+  const players = names.map((n, i) => {
+    const reports = rnd() > 0.82 ? Math.round(3 + rnd() * 9) : Math.round(rnd() * 2);
+    const status = i === 11 || i === 17 ? "BANNED" : reports >= 3 ? "FLAGGED" : "ACTIVE";
+    return {
+      id: "P-" + String(10421 + i * 37),
+      name: n,
+      status,
+      region: regions[Math.floor(rnd() * 3)],
+      level: Math.round(12 + rnd() * 70),
+      reports,
+      spend: Math.round(rnd() * rnd() * 900),
+      seen: status === "BANNED" ? 30 + Math.round(rnd() * 40) : Math.round(rnd() * 600),
+      trend: Array.from({ length: 10 }, () => Math.round(rnd() * 8)),
+    };
+  });
+  const ago = (m) => (m < 60 ? `${m} min` : m < 1440 ? `${Math.round(m / 60)} h` : `${Math.round(m / 1440)} d`);
+
+  const state = { status: "", regions: new Set(), minLevel: 20, q: "" };
+  const visible = () => players.filter((p) =>
+    (!state.status || p.status === state.status) &&
+    (!state.regions.size || state.regions.has(p.region)) &&
+    p.level >= state.minLevel &&
+    (!state.q || (p.name + p.id).toLowerCase().includes(state.q)));
+
+  // ---- render ------------------------------------------------------------
+  const body = document.getElementById("rows");
+  const tag = (st) => st === "ACTIVE" ? "mn-tag--solid" : st === "FLAGGED" ? "mn-tag--signal-line" : "mn-tag--muted";
+  function render() {
+    const list = visible().sort((a, b) => b.level - a.level);
+    body.textContent = "";
+    if (!list.length) {
+      body.innerHTML = `<tr class="mn-table__empty"><td colspan="10"><div class="mn-stack" style="--mn-gap: var(--mn-space-3); align-items: center">
+        <span class="mn-label">No players match</span><span class="mn-hint mn-hint--sentence">Nothing for “${state.q || "these filters"}”.</span>
+        <button class="mn-btn mn-btn--sm" type="button" id="clearAll">Clear filters</button></div></td></tr>`;
+      document.getElementById("clearAll").onclick = () => { state.q = ""; state.regions.clear(); state.minLevel = 0; q.value = ""; document.getElementById("levelChip").remove(); document.querySelectorAll("[data-region]").forEach((c) => c.setAttribute("aria-pressed", "false")); render(); };
+    }
+    for (const p of list) {
+      const tr = document.createElement("tr");
+      if (p.status === "BANNED") tr.className = "is-idle";
+      tr.innerHTML = `
+        <td class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select ${p.name}"></label></td>
+        <td class="mn-table__expand"><button class="mn-expand" type="button" aria-expanded="false" aria-controls="d-${p.id}" aria-label="Details for ${p.name}"></button></td>
+        <td data-sort="${p.name}"><span class="is-plain" style="font-weight:500">${p.name}</span> <span class="is-muted">${p.id}</span></td>
+        <td><span class="mn-tag ${tag(p.status)}">${p.status}</span></td>
+        <td data-col="region">${p.region}</td>
+        <td data-col="level" class="is-num">${p.level}</td>
+        <td class="is-num ${p.reports >= 3 ? "" : "is-muted"}">${p.reports}</td>
+        <td data-col="spend" class="is-num" data-sort="${p.spend}">$${p.spend.toLocaleString("en-US")}</td>
+        <td data-col="seen" data-sort="${p.seen}">${ago(p.seen)}</td>
+        <td class="mn-table__actions"><div class="mn-dropdown mn-dropdown--end">
+          <button class="mn-btn mn-btn--icon mn-btn--sm" type="button" data-mn-menu aria-controls="m-${p.id}" aria-label="Actions for ${p.name}">⋯</button>
+          <ul class="mn-menu" id="m-${p.id}" role="menu">
+            <li role="none"><button class="mn-menu__item" role="menuitem">View profile</button></li>
+            <li role="none"><button class="mn-menu__item" role="menuitem">Message</button></li>
+            <li role="none"><button class="mn-menu__item" role="menuitem">Reset password</button></li>
+            <li role="separator" class="mn-menu__sep"></li>
+            <li role="none"><button class="mn-menu__item mn-menu__item--danger" role="menuitem" data-ban="${p.id}">Ban ${p.name}</button></li>
+          </ul></div></td>`;
+      const d = document.createElement("tr");
+      d.className = "mn-table__detail";
+      d.id = "d-" + p.id;
+      d.hidden = true;
+      d.innerHTML = `<td colspan="10"><div class="mn-stats mn-stats--sm" style="--mn-cols:4; border:0; padding:0">
+          <div class="mn-stat"><span class="mn-label">Matches · 7 d</span><p class="mn-readout"><span>${40 + p.level}</span></p><svg class="mn-spark" data-values="${p.trend}" role="img" aria-label="Matches per day"></svg></div>
+          <div class="mn-stat"><span class="mn-label">Win rate</span><p class="mn-readout"><span>${Math.round(38 + p.level / 4)}</span><span class="mn-readout__unit">%</span></p></div>
+          <div class="mn-stat"><span class="mn-label">Reports · 30 d</span><p class="mn-readout ${p.reports >= 3 ? "is-live" : ""}"><span>${p.reports}</span></p><span class="mn-caption">${p.reports >= 3 ? "Over 3 · review" : "Normal"}</span></div>
+          <div class="mn-stat"><span class="mn-label">Account</span><p class="mn-hint mn-hint--sentence">Created 2024-0${1 + (p.level % 9)}-1${p.level % 10} · ${p.region} · 2FA ${p.level % 3 ? "on" : "off"}</p></div>
+        </div></td>`;
+      body.append(tr, d);
+    }
+    // counts for tabs + footer come from the same source
+    const base = players.filter((p) => (!state.regions.size || state.regions.has(p.region)) && p.level >= state.minLevel && (!state.q || (p.name + p.id).toLowerCase().includes(state.q)));
+    document.querySelectorAll("[data-count]").forEach((c) => { c.textContent = base.filter((p) => !c.dataset.count || p.status === c.dataset.count).length; });
+    document.getElementById("summary").textContent = `${list.length ? 1 : 0}–${list.length} of ${list.length} · 1,204 total`;
+    applyColumns();
+    MN.init(body); // menus, expanders and sparklines in the new rows
+    // a re-render clears the selection and returns to the default order
+    const all = document.querySelector("#players thead .mn-table__select input");
+    all.checked = false; all.indeterminate = false;
+    document.querySelector('.mn-bulkbar[data-mn-bulk-for="players"]').hidden = true;
+    document.querySelectorAll("#players th[aria-sort]").forEach((th) => th.setAttribute("aria-sort", th.dataset.col === "level" ? "descending" : "none"));
+  }
+
+  function applyColumns() {
+    document.querySelectorAll("#colMenu [data-col]").forEach((item) => {
+      const on = item.getAttribute("aria-checked") === "true";
+      document.querySelectorAll(`#players [data-col="${item.dataset.col}"]`).forEach((c) => (c.hidden = !on));
+    });
+  }
+
+  // ---- controls ----------------------------------------------------------
+  document.getElementById("tabs").addEventListener("click", (e) => {
+    const t = e.target.closest("[role=tab]"); if (!t) return;
+    document.querySelectorAll("#tabs [role=tab]").forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+    state.status = t.dataset.status; render();
+  });
+  document.querySelectorAll("[data-region]").forEach((c) => c.addEventListener("click", () => {
+    const on = c.getAttribute("aria-pressed") !== "true";
+    c.setAttribute("aria-pressed", String(on));
+    on ? state.regions.add(c.dataset.region) : state.regions.delete(c.dataset.region);
+    render();
+  }));
+  document.querySelector("#levelChip .mn-chip__clear").addEventListener("click", () => { state.minLevel = 0; document.getElementById("levelChip").remove(); render(); });
+  const q = document.getElementById("q");
+  q.addEventListener("input", () => { state.q = q.value.trim().toLowerCase(); render(); });
+  document.getElementById("colMenu").addEventListener("click", () => setTimeout(applyColumns));
+
+  // skeleton while "loading"
+  document.getElementById("reload").addEventListener("click", () => {
+    const table = document.getElementById("players");
+    table.setAttribute("aria-busy", "true");
+    body.innerHTML = Array.from({ length: 6 }, (_, i) => `<tr><td colspan="10"><span class="mn-skeleton mn-skeleton--line" style="--mn-skel-w:${60 + (i * 37) % 35}%"></span></td></tr>`).join("");
+    setTimeout(() => { table.removeAttribute("aria-busy"); render(); MN.toast("Loaded", "24 players · just now"); }, 1100);
+  });
+
+  // ban — one or many, always confirmed
+  const banDlg = document.getElementById("banDlg");
+  let banIds = [];
+  const askBan = (ids) => {
+    banIds = ids;
+    const who = ids.length === 1 ? players.find((p) => p.id === ids[0]).name : `${ids.length} players`;
+    document.getElementById("ban-t").textContent = `Ban ${who}`;
+    document.getElementById("banGo").textContent = `Ban ${who}`;
+    document.getElementById("banText").textContent = `They are signed out now and can’t play until unbanned. Reports and history are kept.`;
+    banDlg.showModal();
+  };
+  document.addEventListener("mn:select", (e) => { const id = e.detail.item?.dataset.ban; if (id) askBan([id]); });
+  document.getElementById("bulkBan").addEventListener("click", () => {
+    const ids = [...document.querySelectorAll("#rows tr:not(.mn-table__detail)")]
+      .filter((r) => r.querySelector(".mn-table__select input")?.checked)
+      .map((r) => r.querySelector(".mn-expand").getAttribute("aria-controls").slice(2));
+    askBan(ids);
+  });
+  document.getElementById("banGo").addEventListener("click", () => {
+    banIds.forEach((id) => (players.find((p) => p.id === id).status = "BANNED"));
+    banDlg.close(); render();
+    MN.toast("Banned", `${banIds.length} player${banIds.length > 1 ? "s" : ""} · undo in Banned tab`);
+  });
+
+  MN.init();
+  render();
+})();
+</script>
+</body>
+</html>

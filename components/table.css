@@ -1,0 +1,313 @@
+/**
+ * MINIMAL — tables and lists.
+ *   .mn-table     mono rows, strong rule under the head, subtle rules between rows.
+ *                 Rows that are doing nothing go gray (.is-idle); rows that are active go bold (.is-active).
+ *   .mn-now       inline "NOW" meter for a row: a hairline with a signal tick at --mn-pos
+ *   .mn-list      a vertical item list (parts bin, files): icon + name, subtle rules
+ */
+
+/* wrap any table that might outgrow a narrow panel */
+.mn-table-wrap {
+  position: relative; /* containing block, so .mn-sr-only labels in headers can't escape the scroll box */
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.mn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--mn-ink-primary);
+}
+.mn-table caption {
+  padding-bottom: var(--mn-space-2);
+  text-align: left;
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  color: var(--mn-ink-secondary);
+}
+.mn-table th {
+  padding: var(--mn-space-2) var(--mn-space-3) var(--mn-space-2) 0;
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-regular);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-align: left;
+  color: var(--mn-ink-secondary);
+  white-space: nowrap;
+}
+.mn-table td {
+  height: var(--mn-row-h, 33px);
+  padding: 0 var(--mn-space-3) 0 0;
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.mn-table th:last-child,
+.mn-table td:last-child {
+  padding-right: 0;
+}
+.mn-table .is-num {
+  text-align: right;
+}
+.mn-table tr.is-idle td {
+  color: var(--mn-ink-tertiary);
+}
+.mn-table tr.is-active td:first-child {
+  font-weight: var(--mn-font-weight-semibold);
+}
+.mn-table tr.is-end td {
+  border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong);
+}
+.mn-table--hover tbody tr:hover td {
+  background: var(--mn-bg-sunken);
+}
+.mn-table tr[aria-selected="true"] td {
+  background: var(--mn-signal-wash);
+}
+.mn-table--dense td {
+  --mn-row-h: 26px;
+}
+
+/* ---- now meter ----------------------------------------------------------- */
+.mn-now {
+  --mn-pos: 0;
+  --mn-w: 0.06;
+  position: relative;
+  display: block;
+  min-width: 48px;
+  height: 10px;
+  background: linear-gradient(var(--mn-line-subtle), var(--mn-line-subtle)) 0 50% / 100% 1px no-repeat;
+}
+.mn-now::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(var(--mn-pos) * 100%);
+  width: max(2px, calc(var(--mn-w) * 100%));
+  height: var(--mn-stroke-mark);
+  transform: translateY(-50%);
+  background: var(--mn-signal-mark);
+}
+/* trace + endpoint dot (FIELD "MOTION NOW") */
+.mn-now--trace {
+  background: linear-gradient(var(--mn-ink-secondary), var(--mn-ink-secondary)) 0 50% / calc(var(--mn-pos) * 100%) 1px no-repeat,
+    linear-gradient(var(--mn-line-subtle), var(--mn-line-subtle)) 0 50% / 100% 1px no-repeat;
+}
+.mn-now--trace::after {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ---- list ---------------------------------------------------------------- */
+.mn-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mn-list__head {
+  padding-bottom: var(--mn-space-2);
+  border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+}
+.mn-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-4);
+  min-height: 48px;
+  padding: var(--mn-space-2) 0;
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-sm);
+  color: var(--mn-ink-primary);
+  cursor: default;
+}
+.mn-list__item[draggable="true"] {
+  cursor: grab;
+}
+.mn-list__item:hover {
+  background: var(--mn-bg-sunken);
+}
+.mn-list__item[aria-selected="true"] {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-list__icon {
+  flex: none;
+  width: 28px;
+  height: 16px;
+  color: currentColor;
+}
+.mn-list__meta {
+  margin-left: auto;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- managed tables: select · sort · expand · row actions ---------------- */
+/* checkbox column — use .mn-check inside, no label text */
+.mn-table__select {
+  width: 32px;
+  padding-right: var(--mn-space-2) !important;
+}
+.mn-table__select .mn-check {
+  gap: 0;
+}
+.mn-table tr:has(.mn-table__select input:checked) td {
+  background: var(--mn-signal-wash);
+}
+
+/* sortable header: the whole label is a button; arrow only on the sorted column */
+.mn-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.mn-sort::after {
+  content: "↕";
+  color: var(--mn-ink-disabled);
+}
+.mn-sort:hover {
+  color: var(--mn-ink-primary);
+}
+th[aria-sort="ascending"] .mn-sort,
+th[aria-sort="descending"] .mn-sort {
+  color: var(--mn-ink-primary);
+}
+th[aria-sort="ascending"] .mn-sort::after {
+  content: "▲";
+  color: inherit;
+  font-size: 0.8em;
+}
+th[aria-sort="descending"] .mn-sort::after {
+  content: "▼";
+  color: inherit;
+  font-size: 0.8em;
+}
+.mn-table th.is-num .mn-sort {
+  flex-direction: row-reverse;
+}
+
+/* expand toggle + detail row */
+.mn-table__expand {
+  width: 28px;
+}
+.mn-expand {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: var(--mn-stroke-hair) solid transparent;
+  background: transparent;
+  color: var(--mn-ink-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+.mn-expand::before {
+  content: "▸";
+}
+.mn-expand[aria-expanded="true"]::before {
+  content: "▾";
+}
+.mn-expand:hover {
+  border-color: var(--mn-line-strong);
+  color: var(--mn-ink-primary);
+}
+.mn-table tr.mn-table__detail td {
+  height: auto;
+  padding: var(--mn-space-4) var(--mn-space-4) var(--mn-space-5) 60px;
+  background: var(--mn-bg-sunken);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: normal;
+}
+.mn-table tr.mn-table__detail[hidden] {
+  display: none;
+}
+.mn-table tr:has(+ tr.mn-table__detail:not([hidden])) td {
+  border-bottom-color: transparent;
+}
+
+/* row actions: the ⋯ menu lives in the last cell */
+.mn-table__actions {
+  width: 1%;
+  text-align: right;
+}
+.mn-table__actions .mn-btn {
+  height: 22px;
+  width: 22px;
+  min-width: 22px;
+  border-color: transparent;
+}
+.mn-table__actions .mn-btn:hover,
+.mn-table__actions .mn-btn[aria-expanded="true"] {
+  border-color: var(--mn-line-strong);
+}
+.mn-table__actions .mn-menu {
+  text-align: left;
+}
+
+/* cells */
+.mn-table .is-truncate {
+  max-width: var(--mn-truncate, 240px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mn-table .is-plain {
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.mn-table .is-muted {
+  color: var(--mn-ink-tertiary);
+}
+
+/* sticky header: wrap in .mn-table-wrap with a max-height */
+.mn-table--sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--mn-bg-canvas);
+}
+.mn-table-wrap--scroll {
+  max-height: var(--mn-table-max-h, 560px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* empty state inside a table */
+.mn-table__empty td {
+  height: auto;
+  padding: var(--mn-space-10) var(--mn-space-4);
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: normal;
+}

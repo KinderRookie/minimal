@@ -1,0 +1,225 @@
+/**
+ * MINIMAL — param: the signature unit.
+ *
+ *   REACH                      ← .mn-param__label
+ *   0.80 S                     ← .mn-readout (big light numeral + unit)
+ *   ┃╷╷╷╷┃╷╷╷╷┃╷╷╷╷┃╷╷╷╷┃      ← .mn-ruler (ticks)
+ *            ▲                 ← pointer at --mn-value (0–1)
+ *   STEADY                     ← .mn-param__caption (what the value *means*)
+ *
+ * The ruler wraps a real <input type="range"> (invisible, on top), so keyboard,
+ * screen readers and forms work without JS. js/minimal.js only syncs --mn-value
+ * and the readout text, and adds drag-the-number + double-click-to-default.
+ */
+
+.mn-param {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label   aside"
+    "readout aside"
+    "ruler   ruler"
+    "caption caption";
+  align-items: end;
+  row-gap: var(--mn-space-2);
+  column-gap: var(--mn-space-3);
+  min-width: 0;
+}
+.mn-param__label {
+  grid-area: label;
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  font-weight: var(--mn-font-weight-regular);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mn-param > .mn-readout {
+  grid-area: readout;
+}
+.mn-param > .mn-ruler {
+  grid-area: ruler;
+}
+.mn-param__aside {
+  grid-area: aside;
+  align-self: end;
+}
+.mn-param__caption {
+  grid-area: caption;
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* compact: FIELD's dense FX grid */
+.mn-param--sm {
+  row-gap: var(--mn-space-1);
+}
+.mn-param--sm > .mn-readout {
+  font-size: var(--mn-font-readout-sm);
+}
+.mn-param--sm .mn-param__label {
+  font-size: var(--mn-font-size-2xs);
+}
+
+/* inline: label on the left, value + ruler on the right (SPACE  L/R 89) */
+.mn-param--inline {
+  grid-template-columns: var(--mn-param-label-width, 96px) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label readout aside"
+    "label ruler   ruler";
+  align-items: center;
+}
+
+.mn-param.is-disabled > .mn-readout,
+.mn-param.is-disabled .mn-param__label {
+  color: var(--mn-ink-disabled);
+}
+
+/* ---- ruler --------------------------------------------------------------- */
+.mn-ruler {
+  --mn-value: 0.5;
+  --mn-ticks: 20; /* minor divisions */
+  --mn-majors: 4; /* major divisions */
+  --mn-tick-h: 6px;
+  --mn-major-h: 10px;
+  --mn-scale-h: 12px;
+  --mn-pointer-w: 12px;
+  --mn-pointer-h: 9px;
+
+  position: relative;
+  display: block;
+  height: calc(var(--mn-scale-h) + var(--mn-pointer-h) + 2px);
+  min-width: 80px;
+  color: var(--mn-ink-primary);
+  /* layers: baseline · minor ticks · major ticks · end ticks */
+  background:
+    linear-gradient(currentColor, currentColor) 0 calc(var(--mn-scale-h) - 1px) / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / var(--mn-ticks)))
+      0 calc(var(--mn-scale-h) - var(--mn-tick-h)) / calc(100% - 1px) var(--mn-tick-h) no-repeat,
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / var(--mn-majors)))
+      0 calc(var(--mn-scale-h) - var(--mn-major-h)) / calc(100% - 1px) var(--mn-major-h) no-repeat,
+    linear-gradient(currentColor, currentColor) 100% 0 / 1px var(--mn-scale-h) no-repeat,
+    linear-gradient(currentColor, currentColor) 0 0 / 1px var(--mn-scale-h) no-repeat;
+}
+
+/* pointer ▲ */
+.mn-ruler::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--mn-scale-h) + 2px);
+  left: calc(var(--mn-value) * 100%);
+  width: var(--mn-pointer-w);
+  height: var(--mn-pointer-h);
+  transform: translateX(-50%);
+  background: var(--mn-signal-mark);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* filled run from 0 to the value, along the baseline (mosaic) */
+.mn-ruler--fill::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--mn-scale-h) - var(--mn-stroke-mark));
+  width: calc(var(--mn-value) * 100%);
+  height: var(--mn-stroke-mark);
+  background: var(--mn-signal-mark);
+  pointer-events: none;
+}
+
+/* ink pointer — when the param is set but nothing is moving it */
+.mn-ruler--ink::after {
+  background: var(--mn-ink-primary);
+}
+
+/* bipolar: a centre mark, the run grows from the middle (PAN, OUTPUT dB) */
+.mn-ruler--center::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--mn-scale-h) - var(--mn-stroke-mark));
+  left: min(50%, calc(var(--mn-value) * 100%));
+  width: calc(max(var(--mn-value) - 0.5, 0.5 - var(--mn-value)) * 100%);
+  height: var(--mn-stroke-mark);
+  background: var(--mn-signal-mark);
+  pointer-events: none;
+}
+
+/* dense: mini ruler for compact grids */
+.mn-ruler--sm {
+  --mn-ticks: 16;
+  --mn-tick-h: 4px;
+  --mn-major-h: 8px;
+  --mn-scale-h: 9px;
+  --mn-pointer-w: 9px;
+  --mn-pointer-h: 7px;
+}
+
+/* allowed / suggested range band (mosaic "4-BAR SECTIONS MAY CHANGE") */
+.mn-ruler__band {
+  position: absolute;
+  top: 0;
+  left: calc(var(--mn-from, 0) * 100%);
+  width: calc((var(--mn-to, 1) - var(--mn-from, 0)) * 100%);
+  height: var(--mn-scale-h);
+  background: var(--mn-signal-wash);
+  pointer-events: none;
+}
+
+/* the real control, invisible, on top of the drawing */
+.mn-ruler__input {
+  position: absolute;
+  inset: -4px 0;
+  width: 100%;
+  height: calc(100% + 8px);
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.mn-ruler:has(> .mn-ruler__input:focus-visible) {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 4px;
+}
+.mn-ruler:has(> .mn-ruler__input:disabled) {
+  color: var(--mn-ink-disabled);
+}
+.mn-ruler:has(> .mn-ruler__input:disabled)::after {
+  background: var(--mn-ink-disabled);
+}
+.mn-ruler__input:disabled {
+  cursor: not-allowed;
+}
+
+/* ---- tiny shape box (LFO curve / empty "—" slot) beside a readout ---------- */
+.mn-shape {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 26px;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  color: var(--mn-ink-disabled);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+}
+.mn-shape--empty {
+  border-color: var(--mn-line-default);
+}
+.mn-shape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--mn-ink-primary);
+}

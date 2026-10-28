@@ -1,0 +1,352 @@
+/**
+ * MINIMAL — plots: the canvas half of every instrument.
+ *   .mn-plot           frame (light hairline), corner labels, holds an <svg> or <canvas>
+ *   .mn-axis           tick ruler + labels under a plot (-0.80 S ······ NOW)
+ *   .mn-wash           a selection rectangle tinted with signal
+ *   .mn-marker         ◎ ring + dot at --mn-x/--mn-y (0–1)
+ *   .mn-playhead       vertical signal line at --mn-pos
+ *   .mn-scope          small titled thumbnail panels (SPECTRUM, V × I)
+ *   .mn-wave           bar waveform; past bars ink, current window signal
+ *   .mn-minimap        overview box with a wash viewport
+ *   SVG paint classes  .mn-s-* (stroke) / .mn-f-* (fill) so drawings follow the theme
+ */
+
+.mn-plot {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+  border-radius: var(--mn-radius-panel);
+  background: var(--mn-bg-canvas);
+  overflow: hidden;
+}
+[data-dialect="soft"] .mn-plot {
+  border-color: transparent;
+  background: var(--mn-bg-sunken);
+}
+.mn-plot > svg,
+.mn-plot > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mn-plot--grid {
+  background-image:
+    linear-gradient(to right, var(--mn-line-faint) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--mn-line-faint) 1px, transparent 1px);
+  background-size: var(--mn-grid, 40px) var(--mn-grid, 40px);
+}
+.mn-plot--strong {
+  border-color: var(--mn-line-strong);
+}
+
+.mn-plot__label {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: var(--mn-space-2) var(--mn-space-3);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.mn-plot__label--tl { top: 0; left: 0; }
+.mn-plot__label--tr { top: 0; right: 0; }
+.mn-plot__label--bl { bottom: 0; left: 0; }
+.mn-plot__label--br { bottom: 0; right: 0; }
+
+/* ---- axis ---------------------------------------------------------------- */
+.mn-axis {
+  --mn-ticks: 40;
+  --mn-majors: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mn-space-2);
+  min-width: 0;
+  color: var(--mn-ink-primary);
+}
+.mn-axis__scale {
+  height: 9px;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / var(--mn-ticks)))
+      0 0 / calc(100% - 1px) 4px no-repeat,
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / var(--mn-majors)))
+      0 0 / calc(100% - 1px) 9px no-repeat,
+    linear-gradient(currentColor, currentColor) 100% 0 / 1px 9px no-repeat;
+}
+.mn-axis__labels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mn-space-4);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.mn-axis__labels > * {
+  flex: none;
+}
+.mn-axis__labels > .mn-axis__mid {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  color: var(--mn-ink-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- overlays ------------------------------------------------------------ */
+.mn-wash {
+  position: absolute;
+  left: calc(var(--mn-x, 0) * 100%);
+  top: calc(var(--mn-y, 0) * 100%);
+  width: calc(var(--mn-w, 0.2) * 100%);
+  height: calc(var(--mn-h, 1) * 100%);
+  background: var(--mn-signal-wash);
+  pointer-events: none;
+}
+/* wash sits *under* the drawing: put it before the svg in the DOM, or use mix-blend */
+.mn-plot > .mn-wash {
+  z-index: 0;
+}
+.mn-plot > svg {
+  position: relative;
+  z-index: 1;
+}
+
+.mn-marker {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--mn-x, 0.5) * 100%);
+  top: calc(var(--mn-y, 0.5) * 100%);
+  width: var(--mn-marker-size, 36px);
+  height: var(--mn-marker-size, 36px);
+  transform: translate(-50%, -50%);
+  border: var(--mn-stroke-rule) solid var(--mn-signal-mark);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.mn-marker::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--mn-signal-mark);
+}
+/* ghost marker: a past / secondary point */
+.mn-marker--ghost {
+  --mn-marker-size: 14px;
+  border-width: var(--mn-stroke-hair);
+  opacity: 0.6;
+}
+.mn-marker--ghost::after {
+  display: none;
+}
+
+.mn-playhead {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--mn-pos, 0) * 100%);
+  width: 0;
+  border-left: var(--mn-stroke-rule) solid var(--mn-signal-mark);
+  pointer-events: none;
+}
+.mn-playhead::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -6px;
+  width: 11px;
+  height: 8px;
+  background: var(--mn-signal-mark);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+/* ---- scope (small titled panels) ---------------------------------------- */
+.mn-scopes {
+  display: grid;
+  grid-template-columns: repeat(var(--mn-cols, 2), minmax(0, 1fr));
+  gap: var(--mn-space-2);
+}
+.mn-scope {
+  position: relative;
+  aspect-ratio: var(--mn-scope-ratio, 1);
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+  border-radius: var(--mn-radius-panel);
+  background: var(--mn-bg-canvas);
+  overflow: hidden;
+}
+.mn-scope > svg,
+.mn-scope > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mn-scope__label {
+  position: absolute;
+  top: var(--mn-space-1);
+  left: var(--mn-space-2);
+  z-index: 1;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-primary);
+  background: var(--mn-bg-canvas);
+  padding: 0 var(--mn-space-1);
+}
+
+/* ---- waveform bars ------------------------------------------------------- */
+.mn-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: var(--mn-wave-h, 32px);
+  min-width: 0;
+}
+.mn-wave > i {
+  flex: 1 1 0;
+  min-width: 1px;
+  height: calc(var(--h, 0.5) * 100%);
+  background: var(--mn-ink-primary);
+}
+.mn-wave > i.is-live {
+  background: var(--mn-signal-mark);
+}
+.mn-wave > i.is-dim {
+  background: var(--mn-ink-disabled);
+}
+
+/* ---- minimap ------------------------------------------------------------- */
+.mn-minimap {
+  position: relative;
+  width: var(--mn-minimap-w, 148px);
+  aspect-ratio: 3 / 2;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  background: var(--mn-bg-canvas);
+}
+.mn-minimap > .mn-wash {
+  outline: var(--mn-stroke-hair) solid var(--mn-signal-mark);
+  outline-offset: -1px;
+}
+
+/* ---- SVG paint ----------------------------------------------------------- */
+.mn-s-ink    { stroke: var(--mn-ink-primary);   fill: none; }
+.mn-s-mute   { stroke: var(--mn-ink-disabled);  fill: none; }
+.mn-s-line   { stroke: var(--mn-line-default);  fill: none; }
+.mn-s-grid   { stroke: var(--mn-line-faint);    fill: none; }
+.mn-s-signal { stroke: var(--mn-signal-mark);   fill: none; }
+.mn-f-ink    { fill: var(--mn-ink-primary); }
+.mn-f-mute   { fill: var(--mn-ink-disabled); }
+.mn-f-signal { fill: var(--mn-signal-mark); }
+.mn-f-wash   { fill: var(--mn-signal-wash); }
+.mn-f-canvas { fill: var(--mn-bg-canvas); }
+.mn-t-label {
+  fill: var(--mn-ink-secondary);
+  font-family: var(--mn-font-family-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.mn-t-ink {
+  fill: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---- ratio bar: parts of a whole (the pie chart, as one ruled bar) --------
+   <div class="mn-ratio">
+     <div class="mn-ratio__bar"><span class="mn-ratio__seg" style="--mn-share:.42"></span>…</div>
+     <ul class="mn-ratio__keys"><li class="mn-ratio__key"><i></i>KR <b>42%</b></li>…</ul>
+   </div>
+   Segments step from ink to pale by order; the one that matters gets .is-focus (on seg + key). */
+.mn-ratio {
+  display: grid;
+  gap: var(--mn-space-3);
+  min-width: 0;
+}
+.mn-ratio__bar {
+  display: flex;
+  gap: 2px;
+  height: var(--mn-ratio-h, 14px);
+  min-width: 0;
+}
+.mn-ratio__seg {
+  flex: var(--mn-share, 1) 1 0;
+  min-width: 2px;
+  background: var(--mn-part);
+}
+.mn-ratio__keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mn-space-1) var(--mn-space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-ratio__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-2);
+}
+.mn-ratio__key > i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--mn-part);
+}
+.mn-ratio__key > b {
+  font-weight: var(--mn-font-weight-medium);
+  color: var(--mn-ink-primary);
+}
+.mn-ratio__seg,
+.mn-ratio__key {
+  --mn-part: color-mix(in srgb, var(--mn-ink-primary) 18%, var(--mn-bg-canvas));
+}
+.mn-ratio__seg:nth-child(1), .mn-ratio__key:nth-child(1) { --mn-part: var(--mn-ink-primary); }
+.mn-ratio__seg:nth-child(2), .mn-ratio__key:nth-child(2) { --mn-part: color-mix(in srgb, var(--mn-ink-primary) 72%, var(--mn-bg-canvas)); }
+.mn-ratio__seg:nth-child(3), .mn-ratio__key:nth-child(3) { --mn-part: color-mix(in srgb, var(--mn-ink-primary) 50%, var(--mn-bg-canvas)); }
+.mn-ratio__seg:nth-child(4), .mn-ratio__key:nth-child(4) { --mn-part: color-mix(in srgb, var(--mn-ink-primary) 32%, var(--mn-bg-canvas)); }
+.mn-ratio__seg.is-focus,
+.mn-ratio__key.is-focus {
+  --mn-part: var(--mn-signal-mark);
+}
+.mn-ratio__key.is-focus > b {
+  color: var(--mn-signal-text);
+}
+
+/* ---- sparkline: drawn by minimal.js from data-values ---------------------
+   <svg class="mn-spark" data-values="12,14,13,19,24" data-focus="last" role="img" aria-label="…"></svg>
+   data-type="bars" for bars · data-focus="last|max|min|none" */
+.mn-spark {
+  display: inline-block;
+  width: var(--mn-spark-w, 96px);
+  height: var(--mn-spark-h, 24px);
+  vertical-align: middle;
+  overflow: visible;
+}
+.mn-spark--block {
+  display: block;
+  width: 100%;
+}

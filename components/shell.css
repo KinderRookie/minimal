@@ -1,0 +1,355 @@
+/**
+ * MINIMAL — app shell: the frame for multi-page tools (consoles, admin, ops).
+ *
+ *   ┌ side ─────┬ top ─────────────────────────────────────────┐
+ *   │ MARK      │ HOME / OPS / SHARDS             [SEARCH] ■KP │  ← rule
+ *   │ 01 OVERVIEW├──────────────────────────────────────────────┤
+ *   │■02 SHARDS ■│ .mn-page  title · desc            [ACTIONS]  │
+ *   │ 03 RULES  │ … only this area scrolls …                    │
+ *   │ v0.1.0    │                                               │
+ *   └───────────┴───────────────────────────────────────────────┘
+ *
+ * The sidebar is an index, not a colored rail: numbered mono items, current = inversion,
+ * counts in tabular figures. Chrome is fixed; the page scrolls inside .mn-shell__content.
+ * Under 960px the sidebar slides over the page; toggle with [data-mn-nav-toggle] (minimal.js).
+ */
+
+.mn-shell {
+  display: grid;
+  grid-template-columns: var(--mn-side-width, 232px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    "side top"
+    "side content";
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+}
+
+/* ---- sidebar ------------------------------------------------------------- */
+.mn-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  background: var(--mn-bg-panel);
+}
+.mn-side__head {
+  display: grid;
+  gap: var(--mn-space-1);
+  height: var(--mn-top-height, 64px);
+  align-content: center;
+  padding: 0 var(--mn-space-5);
+  border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong);
+}
+.mn-side__head .mn-wordmark {
+  font-size: var(--mn-font-size-xl);
+}
+.mn-side__nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--mn-space-4) 0;
+}
+.mn-side__group {
+  display: grid;
+  margin: 0 0 var(--mn-space-5);
+  padding: 0;
+  list-style: none;
+}
+.mn-side__group-label {
+  margin: 0 0 var(--mn-space-2);
+  padding: 0 var(--mn-space-5);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+.mn-side__item {
+  display: grid;
+  grid-template-columns: minmax(2.2em, max-content) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--mn-space-2) var(--mn-space-3);
+  min-height: 32px;
+  margin: 0 var(--mn-space-3);
+  padding: 0 var(--mn-space-2);
+  border-radius: var(--mn-radius-control);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mn-side__item:hover {
+  background: var(--mn-bg-hover);
+}
+.mn-side__item[aria-current="page"],
+.mn-side__item[aria-current="true"] {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-side__n {
+  color: var(--mn-ink-tertiary);
+  font-size: var(--mn-font-size-2xs);
+  font-variant-numeric: tabular-nums;
+}
+.mn-side__item[aria-current] .mn-side__n {
+  color: inherit;
+  opacity: 0.6;
+}
+.mn-side__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mn-side__count {
+  font-size: var(--mn-font-size-2xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--mn-ink-secondary);
+}
+.mn-side__item[aria-current] .mn-side__count {
+  color: inherit;
+}
+/* a nav item that needs attention: the count turns signal */
+.mn-side__count.is-live {
+  color: var(--mn-signal-text);
+}
+.mn-side__item[aria-current] .mn-side__count.is-live {
+  color: inherit;
+}
+.mn-side__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-3);
+  padding: var(--mn-space-3) var(--mn-space-5);
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-default);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  min-width: 0;
+}
+.mn-side__who {
+  display: grid;
+  min-width: 0;
+  line-height: 1.35;
+}
+.mn-side__who > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mn-side__who > :first-child {
+  color: var(--mn-ink-primary);
+}
+
+/* ---- topbar -------------------------------------------------------------- */
+.mn-top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-4);
+  height: var(--mn-top-height, 64px);
+  padding: 0 var(--mn-space-6);
+  border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong);
+  min-width: 0;
+}
+.mn-top__start {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-3);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.mn-top__end {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-2);
+  flex: none;
+}
+.mn-shell__toggle {
+  display: none;
+}
+
+/* ---- content + page ------------------------------------------------------ */
+.mn-shell__content {
+  grid-area: content;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.mn-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mn-space-6);
+  max-width: var(--mn-page-max, none);
+  padding: var(--mn-space-6) var(--mn-space-6) var(--mn-space-12);
+}
+.mn-page--narrow {
+  --mn-page-max: 880px;
+}
+.mn-page__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--mn-space-6);
+  flex-wrap: wrap;
+}
+.mn-page__heading {
+  display: grid;
+  gap: var(--mn-space-2);
+  min-width: 0;
+}
+.mn-page__title {
+  margin: 0;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-2xl);
+  font-weight: var(--mn-font-weight-regular);
+  line-height: var(--mn-font-leading-tight);
+  letter-spacing: -0.01em;
+}
+.mn-page__desc {
+  margin: 0;
+  max-width: 64ch;
+  font-size: var(--mn-font-size-md);
+  color: var(--mn-ink-secondary);
+}
+.mn-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mn-space-2);
+}
+
+/* ---- initials: the avatar, as a square ink chip -------------------------- */
+.mn-initials {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--mn-initials-size, 28px);
+  height: var(--mn-initials-size, 28px);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mn-initials--open {
+  background: transparent;
+  color: var(--mn-ink-primary);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+}
+.mn-initials--sm {
+  --mn-initials-size: 22px;
+}
+
+/* ---- narrow: sidebar slides over --------------------------------------- */
+@media (max-width: 960px) {
+  .mn-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "top"
+      "content";
+  }
+  .mn-side {
+    position: fixed;
+    z-index: 30;
+    inset: 0 auto 0 0;
+    width: min(280px, 86vw);
+    transform: translateX(-100%);
+    transition: transform var(--mn-motion-duration-base) var(--mn-motion-ease-out);
+  }
+  .mn-shell[data-nav="open"] .mn-side {
+    transform: none;
+  }
+  .mn-shell[data-nav="open"]::after {
+    content: "";
+    position: fixed;
+    z-index: 29;
+    inset: 0;
+    background: var(--mn-bg-scrim);
+  }
+  .mn-shell__toggle {
+    display: inline-flex;
+  }
+  .mn-top {
+    padding: 0 var(--mn-space-4);
+  }
+  .mn-page {
+    padding: var(--mn-space-5) var(--mn-space-4) var(--mn-space-10);
+  }
+}
+
+/* ---- split: master-detail ------------------------------------------------
+   ┌ list (own scroll) ┬ detail (own scroll) ┐
+   Put inside .mn-shell__content (or any box with a height). Each pane scrolls alone.
+   Under 960px only one pane shows: data-view="list" | "detail" on .mn-split,
+   and .mn-split__back (shown only there) returns to the list. */
+.mn-split {
+  display: grid;
+  grid-template-columns: var(--mn-split-list, 340px) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+}
+.mn-split__list,
+.mn-split__detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.mn-split__list {
+  border-right: var(--mn-stroke-hair) solid var(--mn-line-strong);
+}
+.mn-split__head {
+  display: grid;
+  gap: var(--mn-space-3);
+  padding: var(--mn-space-4);
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-strong);
+}
+.mn-split__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.mn-split__foot {
+  padding: var(--mn-space-2) var(--mn-space-4);
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-default);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-split__detail > .mn-split__scroll > .mn-page {
+  padding-top: var(--mn-space-5);
+}
+.mn-split .mn-split__back {
+  display: none; /* beats .mn-btn's display, which loads later */
+}
+@media (max-width: 960px) {
+  .mn-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mn-split__list {
+    border-right: 0;
+  }
+  .mn-split:not([data-view="detail"]) > .mn-split__detail,
+  .mn-split[data-view="detail"] > .mn-split__list {
+    display: none;
+  }
+  .mn-split .mn-split__back {
+    display: inline-flex;
+  }
+}

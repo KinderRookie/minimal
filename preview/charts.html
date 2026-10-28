@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MINIMAL Charts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+  <style>
+    .charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mn-space-10) var(--mn-space-8); padding-bottom: var(--mn-space-12); }
+    .charts .wide { grid-column: 1 / -1; }
+    .chart { height: 300px; }
+    .chart--tall { height: 360px; }
+    .chart--short { height: 220px; }
+    .chart--ratio { height: 64px; }
+    .chart--gauge { height: 260px; }
+    .lib { margin-left: var(--mn-space-2); }
+    @media (max-width: 960px) { .charts { grid-template-columns: minmax(0, 1fr); } }
+  </style>
+</head>
+<body class="mn">
+<div class="mn-app">
+  <header class="mn-header">
+    <div class="mn-header__brand">
+      <h1 class="mn-wordmark">Minimal</h1>
+      <span class="mn-vrule" aria-hidden="true"></span>
+      <p class="mn-subtitle">Charts <span class="mn-sep">/</span> ECharts · Recharts</p>
+    </div>
+    <div class="mn-header__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">Light</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">Dark</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Signal">
+        <label class="mn-seg__item"><input type="radio" name="signal" value="red" data-mn-attr="signal" checked><span class="mn-seg__face">Red</span></label>
+        <label class="mn-seg__item"><input type="radio" name="signal" value="blue" data-mn-attr="signal"><span class="mn-seg__face">Blue</span></label>
+        <label class="mn-seg__item"><input type="radio" name="signal" value="orange" data-mn-attr="signal"><span class="mn-seg__face">Orange</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Paper">
+        <label class="mn-seg__item"><input type="radio" name="paper" value="white" data-mn-attr="paper" checked><span class="mn-seg__face">White</span></label>
+        <label class="mn-seg__item"><input type="radio" name="paper" value="warm" data-mn-attr="paper"><span class="mn-seg__face">Warm</span></label>
+      </fieldset>
+      <a class="mn-btn mn-btn--sm" href="index.html">Specimen</a>
+    </div>
+  </header>
+
+  <main class="charts">
+    <section class="mn-section mn-section--bare wide">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Focus + context <span class="mn-sep">·</span> P95 wait by region <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.line({ focus }) · m.target · m.span</span>
+      </div>
+      <div class="chart chart--tall" id="ec-line" role="img" aria-label="Line chart: SEA wait time rises above the 35 second target in the last 15 minutes; other regions stay below."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">One bar is the point <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.bar({ focusIndex })</span>
+      </div>
+      <div class="chart" id="ec-bar" role="img" aria-label="Bar chart of matches per hour; the current hour is highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Map <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.scatter({ focusSet })</span>
+      </div>
+      <div class="chart" id="ec-scatter" role="img" aria-label="Scatter of sounds by brightness and decay; a chosen cluster is highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare wide">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Magnitude <span class="mn-sep">·</span> load by region × hour <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.heat() · paper → signal</span>
+      </div>
+      <div class="chart chart--short" id="ec-heat" role="img" aria-label="Heatmap of load per region and hour; evenings are densest."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Focus + context <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.line · r.target · r.span</span>
+      </div>
+      <div class="chart" id="rc-line" role="img" aria-label="Recharts version of the region wait chart."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">One bar is the point <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.bar · r.barFill</span>
+      </div>
+      <div class="chart" id="rc-bar" role="img" aria-label="Recharts version of the hourly bar chart."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare wide">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Sparkline <span class="mn-tag mn-tag--muted lib">No library</span></h2>
+        <span class="mn-section__meta">svg.mn-spark[data-values] · minimal.js</span>
+      </div>
+      <div class="mn-table-wrap">
+        <table class="mn-table">
+          <thead><tr><th>Metric</th><th class="is-num">Now</th><th>Last 12 h</th><th>Bars</th><th>Focus</th></tr></thead>
+          <tbody>
+            <tr><td>Players</td><td class="is-num">12,408</td><td><svg class="mn-spark" style="--mn-spark-w:140px" data-values="7,8,8,9,10,9,11,12,11,12,13,12.4" role="img" aria-label="Players rising"></svg></td><td><svg class="mn-spark" data-type="bars" data-values="7,8,8,9,10,9,11,12,11,12,13,12.4" role="img" aria-label="Players, bars"></svg></td><td>last</td></tr>
+            <tr><td>Peak CPU</td><td class="is-num">94 %</td><td><svg class="mn-spark" style="--mn-spark-w:140px" data-values="61,64,62,70,74,79,85,88,91,94,96,94" data-focus="max" role="img" aria-label="CPU peaking at 96"></svg></td><td><svg class="mn-spark" data-type="bars" data-focus="max" data-values="61,64,62,70,74,79,85,88,91,94,96,94" role="img" aria-label="CPU bars"></svg></td><td>max</td></tr>
+            <tr class="is-idle"><td>Crash rate</td><td class="is-num">0.02 %</td><td><svg class="mn-spark" style="--mn-spark-w:140px" data-values="0.03,0.02,0.02,0.04,0.02,0.02,0.01,0.02,0.02,0.03,0.02,0.02" data-focus="none" role="img" aria-label="Crash rate flat"></svg></td><td><svg class="mn-spark" data-type="bars" data-focus="none" data-values="0.03,0.02,0.02,0.04,0.02,0.02,0.01,0.02,0.02,0.03,0.02,0.02" role="img" aria-label="Crash rate bars"></svg></td><td>none</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Ratio <span class="mn-sep">·</span> instead of a pie <span class="mn-tag mn-tag--muted lib">No library</span></h2>
+        <span class="mn-section__meta">.mn-ratio</span>
+      </div>
+      <div class="mn-ratio" style="--mn-ratio-h: 18px">
+        <div class="mn-ratio__bar">
+          <span class="mn-ratio__seg" style="--mn-share:.38"></span>
+          <span class="mn-ratio__seg" style="--mn-share:.24"></span>
+          <span class="mn-ratio__seg is-focus" style="--mn-share:.19"></span>
+          <span class="mn-ratio__seg" style="--mn-share:.12"></span>
+          <span class="mn-ratio__seg" style="--mn-share:.07"></span>
+        </div>
+        <ul class="mn-ratio__keys">
+          <li class="mn-ratio__key"><i></i>KR <b>38%</b></li>
+          <li class="mn-ratio__key"><i></i>JP <b>24%</b></li>
+          <li class="mn-ratio__key is-focus"><i></i>SEA <b>19%</b></li>
+          <li class="mn-ratio__key"><i></i>TW <b>12%</b></li>
+          <li class="mn-ratio__key"><i></i>Other <b>7%</b></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Ratio <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.ratio(parts, { focus })</span>
+      </div>
+      <div class="chart chart--ratio" id="ec-ratio" role="img" aria-label="Ratio bar of players by region; SEA highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Stacked bar <span class="mn-sep">·</span> sessions by mode <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.stack(i, { focus })</span>
+      </div>
+      <div class="chart" id="ec-stack" role="img" aria-label="Stacked bars of sessions per day by mode; ranked mode highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Stacked bar <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.stack(i, { focus })</span>
+      </div>
+      <div class="chart" id="rc-stack" role="img" aria-label="Recharts stacked bars."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Stacked area <span class="mn-sep">·</span> traffic by platform <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.stack(i, { type: "area" })</span>
+      </div>
+      <div class="chart" id="ec-area" role="img" aria-label="Stacked area of traffic by platform."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Stacked area <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.stack(i, { type: "area" })</span>
+      </div>
+      <div class="chart" id="rc-area" role="img" aria-label="Recharts stacked area."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Ranking <span class="mn-sep">·</span> crash reports by device <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.hbar({ focusIndex })</span>
+      </div>
+      <div class="chart" id="ec-hbar" role="img" aria-label="Horizontal bars ranking devices by crash reports; the top one highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Ranking <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.hbar · r.hAxis</span>
+      </div>
+      <div class="chart" id="rc-hbar" role="img" aria-label="Recharts horizontal ranking."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Gauge <span class="mn-sep">·</span> the ruler, bent <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.gauge(value, { band })</span>
+      </div>
+      <div class="chart chart--gauge" id="ec-gauge" role="img" aria-label="Two gauges: server load 72 percent within target band, and tick rate 58.4 hertz."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Funnel <span class="mn-sep">·</span> install → ranked <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.funnel(stages)</span>
+      </div>
+      <div class="chart" id="ec-funnel" role="img" aria-label="Funnel from install to first ranked match; the biggest drop highlighted."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Funnel <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.funnelFill(i, focus)</span>
+      </div>
+      <div class="chart" id="rc-funnel" role="img" aria-label="Recharts funnel."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Waterfall <span class="mn-sep">·</span> daily active, start → end <span class="mn-tag mn-tag--muted lib">ECharts</span></h2>
+        <span class="mn-section__meta">m.waterfall(rows)</span>
+      </div>
+      <div class="chart" id="ec-wf" role="img" aria-label="Waterfall of daily active users: new and returning add, churn subtracts."></div>
+    </section>
+
+    <section class="mn-section mn-section--bare">
+      <div class="mn-section__head">
+        <h2 class="mn-section__title">Waterfall <span class="mn-tag mn-tag--muted lib">Recharts</span></h2>
+        <span class="mn-section__meta">r.waterfall · r.waterfallCell</span>
+      </div>
+      <div class="chart" id="rc-wf" role="img" aria-label="Recharts waterfall."></div>
+    </section>
+  </main>
+
+  <footer class="mn-footer">
+    <span>Minimal charts 0.1.0</span>
+    <span class="mn-footer__hints">One signal series <span class="mn-sep">·</span> context in ink + dashes <span class="mn-sep">·</span> direct labels over legends <span class="mn-sep">·</span> switch theme above</span>
+    <span class="mn-footer__end" id="status">—</span>
+  </footer>
+</div>
+
+<script src="../js/minimal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script type="module">
+import { minimalECharts } from "../charts/echarts.js";
+import { minimalRecharts } from "../charts/recharts.js";
+
+// ---- deterministic data ----------------------------------------------------
+let s = 5; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+const minutes = Array.from({ length: 61 }, (_, i) => (i === 60 ? "NOW" : `-${60 - i}`));
+const regions = { SEA: [32, 6, true], KR: [26, 4], JP: [29, 5], TW: [22, 3], OCE: [18, 3] };
+const waits = {};
+for (const [name, [base, amp, rise]] of Object.entries(regions)) {
+  waits[name] = minutes.map((_, m) => +(base + Math.sin(m / 5 + base) * amp + (rnd() - 0.5) * 4 + (rise && m > 44 ? (m - 44) * 1.6 : 0)).toFixed(1));
+}
+const hours = Array.from({ length: 24 }, (_, h) => String(h).padStart(2, "0"));
+const perHour = hours.map((_, h) => Math.round(120 + 220 * Math.exp(-((h - 21) ** 2) / 22) + rnd() * 30));
+const NOW_HOUR = 16;
+const points = Array.from({ length: 360 }, () => [+(rnd() * 0.5 + rnd() * 0.5).toFixed(3), +(rnd() * 0.9 + 0.05).toFixed(3)]);
+const chosen = new Set(points.map((p, i) => (p[0] > 0.6 && p[0] < 0.72 ? i : -1)).filter((i) => i >= 0));
+const heatRows = ["KR", "JP", "SEA", "TW", "OCE"];
+const heatData = [];
+heatRows.forEach((r, y) => hours.forEach((_, h) => {
+  const d = Math.min(Math.abs(h - 21), 24 - Math.abs(h - 21));
+  heatData.push([h, y, +Math.max(0, Math.exp(-(d * d) / 18) * (r === "OCE" ? 0.35 : 0.95) - rnd() * 0.08).toFixed(2)]);
+}));
+
+const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+const modes = { Ranked: [42, 44, 41, 47, 52, 68, 71], Casual: [30, 31, 29, 33, 36, 49, 52], Arcade: [12, 11, 13, 12, 15, 22, 24], Training: [6, 7, 6, 6, 7, 9, 8] };
+const platforms = { PC: [], Console: [], Mobile: [] };
+hours.forEach((_, h) => {
+  const curve = 0.35 + 0.65 * Math.exp(-((h - 21) ** 2) / 30);
+  platforms.PC.push(Math.round(320 * curve + rnd() * 20));
+  platforms.Console.push(Math.round(180 * curve + rnd() * 15));
+  platforms.Mobile.push(Math.round(140 * (0.5 + 0.5 * Math.exp(-((h - 13) ** 2) / 40)) + rnd() * 15));
+});
+const devices = [["Galaxy A14", 412], ["iPhone 12", 233], ["Redmi 12", 198], ["Pixel 6", 121], ["iPhone 15", 88], ["Galaxy S23", 61]];
+const stages = [{ name: "INSTALL", value: 100000 }, { name: "TUTORIAL", value: 81000 }, { name: "FIRST MATCH", value: 66000 }, { name: "DAY 2", value: 31000 }, { name: "RANKED", value: 22000 }];
+const wfRows = [{ name: "START", total: true, value: 12000 }, { name: "NEW", value: 1840 }, { name: "RETURNING", value: 960 }, { name: "CHURNED", value: -1310 }, { name: "BANNED", value: -120 }, { name: "END", total: true }];
+const regionsShare = [{ name: "KR", value: 38 }, { name: "JP", value: 24 }, { name: "SEA", value: 19 }, { name: "TW", value: 12 }, { name: "OTHER", value: 7 }];
+
+// ---- ECharts ---------------------------------------------------------------
+const charts = {};
+function ec(id, build) {
+  charts[id]?.dispose();
+  const m = minimalECharts(document.documentElement);
+  const c = echarts.init(document.getElementById(id), m.theme, { renderer: "svg" });
+  c.setOption(build(m));
+  charts[id] = c;
+}
+
+function renderECharts() {
+  ec("ec-line", (m) => ({
+    grid: { right: 56 },
+    tooltip: { trigger: "axis" },
+    xAxis: { type: "category", data: minutes, axisLabel: { interval: 9 } },
+    yAxis: { type: "value", name: "S", min: 0 },
+    series: [
+      { name: "KR", data: waits.KR, ...m.line({ slot: 0 }) },
+      { name: "JP", data: waits.JP, ...m.line({ slot: 1 }) },
+      { name: "TW", data: waits.TW, ...m.line({ slot: 2 }) },
+      { name: "OCE", data: waits.OCE, ...m.line({ slot: 3 }) },
+      { name: "SEA", data: waits.SEA, ...m.line({ focus: true }),
+        markLine: m.target(35, "35 S TARGET"),
+        markArea: m.span("-13", "NOW", "OVER TARGET") },
+    ],
+  }));
+
+  ec("ec-bar", (m) => ({
+    tooltip: { trigger: "axis", axisPointer: { type: "line" } },
+    xAxis: { type: "category", data: hours, axisLabel: { interval: 2 } },
+    yAxis: { type: "value" },
+    series: [{ name: "Matches / h", data: perHour, ...m.bar({ focusIndex: NOW_HOUR }) }],
+  }));
+
+  ec("ec-scatter", (m) => ({
+    grid: { top: 12, bottom: 24, left: 30 },
+    tooltip: { trigger: "item" },
+    xAxis: { type: "value", name: "BRIGHTNESS →", nameLocation: "middle", nameGap: 26, min: 0, max: 1, splitLine: { show: true, lineStyle: { color: m.t.grid } } },
+    yAxis: { type: "value", name: "DECAY →", nameLocation: "middle", nameGap: 34, min: 0, max: 1 },
+    series: [{ name: "Sounds", data: points, ...m.scatter({ focusSet: chosen }) }],
+  }));
+
+  ec("ec-heat", (m) => ({
+    grid: { top: 8, bottom: 8 },
+    tooltip: { formatter: (p) => `${heatRows[p.value[1]]} · ${hours[p.value[0]]}:00 · ${Math.round(p.value[2] * 100)}%` },
+    xAxis: { type: "category", data: hours, splitArea: { show: false } },
+    yAxis: { type: "category", data: heatRows, inverse: true, axisLine: { show: false }, axisTick: { show: false } },
+    visualMap: m.heat({ min: 0, max: 1 }),
+    series: [{ type: "heatmap", data: heatData, itemStyle: { borderColor: m.t.axis, borderWidth: 1 }, emphasis: { itemStyle: { borderColor: m.t.focus, borderWidth: 2 } } }],
+  }));
+
+  ec("ec-ratio", (m) => m.ratio(regionsShare, { focus: "SEA" }));
+
+  ec("ec-stack", (m) => ({
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: m.t.wash } } },
+    legend: { top: 0, right: 0 },
+    grid: { top: 30 },
+    xAxis: { type: "category", data: days },
+    yAxis: { type: "value", name: "K" },
+    series: Object.entries(modes).map(([name, data], i) => ({ name, data, ...m.stack(i, { focus: name === "Ranked" }) })),
+  }));
+
+  ec("ec-area", (m) => ({
+    tooltip: { trigger: "axis" },
+    legend: { top: 0, right: 0 },
+    grid: { top: 30 },
+    xAxis: { type: "category", data: hours, boundaryGap: false, axisLabel: { interval: 3 } },
+    yAxis: { type: "value" },
+    series: Object.entries(platforms).map(([name, data], i) => ({ name, data, ...m.stack(i, { type: "area" }) })),
+  }));
+
+  ec("ec-hbar", (m) => ({
+    grid: { right: 40 },
+    tooltip: { trigger: "axis", axisPointer: { type: "none" } },
+    xAxis: { type: "value", splitLine: { show: true, lineStyle: { color: m.t.grid } }, axisLine: { show: false }, axisTick: { show: false } },
+    yAxis: { type: "category", inverse: true, data: devices.map((d) => d[0]), axisLabel: { color: m.t.ink } },
+    series: [{ name: "Crash reports", data: devices.map((d) => d[1]), ...m.hbar({ focusIndex: 0 }) }],
+  }));
+
+  ec("ec-gauge", (m) => ({
+    series: [
+      ...m.gauge(72, { min: 0, max: 100, unit: "%", label: "Server load", band: [55, 80] }).map((g) => ({ ...g, center: ["26%", "60%"], radius: g.radius === "92%" ? "78%" : "74%" })),
+      ...m.gauge(58.4, { min: 0, max: 64, unit: "Hz", label: "Tick", decimals: 1 }).map((g) => ({ ...g, center: ["74%", "60%"], radius: "74%" })),
+    ],
+  }));
+
+  ec("ec-funnel", (m) => ({ tooltip: { trigger: "item" }, series: [m.funnel(stages)] }));
+
+  ec("ec-wf", (m) => {
+    const w = m.waterfall(wfRows, { focusIndex: 3 });
+    return {
+      tooltip: { trigger: "axis", axisPointer: { type: "none" } },
+      xAxis: { type: "category", data: w.categories },
+      yAxis: { type: "value", min: 10000 },
+      series: w.series,
+    };
+  });
+}
+
+// ---- Recharts --------------------------------------------------------------
+const h = React.createElement;
+const R = Recharts;
+const roots = {};
+const lineRows = minutes.map((t, i) => ({ t, ...Object.fromEntries(Object.keys(waits).map((k) => [k, waits[k][i]])) }));
+const barRows = hours.map((hh, i) => ({ h: hh, v: perHour[i] }));
+
+function rc(id, el) {
+  roots[id] ??= ReactDOM.createRoot(document.getElementById(id));
+  roots[id].render(h(R.ResponsiveContainer, { width: "100%", height: "100%" }, el));
+}
+
+function renderRecharts() {
+  const r = minimalRecharts(document.documentElement);
+  rc("rc-line", h(R.LineChart, { data: lineRows, margin: r.margin },
+    h(R.CartesianGrid, r.grid),
+    h(R.XAxis, { dataKey: "t", interval: 9, ...r.xAxis }),
+    h(R.YAxis, r.yAxis),
+    h(R.Tooltip, r.tooltip),
+    h(R.ReferenceArea, { x1: "-13", x2: "NOW", ...r.span("OVER TARGET") }),
+    h(R.ReferenceLine, { y: 35, ...r.target("35 S TARGET") }),
+    h(R.Line, { dataKey: "KR", ...r.line({ slot: 0 }) }),
+    h(R.Line, { dataKey: "JP", ...r.line({ slot: 1 }) }),
+    h(R.Line, { dataKey: "TW", ...r.line({ slot: 2 }) }),
+    h(R.Line, { dataKey: "OCE", ...r.line({ slot: 3 }) }),
+    h(R.Line, { dataKey: "SEA", ...r.line({ focus: true }) }),
+  ));
+  rc("rc-bar", h(R.BarChart, { data: barRows, margin: r.margin },
+    h(R.CartesianGrid, r.grid),
+    h(R.XAxis, { dataKey: "h", interval: 2, ...r.xAxis }),
+    h(R.YAxis, r.yAxis),
+    h(R.Tooltip, { ...r.tooltip, cursor: { fill: r.t.wash } }),
+    h(R.Bar, { dataKey: "v", ...r.bar() }, barRows.map((_, i) => h(R.Cell, { key: i, fill: r.barFill(i === NOW_HOUR) }))),
+  ));
+}
+
+function renderRecharts2() {
+  const r = minimalRecharts(document.documentElement);
+  const stackRows = days.map((d, i) => ({ d, ...Object.fromEntries(Object.entries(modes).map(([k, v]) => [k, v[i]])) }));
+  rc("rc-stack", h(R.BarChart, { data: stackRows, margin: r.margin },
+    h(R.CartesianGrid, r.grid), h(R.XAxis, { dataKey: "d", ...r.xAxis }), h(R.YAxis, r.yAxis),
+    h(R.Tooltip, { ...r.tooltip, cursor: { fill: r.t.wash } }),
+    ...Object.keys(modes).map((k, i) => h(R.Bar, { key: k, dataKey: k, ...r.stack(i, { focus: k === "Ranked" }) })),
+  ));
+  const areaRows = hours.map((hh, i) => ({ h: hh, ...Object.fromEntries(Object.entries(platforms).map(([k, v]) => [k, v[i]])) }));
+  rc("rc-area", h(R.AreaChart, { data: areaRows, margin: r.margin },
+    h(R.CartesianGrid, r.grid), h(R.XAxis, { dataKey: "h", interval: 3, ...r.xAxis }), h(R.YAxis, r.yAxis),
+    h(R.Tooltip, r.tooltip),
+    ...Object.keys(platforms).map((k, i) => h(R.Area, { key: k, dataKey: k, ...r.stack(i, { type: "area" }) })),
+  ));
+  const devRows = devices.map(([name, v]) => ({ name, v }));
+  rc("rc-hbar", h(R.BarChart, { data: devRows, layout: "vertical", margin: { ...r.margin, left: 8 } },
+    h(R.CartesianGrid, { ...r.grid, vertical: true, horizontal: false }),
+    h(R.XAxis, { type: "number", ...r.hAxis.x }),
+    h(R.YAxis, { type: "category", dataKey: "name", ...r.hAxis.y, width: 84 }),
+    h(R.Tooltip, { ...r.tooltip, cursor: false }),
+    h(R.Bar, { dataKey: "v", ...r.hbar() },
+      devRows.map((_, i) => h(R.Cell, { key: i, fill: r.barFill(i === 0) })),
+      h(R.LabelList, { dataKey: "v", position: "right", fill: r.t.inkSecondary, fontFamily: r.t.fontMono, fontSize: 10 })),
+  ));
+  rc("rc-funnel", h(R.FunnelChart, { margin: { top: 8, right: 140, bottom: 8, left: 8 } },
+    h(R.Tooltip, r.tooltip),
+    h(R.Funnel, { dataKey: "value", data: stages, isAnimationActive: false, stroke: "none" },
+      stages.map((_, i) => h(R.Cell, { key: i, fill: r.funnelFill(i, i === 3) })),
+      h(R.LabelList, { position: "right", dataKey: "name", fill: r.t.inkSecondary, fontFamily: r.t.fontMono, fontSize: 10, stroke: "none" })),
+  ));
+  const wf = r.waterfall(wfRows);
+  rc("rc-wf", h(R.BarChart, { data: wf, margin: r.margin },
+    h(R.CartesianGrid, r.grid), h(R.XAxis, { dataKey: "name", ...r.xAxis }), h(R.YAxis, { ...r.yAxis, domain: [10000, "auto"], allowDataOverflow: true }),
+    h(R.Tooltip, { ...r.tooltip, cursor: false }),
+    h(R.Bar, { dataKey: "base", stackId: "wf", fill: "transparent", isAnimationActive: false }),
+    h(R.Bar, { dataKey: "delta", stackId: "wf", ...r.bar() }, wf.map((d, i) => h(R.Cell, { key: i, ...r.waterfallCell(d, i === 3) }))),
+  ));
+}
+
+function renderAll() {
+  renderECharts();
+  renderRecharts();
+  renderRecharts2();
+  const a = document.documentElement.dataset;
+  document.getElementById("status").textContent = `${a.theme || "os"} · ${a.signal || "red"} · ${a.paper || "white"}`;
+}
+
+// re-theme when the header switches change <html data-*>
+new MutationObserver(() => requestAnimationFrame(renderAll))
+  .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-signal", "data-paper"] });
+addEventListener("resize", () => Object.values(charts).forEach((c) => c.resize()));
+document.fonts.ready.then(renderAll);
+</script>
+</body>
+</html>

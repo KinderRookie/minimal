@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+</head>
+<body class="mn">
+<div class="mn-shell">
+
+  <nav class="mn-side" aria-label="Main">
+    <div class="mn-side__head">
+      <span class="mn-wordmark">Shard</span>
+      <span class="mn-subtitle">Ops <span class="mn-sep">/</span> Asia</span>
+    </div>
+    <div class="mn-side__nav">
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Run</li>
+        <li><a class="mn-side__item" href="shell.html"><span class="mn-side__n">01</span><span class="mn-side__label">Shards</span></a></li>
+        <li><a class="mn-side__item" href="list.html"><span class="mn-side__n">02</span><span class="mn-side__label">Players</span><span class="mn-side__count">1,204</span></a></li>
+        <li><a class="mn-side__item" href="master-detail.html" aria-current="page"><span class="mn-side__n">03</span><span class="mn-side__label">Reports</span><span class="mn-side__count is-live" id="openCount">7</span></a></li>
+        <li><a class="mn-side__item" href="agent.html"><span class="mn-side__n">04</span><span class="mn-side__label">Agent</span></a></li>
+      </ul>
+    </div>
+    <div class="mn-side__foot">
+      <span class="mn-initials">JL</span>
+      <span class="mn-side__who"><span>J. Lee</span><span>Moderator</span></span>
+    </div>
+  </nav>
+
+  <header class="mn-top">
+    <div class="mn-top__start">
+      <button class="mn-btn mn-btn--icon mn-btn--sm mn-shell__toggle" type="button" data-mn-nav-toggle aria-label="Menu">≡</button>
+      <ol class="mn-crumbs" aria-label="Breadcrumb"><li><a href="#">Ops</a></li><li><a href="#">Reports</a></li><li aria-current="page" id="crumb">—</li></ol>
+    </div>
+    <div class="mn-top__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+    </div>
+  </header>
+
+  <main class="mn-shell__content" style="overflow: hidden">
+    <div class="mn-split" id="split">
+      <!-- left: the master list, scrolls on its own -->
+      <section class="mn-split__list" aria-label="Reports">
+        <div class="mn-split__head">
+          <label class="mn-toolbar__search" style="flex: none"><span class="mn-sr-only">Search reports</span><input class="mn-input mn-input--sm" type="search" id="q" placeholder="Player or case"></label>
+          <div class="mn-words mn-words--row" role="tablist" aria-label="Report state" id="filter">
+            <button class="mn-word__face" role="tab" aria-selected="true" data-state="OPEN">Open<sup class="mn-count" data-n="OPEN"></sup></button>
+            <button class="mn-word__face" role="tab" aria-selected="false" data-state="CLOSED">Closed<sup class="mn-count" data-n="CLOSED"></sup></button>
+            <button class="mn-word__face" role="tab" aria-selected="false" data-state="">All</button>
+          </div>
+        </div>
+        <div class="mn-split__scroll">
+          <ul class="mn-index" id="index" role="listbox" aria-label="Report cases"></ul>
+        </div>
+        <div class="mn-split__foot" id="listFoot">—</div>
+      </section>
+
+      <!-- right: the selected case, scrolls on its own -->
+      <section class="mn-split__detail" aria-live="polite">
+        <div class="mn-split__scroll" id="detailScroll">
+          <div class="mn-page" id="detail"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<dialog class="mn-dialog" id="banDlg" aria-labelledby="ban-t" style="--mn-dialog-w: 440px">
+  <div class="mn-dialog__head"><h3 class="mn-dialog__title" id="ban-t">Ban</h3></div>
+  <div class="mn-dialog__body"><p>The player is signed out now and can’t play until unbanned. The case closes with your note.</p></div>
+  <div class="mn-dialog__foot">
+    <button class="mn-btn mn-btn--ghost" type="button" autofocus onclick="banDlg.close()">Cancel</button>
+    <button class="mn-btn mn-btn--signal-line" type="button" id="banGo">Ban</button>
+  </div>
+</dialog>
+
+<script src="../js/minimal.js" data-manual></script>
+<script>
+(() => {
+  let s = 21; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const kinds = ["Cheating", "Aimbot", "Toxic chat", "Griefing", "Wall hack", "Smurfing", "Exploit"];
+  const players = ["dark_fox", "ghost.pepper", "lin.w", "rook_7", "neon-owl", "ace_of_seoul", "quietstorm", "pixel_ash", "orbit", "kai.sg", "moss"];
+  const cases = players.map((p, i) => ({
+    id: "#" + (4821 - i * 13),
+    player: p,
+    kind: kinds[i % kinds.length],
+    reports: 1 + Math.round(rnd() * 11),
+    state: i < 7 ? "OPEN" : "CLOSED",
+    unread: i < 3,
+    mins: 4 + i * 23 + Math.round(rnd() * 10),
+    kd: (0.8 + rnd() * 3.2).toFixed(2),
+    hs: Math.round(18 + rnd() * 60),
+    matches: 20 + Math.round(rnd() * 200),
+    trend: Array.from({ length: 12 }, (_, k) => +(0.8 + rnd() * (k > 8 && i % 2 === 0 ? 3.5 : 1.2)).toFixed(2)),
+    decision: i >= 7 ? (i % 2 ? "Warned" : "Dismissed") : null,
+  }));
+  const ago = (m) => (m < 60 ? `${m} min` : `${Math.round(m / 60)} h`);
+  let filter = "OPEN", q = "", current = cases[0].id;
+
+  const index = document.getElementById("index");
+  const split = document.getElementById("split");
+
+  function renderList() {
+    const list = cases.filter((c) => (!filter || c.state === filter) && (!q || (c.player + c.id + c.kind).toLowerCase().includes(q)));
+    index.textContent = "";
+    for (const c of list) {
+      const li = document.createElement("li");
+      li.setAttribute("role", "none"); // listbox → option ownership; the <li> must not be a listitem
+      li.innerHTML = `<button class="mn-index__item${c.unread ? " is-unread" : ""}" role="option" aria-selected="${c.id === current}" data-id="${c.id}">
+        <span class="mn-index__title">${c.id} · ${c.kind}</span>
+        <span class="mn-index__sub">${c.player} · ${c.reports} report${c.reports > 1 ? "s" : ""}</span>
+        <span class="mn-index__meta"><span>${ago(c.mins)}</span><span class="mn-tag ${c.state === "OPEN" ? (c.reports >= 5 ? "mn-tag--signal-line" : "mn-tag--solid") : "mn-tag--muted"}">${c.state === "OPEN" ? (c.reports >= 5 ? "Urgent" : "Open") : c.decision}</span></span>
+      </button>`;
+      index.appendChild(li);
+    }
+    document.querySelectorAll("[data-n]").forEach((n) => (n.textContent = cases.filter((c) => c.state === n.dataset.n).length));
+    document.getElementById("openCount").textContent = cases.filter((c) => c.state === "OPEN").length;
+    document.getElementById("listFoot").textContent = `${list.length} shown · sorted by newest`;
+  }
+
+  function renderDetail() {
+    const c = cases.find((x) => x.id === current);
+    const d = document.getElementById("detail");
+    document.getElementById("crumb").textContent = c.id;
+    const open = c.state === "OPEN";
+    d.innerHTML = `
+      <div class="mn-row"><button class="mn-btn mn-btn--sm mn-split__back" type="button" id="back">‹ Reports</button></div>
+      <div class="mn-page__head">
+        <div class="mn-page__heading">
+          <span class="mn-label">${c.id} <span class="mn-sep">·</span> ${c.kind} <span class="mn-sep">·</span> opened ${ago(c.mins)} ago</span>
+          <h1 class="mn-page__title">${c.player}</h1>
+          <div class="mn-row"><span class="mn-tag ${open ? "mn-tag--solid" : "mn-tag--muted"}">${open ? "Open" : c.decision}</span><span class="mn-tag mn-tag--muted">Asia · Ranked</span>${c.reports >= 5 ? '<span class="mn-tag mn-tag--signal-line">5+ reports</span>' : ""}</div>
+        </div>
+        <div class="mn-page__actions">
+          <button class="mn-btn" type="button" ${open ? "" : "disabled"} data-decide="Dismissed">Dismiss</button>
+          <button class="mn-btn" type="button" ${open ? "" : "disabled"} data-decide="Warned">Warn</button>
+          <button class="mn-btn mn-btn--signal-line" type="button" ${open ? "" : "disabled"} id="ban">Ban</button>
+        </div>
+      </div>
+
+      <div class="mn-stats" style="--mn-cols: 4">
+        <div class="mn-stat"><span class="mn-label">Reports</span><p class="mn-readout ${c.reports >= 5 ? "is-live" : ""}"><span>${c.reports}</span></p><span class="mn-caption">${c.reports >= 5 ? "Over 5 · priority" : "Below threshold"}</span></div>
+        <div class="mn-stat"><span class="mn-label">K / D</span><p class="mn-readout"><span>${c.kd}</span></p><svg class="mn-spark" data-values="${c.trend}" role="img" aria-label="K/D over the last 12 matches"></svg></div>
+        <div class="mn-stat"><span class="mn-label">Headshot</span><p class="mn-readout ${c.hs > 60 ? "is-live" : ""}"><span>${c.hs}</span><span class="mn-readout__unit">%</span></p><span class="mn-caption">Region avg 31 %</span></div>
+        <div class="mn-stat"><span class="mn-label">Matches · 30 d</span><p class="mn-readout"><span>${c.matches}</span></p></div>
+      </div>
+
+      <div class="mn-tabs">
+        <div class="mn-tabs__list" role="tablist" aria-label="Case">
+          <button class="mn-tabs__tab" role="tab" id="ct-1" aria-controls="cp-1" aria-selected="true">Decision</button>
+          <button class="mn-tabs__tab" role="tab" id="ct-2" aria-controls="cp-2" aria-selected="false">Evidence<sup class="mn-count">${c.reports}</sup></button>
+          <button class="mn-tabs__tab" role="tab" id="ct-3" aria-controls="cp-3" aria-selected="false">History</button>
+        </div>
+
+        <section class="mn-tabs__panel" role="tabpanel" id="cp-1" aria-labelledby="ct-1">
+          <form class="mn-form" onsubmit="event.preventDefault()">
+            <fieldset class="mn-form__section">
+              <legend class="mn-form__legend"><span>Decision</span><span>${open ? "Draft" : "Closed"}</span></legend>
+              <div class="mn-form__grid">
+                <div class="mn-field mn-field--full">
+                  <span class="mn-field__label">Finding</span>
+                  <fieldset class="mn-seg" aria-label="Finding" ${open ? "" : "disabled"}>
+                    <label class="mn-seg__item"><input type="radio" name="finding" ${open ? "" : "disabled"}><span class="mn-seg__face">No evidence</span></label>
+                    <label class="mn-seg__item"><input type="radio" name="finding" checked ${open ? "" : "disabled"}><span class="mn-seg__face">Likely</span></label>
+                    <label class="mn-seg__item"><input type="radio" name="finding" ${open ? "" : "disabled"}><span class="mn-seg__face">Confirmed</span></label>
+                  </fieldset>
+                </div>
+                <label class="mn-field mn-field--required mn-field--full">
+                  <span class="mn-field__label">Note to the player</span>
+                  <textarea class="mn-textarea" ${open ? "" : "disabled"}>${open ? "" : "Closed by J. Lee."}</textarea>
+                  <span class="mn-field__hint">Sent with a warning or ban. Kept on the case either way.</span>
+                </label>
+              </div>
+            </fieldset>
+          </form>
+        </section>
+
+        <section class="mn-tabs__panel" role="tabpanel" id="cp-2" aria-labelledby="ct-2" hidden>
+          <div class="mn-result">
+            <div class="mn-result__head"><span>Reports</span><span>${c.reports} · last ${ago(c.mins)}</span></div>
+            <ul class="mn-hits">
+              ${Array.from({ length: Math.min(4, c.reports) }, (_, k) => `<li class="mn-hit"><span class="mn-hit__where">Match ${88120 + k * 7} · reporter ${players[(k + 3) % players.length]} · ${ago(c.mins + k * 31)} ago</span><span class="mn-hit__text">“${["snaps to heads through smoke", "tracking is inhuman, check the replay at 12:40", "kept spamming slurs in all-chat", "knew where everyone was the whole round"][k % 4]}”</span></li>`).join("")}
+            </ul>
+          </div>
+        </section>
+
+        <section class="mn-tabs__panel" role="tabpanel" id="cp-3" aria-labelledby="ct-3" hidden>
+          <div class="mn-table-wrap"><table class="mn-table">
+            <thead><tr><th>When</th><th>Event</th><th>By</th></tr></thead>
+            <tbody>
+              <tr><td>${ago(c.mins)} ago</td><td class="is-plain">Case opened from ${c.reports} reports</td><td>System</td></tr>
+              <tr class="is-idle"><td>32 d ago</td><td class="is-plain">Warned · toxic chat</td><td>S. Kim</td></tr>
+              <tr class="is-idle"><td>140 d ago</td><td class="is-plain">Account created</td><td>—</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+      </div>`;
+    MN.init(d);
+    document.getElementById("back").onclick = () => (split.dataset.view = "list");
+    d.querySelectorAll("[data-decide]").forEach((b) => (b.onclick = () => decide(b.dataset.decide)));
+    document.getElementById("ban").onclick = () => {
+      document.getElementById("ban-t").textContent = `Ban ${c.player}`;
+      document.getElementById("banGo").textContent = `Ban ${c.player}`;
+      banDlg.showModal();
+    };
+    document.getElementById("detailScroll").scrollTop = 0;
+  }
+
+  function decide(what) {
+    const c = cases.find((x) => x.id === current);
+    c.state = "CLOSED"; c.decision = what; c.unread = false;
+    renderList(); renderDetail();
+    MN.toast(what, `${c.id} · ${c.player} — case closed`);
+  }
+  document.getElementById("banGo").onclick = () => { banDlg.close(); decide("Banned"); };
+
+  // select
+  index.addEventListener("click", (e) => {
+    const b = e.target.closest(".mn-index__item"); if (!b) return;
+    current = b.dataset.id;
+    const c = cases.find((x) => x.id === current); c.unread = false;
+    renderList(); renderDetail();
+    split.dataset.view = "detail";
+  });
+  // ↑ ↓ through the list
+  index.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    const items = [...index.querySelectorAll(".mn-index__item")];
+    const i = items.findIndex((x) => x.dataset.id === current);
+    const next = items[Math.max(0, Math.min(items.length - 1, i + (e.key === "ArrowDown" ? 1 : -1)))];
+    if (next) { next.click(); index.querySelector(`[data-id="${next.dataset.id}"]`)?.focus(); }
+  });
+  document.getElementById("filter").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-state]"); if (!t) return;
+    document.querySelectorAll("#filter [role=tab]").forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+    filter = t.dataset.state; renderList();
+  });
+  document.getElementById("q").addEventListener("input", (e) => { q = e.target.value.trim().toLowerCase(); renderList(); });
+
+  MN.init();
+  renderList(); renderDetail();
+})();
+</script>
+</body>
+</html>

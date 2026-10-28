@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Match Console · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+  <style>
+    .chart { height: 300px; }
+  </style>
+</head>
+<body class="mn">
+<div class="mn-app">
+
+  <header class="mn-header">
+    <div class="mn-header__brand">
+      <h1 class="mn-wordmark">Match</h1>
+      <span class="mn-vrule" aria-hidden="true"></span>
+      <p class="mn-subtitle">Minimal <span class="mn-sep">/</span> Live ops</p>
+    </div>
+    <div class="mn-header__center">
+      <div class="mn-stepper" data-items="ASIA · RANKED SQUAD|ASIA · CASUAL DUO|EU · RANKED SQUAD|NA · ARCADE|SEA · RANKED SQUAD" aria-label="Queue">
+        <button class="mn-btn" type="button" aria-label="Previous queue">&lt;</button>
+        <span class="mn-stepper__name" aria-live="polite">ASIA · RANKED SQUAD</span>
+        <button class="mn-btn" type="button" aria-label="Next queue">&gt;</button>
+      </div>
+    </div>
+    <div class="mn-header__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit" aria-label="Feed">
+        <label class="mn-seg__item"><input type="radio" name="feed" checked><span class="mn-seg__face"><span class="mn-glyph mn-glyph--dot mn-glyph--signal"></span> Live</span></label>
+        <label class="mn-seg__item"><input type="radio" name="feed"><span class="mn-seg__face">Paused</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+      <button class="mn-btn" type="button" disabled>Undo</button>
+      <button class="mn-btn mn-btn--solid" type="button" id="publish">Publish rules</button>
+    </div>
+  </header>
+
+  <div class="mn-body">
+    <main class="mn-main" style="gap: var(--mn-space-6)">
+      <div class="mn-stats">
+        <div class="mn-stat">
+          <span class="mn-label">In queue</span>
+          <p class="mn-readout"><span id="k-queue">12,408</span></p>
+          <span class="mn-caption">+6% vs last hour</span>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">P95 wait</span>
+          <p class="mn-readout is-live"><span id="k-wait">41</span><span class="mn-readout__unit">s</span></p>
+          <span class="mn-caption">Target 35 s <span class="mn-sep">·</span> over</span>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">Matches / min</span>
+          <p class="mn-readout"><span id="k-mpm">318</span></p>
+          <span class="mn-caption">Steady</span>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">Fairness</span>
+          <p class="mn-readout"><span>0.91</span></p>
+          <span class="mn-caption">Win-prob spread ≤ 9%</span>
+        </div>
+      </div>
+
+      <section class="mn-section mn-section--bare">
+        <div class="mn-section__head">
+          <h2 class="mn-section__title">P95 wait by region <span class="mn-sep">·</span> last 60 min</h2>
+          <div class="mn-words mn-words--row" role="tablist" aria-label="Metric">
+            <button class="mn-word__face" role="tab" aria-selected="true">Wait</button>
+            <button class="mn-word__face" role="tab" aria-selected="false">Queue</button>
+            <button class="mn-word__face" role="tab" aria-selected="false">MMR gap</button>
+          </div>
+        </div>
+        <div class="mn-plot mn-plot--grid chart" style="--mn-grid: 50px">
+          <div class="mn-wash" style="--mn-x:.78; --mn-w:.22; --mn-y:0; --mn-h:1"></div>
+          <svg id="chart" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-label="Line chart of P95 wait time by region"></svg>
+          <span class="mn-playhead" style="--mn-pos:.998"></span>
+          <span class="mn-plot__label mn-plot__label--tl">SEA <span class="mn-sep">·</span> over target since -13 min</span>
+          <span class="mn-plot__label mn-plot__label--tr">35 s target ─ ─</span>
+        </div>
+        <div class="mn-axis" style="--mn-ticks: 60; --mn-majors: 6">
+          <div class="mn-axis__scale"></div>
+          <div class="mn-axis__labels"><span>-60 min</span><span>-50</span><span>-40</span><span>-30</span><span>-20</span><span>-10</span><span>Now</span></div>
+        </div>
+      </section>
+
+      <section class="mn-section">
+        <div class="mn-section__head">
+          <h2 class="mn-section__title">Load <span class="mn-sep">·</span> region × hour (KST)</h2>
+          <span class="mn-section__meta">00 ──────── 23</span>
+        </div>
+        <div class="mn-heat" id="heat" style="--mn-heat-label: 64px"></div>
+      </section>
+    </main>
+
+    <aside class="mn-panel" aria-label="Matchmaking rules">
+      <div class="mn-note mn-note--signal" role="alert">
+        <span class="mn-note__kind">Warn</span>
+        <span class="mn-note__body">SEA P95 above target for 13 min.</span>
+        <button class="mn-btn mn-btn--sm" type="button" id="widen">Widen</button>
+      </div>
+
+      <section class="mn-section mn-section--bare">
+        <div class="mn-section__head">
+          <h2 class="mn-section__title">Rules</h2>
+          <span class="mn-section__meta">Draft · 3 edits</span>
+        </div>
+        <div class="mn-params" style="--mn-cols: 2">
+          <div class="mn-param">
+            <label class="mn-param__label" for="maxwait">Max wait</label>
+            <output class="mn-readout" for="maxwait" data-drag><span class="mn-readout__num">45</span><span class="mn-readout__unit">s</span></output>
+            <div class="mn-ruler"><span class="mn-ruler__band" style="--mn-from:.15; --mn-to:.45"></span><input class="mn-ruler__input" id="maxwait" type="range" min="10" max="130" value="45" data-default="35"></div>
+            <span class="mn-param__caption" data-captions="Strict,Patient,Loose,Anything goes">Patient</span>
+          </div>
+          <div class="mn-param">
+            <label class="mn-param__label" for="spread">MMR spread</label>
+            <output class="mn-readout" for="spread" data-drag><span class="mn-readout__num">240</span></output>
+            <div class="mn-ruler"><input class="mn-ruler__input" id="spread" type="range" min="50" max="600" step="10" value="240" data-default="200"></div>
+            <span class="mn-param__caption" data-captions="Tight,Fair,Wide,Chaos">Fair</span>
+          </div>
+          <div class="mn-param">
+            <label class="mn-param__label" for="party">Party weight</label>
+            <output class="mn-readout" for="party" data-drag><span class="mn-readout__num">0.60</span></output>
+            <div class="mn-ruler"><input class="mn-ruler__input" id="party" type="range" min="0" max="1" step="0.01" value="0.6"></div>
+            <span class="mn-param__caption" data-captions="Solo first,Balanced,Parties first">Balanced</span>
+          </div>
+          <div class="mn-param">
+            <label class="mn-param__label" for="blend">Region blend</label>
+            <output class="mn-readout" for="blend" data-drag><span class="mn-readout__num">30</span><span class="mn-readout__unit">%</span></output>
+            <div class="mn-ruler mn-ruler--fill"><input class="mn-ruler__input" id="blend" type="range" min="0" max="100" value="30" data-default="10"></div>
+            <span class="mn-param__caption" data-captions="Home only,Neighbours,Continent,Global">Neighbours</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="mn-section">
+        <div class="mn-section__head"><h2 class="mn-section__title">Mode</h2></div>
+        <fieldset class="mn-seg" aria-label="Mode">
+          <label class="mn-seg__item"><input type="radio" name="mode"><span class="mn-seg__face">Strict</span></label>
+          <label class="mn-seg__item"><input type="radio" name="mode" checked><span class="mn-seg__face">Balanced</span></label>
+          <label class="mn-seg__item"><input type="radio" name="mode"><span class="mn-seg__face">Fast</span></label>
+        </fieldset>
+      </section>
+
+      <section class="mn-section">
+        <div class="mn-section__head"><h2 class="mn-section__title">Regions</h2><span class="mn-section__meta">5 live</span></div>
+        <div class="mn-table-wrap"><table class="mn-table">
+          <thead><tr><th>Region</th><th>State</th><th class="is-num">Queue</th><th class="is-num">P95</th><th style="width: 22%">Now</th></tr></thead>
+          <tbody>
+            <tr class="is-active"><td>KR</td><td><span class="mn-tag mn-tag--solid">OK</span></td><td class="is-num">4,812</td><td class="is-num">28 s</td><td><span class="mn-now" style="--mn-pos:.42; --mn-w:.06"></span></td></tr>
+            <tr class="is-active"><td>JP</td><td><span class="mn-tag mn-tag--solid">OK</span></td><td class="is-num">2,190</td><td class="is-num">31 s</td><td><span class="mn-now" style="--mn-pos:.48; --mn-w:.06"></span></td></tr>
+            <tr class="is-active" aria-selected="true"><td>SEA</td><td><span class="mn-tag mn-tag--signal-line">Warn</span></td><td class="is-num">3,604</td><td class="is-num">58 s</td><td><span class="mn-now" style="--mn-pos:.86; --mn-w:.1"></span></td></tr>
+            <tr class="is-active"><td>TW</td><td><span class="mn-tag mn-tag--solid">OK</span></td><td class="is-num">1,402</td><td class="is-num">34 s</td><td><span class="mn-now" style="--mn-pos:.52; --mn-w:.06"></span></td></tr>
+            <tr class="is-idle"><td>OCE</td><td><span class="mn-tag mn-tag--muted">Night</span></td><td class="is-num">400</td><td class="is-num">—</td><td><span class="mn-now" style="--mn-w:0"></span></td></tr>
+          </tbody>
+        </table></div>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="mn-footer">
+    <span>Match 0.1.0</span>
+    <span class="mn-footer__hints">Drag a number up or down <span class="mn-sep">·</span> Shift = fine <span class="mn-sep">·</span> Double-click = default <span class="mn-sep">·</span> Publish applies to the next match</span>
+    <span class="mn-footer__end"><span>Tick 20 Hz</span><span>Lag 112 ms</span></span>
+  </footer>
+</div>
+
+<script src="../js/minimal.js"></script>
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  let s = 11; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const el = (tag, a) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; };
+
+  // chart: one line per region, SEA in signal
+  const chart = document.getElementById("chart");
+  const y = (sec) => 300 - sec * 4.2;
+  chart.appendChild(el("line", { x1: 0, x2: 1000, y1: y(35), y2: y(35), class: "mn-s-ink", "stroke-dasharray": "6 6", "stroke-width": 1, "vector-effect": "non-scaling-stroke" }));
+  const regions = [
+    { base: 26, amp: 4, cls: "mn-s-ink" },
+    { base: 30, amp: 5, cls: "mn-s-ink" },
+    { base: 33, amp: 4, cls: "mn-s-mute" },
+    { base: 20, amp: 3, cls: "mn-s-mute" },
+    { base: 32, amp: 6, cls: "mn-s-signal", rise: true },
+  ];
+  regions.forEach((r, i) => {
+    const pts = [];
+    for (let m = 0; m <= 60; m++) {
+      let v = r.base + Math.sin(m / 5 + i) * r.amp + (rnd() - 0.5) * 4;
+      if (r.rise && m > 44) v += (m - 44) * 1.6;
+      pts.push(`${(m / 60) * 1000},${y(v).toFixed(1)}`);
+    }
+    chart.appendChild(el("polyline", { points: pts.join(" "), class: r.cls, "stroke-width": r.rise ? 2 : 1.25, "vector-effect": "non-scaling-stroke", "stroke-linejoin": "round" }));
+  });
+
+  // heat: region × 24h
+  const heat = document.getElementById("heat");
+  const peaks = { KR: 21, JP: 21, SEA: 20, TW: 21, OCE: 19 };
+  for (const [name, p] of Object.entries(peaks)) {
+    const row = document.createElement("div"); row.className = "mn-heat__row";
+    row.innerHTML = `<span class="mn-heat__label">${name}</span>`;
+    const cells = document.createElement("div"); cells.className = "mn-cells"; cells.style.setProperty("--mn-cols", 24);
+    for (let h = 0; h < 24; h++) {
+      const d = Math.min(Math.abs(h - p), 24 - Math.abs(h - p));
+      const c = document.createElement("span"); c.className = "mn-cell"; c.style.setProperty("--mn-cell-ratio", "1 / 1");
+      c.style.setProperty("--mn-heat", Math.max(0, Math.exp(-(d * d) / 18) * (name === "OCE" ? 0.35 : 0.95) - rnd() * 0.08).toFixed(2));
+      if (h === 16) c.classList.add("is-current");
+      c.title = `${name} ${String(h).padStart(2, "0")}:00`;
+      cells.appendChild(c);
+    }
+    row.appendChild(cells); heat.appendChild(row);
+  }
+
+  // live-ish KPIs
+  setInterval(() => {
+    const q = 12408 + Math.round((rnd() - 0.5) * 300);
+    document.getElementById("k-queue").textContent = q.toLocaleString("en-US");
+    document.getElementById("k-mpm").textContent = 318 + Math.round((rnd() - 0.5) * 12);
+  }, 1500);
+
+  document.getElementById("widen").addEventListener("click", () => {
+    MN.setValue(document.getElementById("maxwait"), 60);
+    MN.setValue(document.getElementById("blend"), 45);
+    MN.toast("Draft", "Max wait 60 s · blend 45% — publish to apply");
+  });
+  document.getElementById("publish").addEventListener("click", () => MN.toast("Published", "Rules v42 live for ASIA · RANKED SQUAD"));
+})();
+</script>
+</body>
+</html>

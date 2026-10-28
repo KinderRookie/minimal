@@ -1,0 +1,5 @@
+# reference screenshots are third-party product images — kept local only
+ref/
+.DS_Store
+.playwright-mcp/
+node_modules/

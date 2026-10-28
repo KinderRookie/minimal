@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MINIMAL Specimen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+  <style>
+    /* specimen-only helpers. Tokens only. */
+    .doc { display: grid; gap: var(--mn-space-16); padding-bottom: var(--mn-space-16); }
+    .chapter { display: grid; gap: var(--mn-space-6); scroll-margin-top: var(--mn-space-6); }
+    .chapter__head { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: baseline; gap: var(--mn-space-4); padding-bottom: var(--mn-space-3); border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong); }
+    .chapter__n { font-family: var(--mn-font-family-mono); font-size: var(--mn-font-size-sm); color: var(--mn-ink-secondary); }
+    .chapter__title { margin: 0; font-family: var(--mn-font-family-sans); font-size: var(--mn-font-size-2xl); font-weight: var(--mn-font-weight-regular); letter-spacing: -0.01em; }
+    .chapter__lede { grid-column: 2; margin: 0; max-width: 64ch; color: var(--mn-ink-secondary); font-size: var(--mn-font-size-md); }
+    .spec { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: var(--mn-space-6); padding-top: var(--mn-space-4); border-top: var(--mn-stroke-hair) solid var(--mn-line-subtle); }
+    .spec__name { display: grid; gap: var(--mn-space-1); align-content: start; }
+    .spec__name code { font-family: var(--mn-font-family-mono); font-size: var(--mn-font-size-xs); color: var(--mn-ink-primary); }
+    .spec__name p { margin: 0; font-size: var(--mn-font-size-sm); color: var(--mn-ink-tertiary); line-height: 1.45; }
+    .spec__body { display: grid; gap: var(--mn-space-5); min-width: 0; align-content: start; }
+    @media (max-width: 960px) { .spec { grid-template-columns: minmax(0, 1fr); gap: var(--mn-space-3); } .chapter__head { grid-template-columns: 40px 1fr; } }
+
+    .rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--mn-space-6) var(--mn-space-8); margin: 0; padding: 0; list-style: none; counter-reset: rule; }
+    .rules li { display: grid; gap: var(--mn-space-2); padding-top: var(--mn-space-3); border-top: var(--mn-stroke-hair) solid var(--mn-line-strong); }
+    .rules li::before { counter-increment: rule; content: counter(rule, decimal-leading-zero); font-family: var(--mn-font-family-sans); font-weight: var(--mn-font-weight-light); font-size: var(--mn-font-readout-sm); line-height: 1; letter-spacing: var(--mn-font-tracking-tight); }
+    .rules b { font-family: var(--mn-font-family-mono); font-size: var(--mn-font-size-xs); font-weight: var(--mn-font-weight-medium); letter-spacing: var(--mn-font-tracking-wide); text-transform: uppercase; }
+    .rules span { font-size: var(--mn-font-size-sm); color: var(--mn-ink-secondary); line-height: 1.5; }
+
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--mn-space-3); }
+    .swatch { display: grid; gap: var(--mn-space-2); }
+    .swatch__chip { height: 64px; border: var(--mn-stroke-hair) solid var(--mn-line-default); }
+    .swatch code { font-family: var(--mn-font-family-mono); font-size: var(--mn-font-size-2xs); color: var(--mn-ink-secondary); }
+    .ramp { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--mn-space-1); }
+
+    .scale-row { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: var(--mn-space-4); }
+    .bar { height: 10px; background: var(--mn-inverse-bg); }
+    .strokes { display: grid; gap: var(--mn-space-4); }
+    .stroke { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: var(--mn-space-4); }
+    .stroke i { display: block; border-top-style: solid; border-top-color: var(--mn-line-strong); }
+
+    .demo-plot { height: 260px; }
+    .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mn-space-8); }
+    @media (max-width: 720px) { .two { grid-template-columns: minmax(0, 1fr); } }
+    .menu-demo { max-width: 260px; }
+  </style>
+</head>
+<body class="mn">
+<div class="mn-app">
+
+  <header class="mn-header">
+    <div class="mn-header__brand">
+      <h1 class="mn-wordmark">Minimal</h1>
+      <span class="mn-vrule" aria-hidden="true"></span>
+      <p class="mn-subtitle">Design grammar <span class="mn-sep">/</span> 0.1.0</p>
+    </div>
+    <div class="mn-header__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">Light</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">Dark</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Signal">
+        <label class="mn-seg__item"><input type="radio" name="signal" value="red" data-mn-attr="signal" checked><span class="mn-seg__face">Red</span></label>
+        <label class="mn-seg__item"><input type="radio" name="signal" value="blue" data-mn-attr="signal"><span class="mn-seg__face">Blue</span></label>
+        <label class="mn-seg__item"><input type="radio" name="signal" value="orange" data-mn-attr="signal"><span class="mn-seg__face">Orange</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Paper">
+        <label class="mn-seg__item"><input type="radio" name="paper" value="white" data-mn-attr="paper" checked><span class="mn-seg__face">White</span></label>
+        <label class="mn-seg__item"><input type="radio" name="paper" value="warm" data-mn-attr="paper"><span class="mn-seg__face">Warm</span></label>
+      </fieldset>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Dialect">
+        <label class="mn-seg__item"><input type="radio" name="dialect" value="hard" data-mn-attr="dialect" checked><span class="mn-seg__face">Hard</span></label>
+        <label class="mn-seg__item"><input type="radio" name="dialect" value="soft" data-mn-attr="dialect"><span class="mn-seg__face">Soft</span></label>
+      </fieldset>
+    </div>
+  </header>
+
+  <div class="mn-body mn-body--doc">
+    <nav class="mn-rail" aria-label="Sections">
+      <ul class="mn-words">
+        <li class="mn-word"><a class="mn-word__face" href="#grammar">00 Grammar</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#color">01 Color</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#type">02 Type</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#line">03 Line · Space</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#controls">04 Controls</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#param">05 Param</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#entry">06 Entry</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#data">07 Data</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#plot">08 Plot</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#feedback">09 Feedback</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#nav">10 Navigation</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#blocks">11 Card · Form</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#manage">12 List · Split</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#chat">13 Agent chat</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="#templates">14 Templates</a></li>
+        <li class="mn-word"><a class="mn-word__face" href="charts.html">15 Charts →</a></li>
+      </ul>
+    </nav>
+
+    <main class="mn-main doc">
+
+      <!-- 00 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="grammar">
+        <div class="chapter__head">
+          <span class="chapter__n">00</span>
+          <h2 class="chapter__title">Grammar</h2>
+          <p class="chapter__lede">Every screen is an instrument: a field you look at, a panel of values you set, and a status line that tells the truth. Eight rules produce everything below.</p>
+        </div>
+        <ol class="rules">
+          <li><b>Line, not fill</b><span>Every box is a 1px hairline. No shadows, no gradients, no rounded corners. Depth comes from rules, not from elevation.</span></li>
+          <li><b>Selection is inversion</b><span>A chosen option becomes an ink block with paper text. Never a tint, never a colored border.</span></li>
+          <li><b>One signal</b><span>Each product picks one accent. It marks only what is live: pointer, playhead, a modulated value, an engaged mode, focus.</span></li>
+          <li><b>The value is the hero</b><span>Numbers are huge, light and tabular. The label above is tiny. The unit is tinier.</span></li>
+          <li><b>Labels speak in caps</b><span>Mono, uppercase, tracked. Short nouns: REACH, FLOW, MIX. Separators are spaced · and /.</span></li>
+          <li><b>Say what it means</b><span>Under a ruler, a caption translates the number: STEADY, WARM, EACH NOTE A LITTLE.</span></li>
+          <li><b>Hands on the numbers</b><span>Drag a value up or down. Shift for fine. Double-click resets. The footer says so, in one line.</span></li>
+          <li><b>Status tells the truth</b><span>Version left, metrics right, always visible. Status is a word (OK, WARN), not a traffic light.</span></li>
+        </ol>
+      </section>
+
+      <!-- 01 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="color">
+        <div class="chapter__head">
+          <span class="chapter__n">01</span>
+          <h2 class="chapter__title">Color</h2>
+          <p class="chapter__lede">Paper, ink, four line weights of gray, and a single signal. Switch the header controls: every swatch here reads live from the CSS variables.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>paper · ink</code><p>Selection = inverse. In dark the roles swap; nothing else changes.</p></div>
+          <div class="swatches">
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-bg-canvas)"></div><code>--mn-bg-canvas</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-bg-sunken)"></div><code>--mn-bg-sunken</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-bg-hover)"></div><code>--mn-bg-hover</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-inverse-bg)"></div><code>--mn-inverse-bg</code></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>ink · line</code><p>Text in three steps; lines in four. Controls use <em>strong</em>, plots <em>default</em>, rows <em>subtle</em>, grids <em>faint</em>.</p></div>
+          <div class="swatches">
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-ink-primary)"></div><code>--mn-ink-primary</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-ink-secondary)"></div><code>--mn-ink-secondary</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-ink-tertiary)"></div><code>--mn-ink-tertiary</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-ink-disabled)"></div><code>--mn-ink-disabled</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-line-default)"></div><code>--mn-line-default</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-line-subtle)"></div><code>--mn-line-subtle</code></div>
+            <div class="swatch"><div class="swatch__chip" style="background:var(--mn-line-faint)"></div><code>--mn-line-faint</code></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>signal</code><p><em>mark</em> for pointers and big numbers (≥3:1), <em>fill</em> under text, <em>text</em> for small words (≥4.5:1), <em>wash</em> for areas.</p></div>
+          <div class="spec__body">
+            <div class="swatches">
+              <div class="swatch"><div class="swatch__chip" style="background:var(--mn-signal-mark)"></div><code>--mn-signal-mark</code></div>
+              <div class="swatch"><div class="swatch__chip" style="background:var(--mn-signal-fill)"></div><code>--mn-signal-fill</code></div>
+              <div class="swatch"><div class="swatch__chip" style="background:var(--mn-signal-text)"></div><code>--mn-signal-text</code></div>
+              <div class="swatch"><div class="swatch__chip" style="background:var(--mn-signal-wash)"></div><code>--mn-signal-wash</code></div>
+            </div>
+            <div class="mn-stack">
+              <span class="mn-label">Heat ramp · .mn-cell --mn-heat 0 → 1</span>
+              <div class="ramp">
+                <span class="mn-cell" style="--mn-heat:0"></span><span class="mn-cell" style="--mn-heat:.12"></span><span class="mn-cell" style="--mn-heat:.3"></span><span class="mn-cell" style="--mn-heat:.5"></span><span class="mn-cell" style="--mn-heat:.75"></span><span class="mn-cell" style="--mn-heat:1"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="type">
+        <div class="chapter__head">
+          <span class="chapter__n">02</span>
+          <h2 class="chapter__title">Type</h2>
+          <p class="chapter__lede">Three voices. The mark names the product, the readout shows the value, the label explains it. IBM Plex Mono and Inter Tight, with Pretendard for Hangul.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-wordmark</code><p>Sans, caps, 0.55em tracking. Once per screen.</p></div>
+          <div class="mn-row" style="--mn-gap: var(--mn-space-8)">
+            <span class="mn-wordmark">Tide</span>
+            <span class="mn-wordmark mn-wordmark--mono">Weft</span>
+            <span class="mn-wordmark mn-ko">파도</span>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-readout</code><p>Light, tabular, tight. <code>--sm</code> 28 · default 44 · <code>--lg</code> 64 · <code>--xl</code> 104. <code>.is-live</code> = signal.</p></div>
+          <div class="mn-row" style="--mn-gap: var(--mn-space-8); align-items: baseline">
+            <p class="mn-readout mn-readout--xl"><span class="mn-readout__num">001</span></p>
+            <p class="mn-readout mn-readout--lg"><span>90</span></p>
+            <p class="mn-readout"><span>0.80</span><span class="mn-readout__unit">s</span></p>
+            <p class="mn-readout is-live"><span>65</span><span class="mn-readout__unit">%</span></p>
+            <p class="mn-readout mn-readout--sm"><span>-18</span><span class="mn-readout__unit">dB</span></p>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-label · .mn-subtitle<br>.mn-caption · .mn-hint</code><p>Mono caps in four sizes and colors. Hints may switch to sentence case.</p></div>
+          <div class="mn-stack">
+            <span class="mn-label">Character</span>
+            <span class="mn-label mn-label--strong">Chance <span class="mn-sep">·</span> Probability needle</span>
+            <span class="mn-label mn-label--signal">FX <span class="mn-sep">·</span> on the added sounds</span>
+            <span class="mn-subtitle">Frond grid <span class="mn-sep">/</span> instrument</span>
+            <span class="mn-caption">Each note a little</span>
+            <span class="mn-hint">Drag a number up or down <span class="mn-sep">·</span> Shift = fine <span class="mn-sep">·</span> Double-click = default</span>
+            <span class="mn-hint mn-hint--sentence">Click a figure to change the progression · draw below to shape the melody</span>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-count · .mn-kbd · .mn-ko</code><p>Counts ride as superscript. Hangul labels opt into tight tracking with <code>.mn-ko</code>.</p></div>
+          <div class="mn-stack">
+            <div class="mn-words mn-words--row mn-words--ink">
+              <span class="mn-word"><span class="mn-word__face">Any<sup class="mn-count">7408</sup></span></span>
+              <span class="mn-word"><span class="mn-word__face" aria-selected="true">Wood<sup class="mn-count">1050</sup></span></span>
+              <span class="mn-word"><span class="mn-word__face">Metal<sup class="mn-count">1754</sup></span></span>
+            </div>
+            <span class="mn-hint">Drag the number <span class="mn-sep">·</span> <span class="mn-kbd">Shift</span> fine <span class="mn-sep">·</span> double-click resets</span>
+            <div class="mn-row" style="--mn-gap: var(--mn-space-8)">
+              <span class="mn-label">반응 · 대기열</span>
+              <span class="mn-label mn-ko">반응 · 대기열 (.mn-ko)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="line">
+        <div class="chapter__head">
+          <span class="chapter__n">03</span>
+          <h2 class="chapter__title">Line · Space</h2>
+          <p class="chapter__lede">Three stroke weights. A 4px grid. Radius is zero unless the soft dialect is on.</p>
+        </div>
+        <div class="spec">
+          <div class="spec__name"><code>--mn-stroke-*</code></div>
+          <div class="strokes">
+            <div class="stroke"><span class="mn-label">hair · 1px</span><i style="border-top-width: var(--mn-stroke-hair)"></i></div>
+            <div class="stroke"><span class="mn-label">rule · 1.5px</span><i style="border-top-width: var(--mn-stroke-rule)"></i></div>
+            <div class="stroke"><span class="mn-label">mark · 3px</span><i style="border-top-width: var(--mn-stroke-mark); border-top-color: var(--mn-signal-mark)"></i></div>
+          </div>
+        </div>
+        <div class="spec">
+          <div class="spec__name"><code>--mn-space-*</code></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-2)">
+            <div class="scale-row"><span class="mn-label">1 · 4</span><span class="bar" style="width: var(--mn-space-1)"></span></div>
+            <div class="scale-row"><span class="mn-label">2 · 8</span><span class="bar" style="width: var(--mn-space-2)"></span></div>
+            <div class="scale-row"><span class="mn-label">3 · 12</span><span class="bar" style="width: var(--mn-space-3)"></span></div>
+            <div class="scale-row"><span class="mn-label">4 · 16</span><span class="bar" style="width: var(--mn-space-4)"></span></div>
+            <div class="scale-row"><span class="mn-label">6 · 24</span><span class="bar" style="width: var(--mn-space-6)"></span></div>
+            <div class="scale-row"><span class="mn-label">8 · 32</span><span class="bar" style="width: var(--mn-space-8)"></span></div>
+            <div class="scale-row"><span class="mn-label">12 · 48</span><span class="bar" style="width: var(--mn-space-12)"></span></div>
+            <div class="scale-row"><span class="mn-label">16 · 64</span><span class="bar" style="width: var(--mn-space-16)"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="controls">
+        <div class="chapter__head">
+          <span class="chapter__n">04</span>
+          <h2 class="chapter__title">Controls</h2>
+          <p class="chapter__lede">Outline = available. Ink = on. Signal = an engaged mode that changes behavior. Signal outline = exceptional.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-btn</code><p>--solid · --signal · --signal-line · --ghost · --bracket · --icon · --sm/--lg · disabled</p></div>
+          <div class="spec__body">
+            <div class="mn-btn-row">
+              <button class="mn-btn" type="button">Generate</button>
+              <button class="mn-btn" type="button" aria-pressed="true"><span class="mn-glyph"></span> Looping</button>
+              <button class="mn-btn" type="button"><span class="mn-glyph mn-glyph--open"></span> Stop</button>
+              <button class="mn-btn mn-btn--solid" type="button">New mix →</button>
+              <button class="mn-btn mn-btn--signal" type="button">Freeze on</button>
+              <button class="mn-btn mn-btn--signal-line" type="button">Remove</button>
+              <button class="mn-btn mn-btn--ghost" type="button">Evolve</button>
+              <button class="mn-btn mn-btn--bracket" type="button">More</button>
+              <button class="mn-btn" type="button" disabled>Redo</button>
+            </div>
+            <div class="mn-btn-row">
+              <button class="mn-btn mn-btn--icon" type="button" aria-label="Previous">&lt;</button>
+              <button class="mn-btn mn-btn--icon" type="button" aria-label="Next">&gt;</button>
+              <button class="mn-btn mn-btn--icon" type="button" aria-label="Zoom out">−</button>
+              <button class="mn-btn mn-btn--icon" type="button" aria-label="Zoom in">+</button>
+              <button class="mn-btn mn-btn--icon" type="button" aria-label="More">…</button>
+              <button class="mn-btn mn-btn--sm" type="button">+A</button>
+              <button class="mn-btn mn-btn--sm" type="button"><span class="mn-glyph mn-glyph--dot mn-glyph--signal"></span> Rec</button>
+              <button class="mn-btn mn-btn--lg" type="button">Release all</button>
+            </div>
+            <button class="mn-btn mn-btn--lg mn-btn--block mn-btn--solid" type="button">Perform</button>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-stepper</code><p>Preset browser. <code>data-items</code> drives &lt; &gt;. <code>data-dirty</code> adds <code>*</code>.</p></div>
+          <div class="spec__body">
+            <div class="mn-stepper" data-items="GLASS GARDEN|SEA FLUTE|SHORE SAND|FELT TINE|PORCELAIN">
+              <span class="mn-stepper__meta" data-prefix="SOUND">SOUND 01 / 05</span>
+              <button class="mn-btn" type="button" aria-label="Previous">&lt;</button>
+              <span class="mn-stepper__name" aria-live="polite">GLASS GARDEN</span>
+              <button class="mn-btn" type="button" aria-label="Next">&gt;</button>
+            </div>
+            <div class="mn-stepper">
+              <button class="mn-btn" type="button" aria-label="Previous">&lt;</button>
+              <span class="mn-stepper__name" data-dirty>Woven lines</span>
+              <button class="mn-btn" type="button" aria-label="Next">&gt;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-seg</code><p>Radios in boxes. Spaced by default; <code>--joined</code> for A|B; <code>--fit</code> to hug content.</p></div>
+          <div class="spec__body">
+            <fieldset class="mn-seg" aria-label="Grid">
+              <label class="mn-seg__item"><input type="radio" name="g1"><span class="mn-seg__face">Free</span></label>
+              <label class="mn-seg__item"><input type="radio" name="g1" checked><span class="mn-seg__face">1/16</span></label>
+              <label class="mn-seg__item"><input type="radio" name="g1"><span class="mn-seg__face">1/8</span></label>
+              <label class="mn-seg__item"><input type="radio" name="g1" disabled><span class="mn-seg__face">1/4</span></label>
+            </fieldset>
+            <div class="mn-row" style="--mn-gap: var(--mn-space-6)">
+              <fieldset class="mn-seg mn-seg--joined mn-seg--fit" aria-label="Slot">
+                <label class="mn-seg__item"><input type="radio" name="ab" checked><span class="mn-seg__face">A</span></label>
+                <label class="mn-seg__item"><input type="radio" name="ab"><span class="mn-seg__face">B</span></label>
+              </fieldset>
+              <fieldset class="mn-seg mn-seg--joined mn-seg--fit" aria-label="Language">
+                <label class="mn-seg__item"><input type="radio" name="lang"><span class="mn-seg__face">日本語</span></label>
+                <label class="mn-seg__item"><input type="radio" name="lang" checked><span class="mn-seg__face">EN</span></label>
+                <label class="mn-seg__item"><input type="radio" name="lang"><span class="mn-seg__face">Off</span></label>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-words</code><p>Unboxed choices. Selected = ink chip. <code>.is-alt</code> = outlined second pick. <code>.is-live</code> = signal underline, width = <code>--mn-amount</code>.</p></div>
+          <div class="spec__body">
+            <div class="mn-words mn-words--row" role="tablist">
+              <button class="mn-word__face" role="tab" aria-selected="true">Touch</button>
+              <button class="mn-word__face" role="tab" aria-selected="false">Grow</button>
+              <button class="mn-word__face" role="tab" aria-selected="false">Stir</button>
+              <button class="mn-word__face" role="tab" aria-selected="false">Break</button>
+              <button class="mn-word__face" role="tab" aria-selected="false">Pull</button>
+              <button class="mn-word__face" role="tab" aria-selected="false">Swirl</button>
+            </div>
+            <div class="mn-row" style="--mn-gap: var(--mn-space-12); align-items: flex-start">
+              <div class="mn-stack" style="--mn-gap: var(--mn-space-2)">
+                <span class="mn-label">Character</span>
+                <fieldset class="mn-words mn-words--ink mn-words--lg">
+                  <label class="mn-word"><input type="radio" name="ch"><span class="mn-word__face">Core</span></label>
+                  <label class="mn-word"><input type="radio" name="ch" checked><span class="mn-word__face is-live" style="--mn-amount:.4">Octave</span></label>
+                  <label class="mn-word"><input type="radio" name="ch"><span class="mn-word__face">Fine</span></label>
+                  <label class="mn-word"><input type="radio" name="ch"><span class="mn-word__face is-alt is-live" style="--mn-amount:.5">Hollow</span></label>
+                  <label class="mn-word"><input type="radio" name="ch"><span class="mn-word__face">Round</span></label>
+                </fieldset>
+              </div>
+              <div class="mn-stack" style="--mn-gap: var(--mn-space-2)">
+                <span class="mn-label">Body (voice)</span>
+                <fieldset class="mn-words">
+                  <label class="mn-word"><input type="radio" name="body" checked><span class="mn-word__face is-live">Membrane</span></label>
+                  <label class="mn-word"><input type="radio" name="body"><span class="mn-word__face">Spring droplet</span></label>
+                  <label class="mn-word"><input type="radio" name="body"><span class="mn-word__face">Hollow tide</span></label>
+                  <label class="mn-word"><input type="radio" name="body"><span class="mn-word__face">River reed</span></label>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-check · .mn-switch</code><p>Square check. ON/OFF chip with <code>role="switch"</code>.</p></div>
+          <div class="mn-row" style="--mn-gap: var(--mn-space-8)">
+            <label class="mn-check"><input type="checkbox"> Mute</label>
+            <label class="mn-check"><input type="checkbox" checked> Ear guard</label>
+            <label class="mn-check"><input type="checkbox" disabled> Locked</label>
+            <label class="mn-switch">Play with DAW <input type="checkbox" role="switch" checked><span class="mn-switch__face" data-on="On" data-off="Off"></span></label>
+            <label class="mn-switch">Gaps <input type="checkbox" role="switch"><span class="mn-switch__face" data-on="On" data-off="Off"></span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="param">
+        <div class="chapter__head">
+          <span class="chapter__n">05</span>
+          <h2 class="chapter__title">Param</h2>
+          <p class="chapter__lede">The signature unit. A real range input sits invisibly on a drawn ruler. Drag the number vertically, Shift for fine, double-click to reset, arrows on the ruler.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-param</code><p>label · readout · ruler · caption. Captions can follow the value via <code>data-captions</code>.</p></div>
+          <div class="mn-params" style="--mn-cols: 3">
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-air">Air</label>
+              <output class="mn-readout" for="p-air" data-drag><span class="mn-readout__num">50</span></output>
+              <div class="mn-ruler"><input class="mn-ruler__input" id="p-air" type="range" min="0" max="100" value="50"></div>
+              <span class="mn-param__caption" data-captions="Still,Steady,Breathing,Gusting">Steady</span>
+            </div>
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-size">Bubble size</label>
+              <output class="mn-readout" for="p-size" data-drag><span class="mn-readout__num">170</span></output>
+              <div class="mn-ruler"><input class="mn-ruler__input" id="p-size" type="range" min="20" max="320" value="170"></div>
+              <span class="mn-param__caption" data-captions="Fine,Small,Medium,Large,Huge">Medium</span>
+            </div>
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-bend">Bend</label>
+              <output class="mn-readout" for="p-bend" data-drag><span class="mn-readout__num">0</span></output>
+              <div class="mn-ruler"><input class="mn-ruler__input" id="p-bend" type="range" min="0" max="100" value="0"></div>
+              <span class="mn-param__caption" data-captions="Off,Slight,Bent,Folded">Off</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-ruler--fill · --center<br>.mn-ruler__band · .is-live</code><p>Run from zero, bipolar run from centre, a suggested band, a modulated value.</p></div>
+          <div class="mn-params" style="--mn-cols: 3">
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-near">Near / far</label>
+              <output class="mn-readout mn-readout--lg" for="p-near" data-drag><span class="mn-readout__num">50</span></output>
+              <div class="mn-ruler mn-ruler--fill"><input class="mn-ruler__input" id="p-near" type="range" min="0" max="100" value="50"></div>
+              <span class="mn-param__caption">In between</span>
+            </div>
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-var">Variation</label>
+              <output class="mn-readout mn-readout--lg" for="p-var" data-drag><span class="mn-readout__num">30</span></output>
+              <div class="mn-ruler mn-ruler--fill"><span class="mn-ruler__band" style="--mn-from:.5; --mn-to:.95"></span><input class="mn-ruler__input" id="p-var" type="range" min="0" max="100" value="30"></div>
+              <span class="mn-param__caption">4-bar sections may change</span>
+            </div>
+            <div class="mn-param">
+              <label class="mn-param__label" for="p-pan">Pan</label>
+              <output class="mn-readout mn-readout--lg is-live" for="p-pan" data-drag><span class="mn-readout__num">+28</span></output>
+              <div class="mn-ruler mn-ruler--center"><input class="mn-ruler__input" id="p-pan" type="range" min="-50" max="50" value="28" data-signed data-default="0"></div>
+              <span class="mn-param__caption">Modulated · sine 1/4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-param--sm · __aside<br>.mn-shape</code><p>Dense grids. The aside holds a tiny shape box: the motion curve, or an empty slot.</p></div>
+          <div class="mn-params" style="--mn-cols: 4; column-gap: var(--mn-space-4)">
+            <div class="mn-param mn-param--sm">
+              <label class="mn-param__label" for="p-even">Even</label>
+              <output class="mn-readout" for="p-even" data-drag><span class="mn-readout__num">40</span></output>
+              <span class="mn-param__aside mn-shape mn-shape--empty">—</span>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-even" type="range" min="0" max="100" value="40"></div>
+            </div>
+            <div class="mn-param mn-param--sm">
+              <label class="mn-param__label" for="p-blur2">Blur</label>
+              <output class="mn-readout is-live" for="p-blur2" data-drag><span class="mn-readout__num">38</span></output>
+              <span class="mn-param__aside mn-shape"><svg viewBox="0 0 44 26" aria-hidden="true"><path class="mn-s-ink" d="M2 18 C 10 2, 18 2, 22 13 S 34 24, 42 8" stroke-width="1"/><circle class="mn-f-signal" cx="36" cy="17" r="2.5"/></svg></span>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-blur2" type="range" min="0" max="100" value="38"></div>
+            </div>
+            <div class="mn-param mn-param--sm">
+              <label class="mn-param__label" for="p-echo">Echo</label>
+              <output class="mn-readout is-live" for="p-echo" data-drag><span class="mn-readout__num">26</span></output>
+              <span class="mn-param__aside mn-shape"><svg viewBox="0 0 44 26" aria-hidden="true"><path class="mn-s-ink" d="M2 4 L 40 20 L 40 4" stroke-width="1"/><circle class="mn-f-signal" cx="40" cy="20" r="2.5"/></svg></span>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-echo" type="range" min="0" max="100" value="26"></div>
+            </div>
+            <div class="mn-param mn-param--sm is-disabled">
+              <label class="mn-param__label" for="p-crush">Crush</label>
+              <output class="mn-readout" for="p-crush"><span class="mn-readout__num">0</span></output>
+              <span class="mn-param__aside mn-shape mn-shape--empty">—</span>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-crush" type="range" min="0" max="100" value="0" disabled></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-param--inline</code><p>Label on the left — for long lists of params.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-4); max-width: 420px">
+            <div class="mn-param mn-param--inline">
+              <label class="mn-param__label" for="p-lr">Space L/R</label>
+              <output class="mn-readout mn-readout--sm is-live" for="p-lr" data-drag><span class="mn-readout__num">89</span></output>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-lr" type="range" min="0" max="100" value="89"></div>
+            </div>
+            <div class="mn-param mn-param--inline">
+              <label class="mn-param__label" for="p-depth">Depth</label>
+              <output class="mn-readout mn-readout--sm" for="p-depth" data-drag><span class="mn-readout__num">50</span></output>
+              <div class="mn-ruler mn-ruler--sm"><input class="mn-ruler__input" id="p-depth" type="range" min="0" max="100" value="50"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="entry">
+        <div class="chapter__head">
+          <span class="chapter__n">06</span>
+          <h2 class="chapter__title">Entry</h2>
+          <p class="chapter__lede">Text entry in the same hairline. Values in mono. Errors are words first, color second.</p>
+        </div>
+        <div class="spec">
+          <div class="spec__name"><code>.mn-field · .mn-input<br>.mn-select · .mn-textarea</code></div>
+          <div class="two">
+            <label class="mn-field">
+              <span class="mn-field__label">Preset name <span>12 / 24</span></span>
+              <input class="mn-input" value="Night crossing">
+              <span class="mn-field__hint">Shown in the stepper</span>
+            </label>
+            <label class="mn-field">
+              <span class="mn-field__label">Tempo</span>
+              <input class="mn-input" value="400" aria-invalid="true">
+              <span class="mn-field__error">Out of range · 20–300 BPM</span>
+            </label>
+            <label class="mn-field">
+              <span class="mn-field__label">Region</span>
+              <span class="mn-select-wrap"><select class="mn-select"><option>Asia · Seoul</option><option>Asia · Tokyo</option><option>EU · Frankfurt</option></select></span>
+            </label>
+            <label class="mn-field">
+              <span class="mn-field__label">Search parts</span>
+              <input class="mn-input" placeholder="Resistor, coil…">
+            </label>
+            <label class="mn-field" style="grid-column: 1 / -1">
+              <span class="mn-field__label">Notes</span>
+              <textarea class="mn-textarea">Shift-click a body in the list to set B. Blend mixes A and B. Sine sways.</textarea>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="data">
+        <div class="chapter__head">
+          <span class="chapter__n">07</span>
+          <h2 class="chapter__title">Data</h2>
+          <p class="chapter__lede">Tables are instruments too: idle rows go gray, active rows go bold, each row can carry a live meter.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-table · .mn-now</code><p>Mod matrix: target, shape, rate, depth, now.</p></div>
+          <div class="mn-table-wrap"><table class="mn-table">
+            <thead><tr><th>Target</th><th>Shape</th><th class="is-num">Rate</th><th class="is-num">Depth</th><th style="width: 22%">Now</th></tr></thead>
+            <tbody>
+              <tr class="is-idle"><td>Air</td><td><span class="mn-tag mn-tag--muted">Off</span></td><td class="is-num">0.16 Hz</td><td class="is-num">0</td><td><span class="mn-now" style="--mn-w:0"></span></td></tr>
+              <tr class="is-active"><td>Push / pull</td><td><span class="mn-tag mn-tag--solid">Random glide</span></td><td class="is-num">0.35 Hz</td><td class="is-num">90</td><td><span class="mn-now" style="--mn-pos:.55; --mn-w:.18"></span></td></tr>
+              <tr class="is-active"><td>Swirl</td><td><span class="mn-tag mn-tag--solid">Random glide</span></td><td class="is-num">0.20 Hz</td><td class="is-num">80</td><td><span class="mn-now" style="--mn-pos:.6; --mn-w:.22"></span></td></tr>
+              <tr class="is-active"><td>Touch</td><td><span class="mn-tag mn-tag--solid">Random step</span></td><td class="is-num">1.0 Hz</td><td class="is-num">60</td><td><span class="mn-now" style="--mn-pos:.4; --mn-w:.14"></span></td></tr>
+              <tr class="is-idle"><td>Space</td><td><span class="mn-tag mn-tag--muted">Off</span></td><td class="is-num">0.16 Hz</td><td class="is-num">0</td><td><span class="mn-now" style="--mn-w:0"></span></td></tr>
+              <tr class="is-active is-end"><td>Chorus</td><td><span class="mn-tag mn-tag--solid">Sine</span></td><td class="is-num">0.12 Hz</td><td class="is-num">16</td><td><span class="mn-now" style="--mn-pos:.5; --mn-w:.03"></span></td></tr>
+              <tr class="is-idle"><td>Body A › B</td><td><span class="mn-tag mn-tag--muted">Off</span></td><td class="is-num">0.20 Hz</td><td class="is-num">0</td><td><span class="mn-now" style="--mn-w:0"></span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-now--trace</code><p>Motion now: a trace up to the current position.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-2); max-width: 420px">
+            <div class="mn-row"><span class="mn-label" style="width: 96px">Density</span><span class="mn-now mn-now--trace" style="--mn-pos:.92; flex: 1"></span><span class="mn-label">71 sine</span></div>
+            <div class="mn-row"><span class="mn-label" style="width: 96px">Fracture</span><span class="mn-now mn-now--trace" style="--mn-pos:.6; flex: 1"></span><span class="mn-label">42 rnd</span></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-list</code><p>Parts bin, files, sources. Icons are line drawings.</p></div>
+          <ul class="mn-list" style="max-width: 280px">
+            <li class="mn-list__head">Real</li>
+            <li class="mn-list__item" draggable="true"><svg class="mn-list__icon" viewBox="0 0 28 16" aria-hidden="true"><path class="mn-s-ink" d="M0 8h7M21 8h7"/><rect class="mn-s-ink" x="7" y="4" width="14" height="8"/><path class="mn-s-ink" d="M10 4v8M13 4v8M16 4v8M19 4v8"/></svg>Resistor<span class="mn-list__meta">220 Ω</span></li>
+            <li class="mn-list__item" draggable="true"><svg class="mn-list__icon" viewBox="0 0 28 16" aria-hidden="true"><path class="mn-s-ink" d="M0 8h11M17 8h11M11 2v12M17 2v12"/></svg>Capacitor<span class="mn-list__meta">10 µF</span></li>
+            <li class="mn-list__item" draggable="true" aria-selected="true"><svg class="mn-list__icon" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h6M22 8h6M6 8c2-6 4-6 4 0s2 6 4 0 2-6 4 0 2 6 4 0" fill="none" stroke="currentColor"/></svg>Coil<span class="mn-list__meta">2 mH</span></li>
+            <li class="mn-list__item" draggable="true"><svg class="mn-list__icon" viewBox="0 0 28 16" aria-hidden="true"><path class="mn-s-ink" d="M0 8h10M18 8h10M10 3v10M10 8l8-5v10z"/></svg>Silicon diode<span class="mn-list__meta">1N4148</span></li>
+          </ul>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-heat · .mn-cell</code><p>Signal at <code>--mn-heat</code>. Row labels in mono caps.</p></div>
+          <div class="mn-heat" id="heat"></div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-steps · .mn-step</code><p>Dashed = empty. Ink = on. Signal number = accent. Outline = playing.</p></div>
+          <div class="mn-stack">
+            <div class="mn-steps" id="steps"></div>
+            <div class="mn-steps mn-steps--sm" id="steps2"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="plot">
+        <div class="chapter__head">
+          <span class="chapter__n">08</span>
+          <h2 class="chapter__title">Plot</h2>
+          <p class="chapter__lede">The field half of the instrument. Drawings are ink lines on paper; the signal marks only what is selected or playing. SVG paints with <code>.mn-s-*</code> / <code>.mn-f-*</code> so it follows the theme.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-plot · .mn-wash<br>.mn-marker · .mn-playhead<br>.mn-axis</code><p>Playing: the playhead runs and every sound it crosses flashes signal, then steps back to ink and to gray. The selected band (wash) and the marker stay put — a selection is not live.</p></div>
+          <div class="mn-stack">
+            <div class="mn-plot mn-plot--grid demo-plot" style="--mn-grid: 48px">
+              <div class="mn-wash" style="--mn-x:.52; --mn-w:.14; --mn-y:0; --mn-h:1"></div>
+              <svg viewBox="0 0 1000 260" preserveAspectRatio="none" id="scatter" aria-hidden="true"></svg>
+              <span class="mn-playhead" style="--mn-pos:.3"></span>
+              <span class="mn-marker" style="--mn-x:.59; --mn-y:.42"></span>
+              <span class="mn-marker mn-marker--ghost" style="--mn-x:.36; --mn-y:.48"></span>
+              <span class="mn-plot__label mn-plot__label--tl">Timbre map <span class="mn-sep">·</span> wood <span class="mn-sep">·</span> 1050 sounds</span>
+              <span class="mn-plot__label mn-plot__label--br">Brightness →</span>
+            </div>
+            <div class="mn-axis">
+              <div class="mn-axis__scale"></div>
+              <div class="mn-axis__labels"><span>0.00</span><span>1.25</span><span>2.50</span><span>3.75</span><span>5.00 s</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-scopes · .mn-scope</code><p>Small labelled monitors. They are live, so they move: <code>MN.monitor()</code> redraws them frame by frame (no tweening), old traces fade to gray like phosphor, only the current value is signal. Paused off-screen; one still frame under reduced motion.</p></div>
+          <div class="mn-scopes" style="--mn-cols: 4">
+            <div class="mn-scope"><span class="mn-scope__label">Sand</span><svg viewBox="0 0 100 100" id="sand" aria-hidden="true"></svg></div>
+            <div class="mn-scope"><span class="mn-scope__label">V × I</span><svg viewBox="0 0 100 100" id="vxi" aria-hidden="true"><circle class="mn-s-line" cx="50" cy="50" r="44" stroke-width=".6"/><path class="mn-s-line" d="M6 50h88M50 6v88" stroke-width=".6"/></svg></div>
+            <div class="mn-scope"><span class="mn-scope__label">Spectrum</span><svg viewBox="0 0 100 100" preserveAspectRatio="none" id="spectrum" aria-hidden="true"></svg></div>
+            <div class="mn-scope"><span class="mn-scope__label">Time</span><svg viewBox="0 0 100 100" preserveAspectRatio="none" id="time" aria-hidden="true"></svg></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-wave · .mn-minimap</code><p>Playing: the signal window walks bar by bar — played bars ink, unplayed gray — and the minimap viewport follows it.</p></div>
+          <div class="mn-row" style="--mn-gap: var(--mn-space-6); align-items: flex-end; flex-wrap: nowrap">
+            <div class="mn-wave" id="wave" style="flex: 1; --mn-wave-h: 40px"></div>
+            <div class="mn-minimap"><span class="mn-wash" style="--mn-x:.2; --mn-y:.15; --mn-w:.55; --mn-h:.7"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="feedback">
+        <div class="chapter__head">
+          <span class="chapter__n">09</span>
+          <h2 class="chapter__title">Feedback</h2>
+          <p class="chapter__lede">No green, amber or red. Status is a word in a chip; the signal is spent only on "look at this now".</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-tag</code><p>--solid · --muted · --signal · --signal-line · --wash</p></div>
+          <div class="mn-row">
+            <span class="mn-tag">Wood</span>
+            <span class="mn-tag mn-tag--solid">OK</span>
+            <span class="mn-tag mn-tag--muted">Off</span>
+            <span class="mn-tag mn-tag--signal">Live</span>
+            <span class="mn-tag mn-tag--signal-line">Warn</span>
+            <span class="mn-tag mn-tag--wash">01 · 5 hits → wood click</span>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-note · MN.toast()</code><p>Inline note with a kind word. Toasts are the same note, floated.</p></div>
+          <div class="mn-stack">
+            <div class="mn-note" role="status"><span class="mn-note__kind">Saved</span><span class="mn-note__body">Preset written to slot A.</span><button class="mn-btn mn-btn--sm mn-btn--ghost" type="button">Undo</button></div>
+            <div class="mn-note mn-note--signal" role="alert"><span class="mn-note__kind">Clip</span><span class="mn-note__body">Output peaked at +1.2 dB. Ear guard lowered it.</span><button class="mn-btn mn-btn--sm" type="button">Reset</button></div>
+            <div class="mn-note mn-note--quiet"><span class="mn-note__kind">Tip</span><span class="mn-note__body">Shift-click a body to set it as B.</span><span></span></div>
+            <div class="mn-row">
+              <button class="mn-btn" type="button" onclick="MN.toast('Saved', 'Preset written to slot A')">Toast</button>
+              <button class="mn-btn" type="button" onclick="MN.toast('Clip', 'Output peaked at +1.2 dB', { signal: true })">Signal toast</button>
+              <button class="mn-btn" type="button" data-mn-tip="Double-click = default">Hover me</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-meter</code><p>Progress and levels. <code>.is-busy</code> steps, not glides.</p></div>
+          <div class="mn-stack" style="max-width: 420px">
+            <span class="mn-meter" style="--mn-value:.62"></span>
+            <span class="mn-meter mn-meter--signal" style="--mn-value:.88"></span>
+            <span class="mn-meter is-busy"></span>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-menu · .mn-dialog<br>.mn-sheet · .mn-empty</code></div>
+          <div class="two">
+            <ul class="mn-menu menu-demo" role="menu">
+              <li role="none"><button class="mn-menu__item" role="menuitem">Save <span class="mn-menu__meta">⌘S</span></button></li>
+              <li role="none"><button class="mn-menu__item" role="menuitem">Duplicate <span class="mn-menu__meta">⌘D</span></button></li>
+              <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true">Snap to grid</button></li>
+              <li role="separator" class="mn-menu__sep"></li>
+              <li role="none"><button class="mn-menu__item" role="menuitem" disabled>Export stems</button></li>
+            </ul>
+            <div class="mn-stack">
+              <div class="mn-sheet">
+                <div class="mn-sheet__head">
+                  <h3 class="mn-sheet__title">Mod <span class="mn-sep">/</span> moves by itself</h3>
+                  <button class="mn-btn mn-btn--sm" type="button">Close</button>
+                </div>
+                <div class="mn-row"><button class="mn-btn" type="button">New mod</button><button class="mn-btn" type="button">Clear</button><span class="mn-spacer"></span><span class="mn-label">Amount</span><span class="mn-label mn-label--strong">100 %</span></div>
+              </div>
+              <button class="mn-btn" type="button" onclick="document.getElementById('dlg').showModal()">Open dialog</button>
+              <div class="mn-empty">No sounds added <span>Drop a loop to load it</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="nav">
+        <div class="chapter__head">
+          <span class="chapter__n">10</span>
+          <h2 class="chapter__title">Navigation</h2>
+          <p class="chapter__lede">For tools with many pages. The sidebar is an index (numbered, current = inversion); the topbar carries breadcrumbs under a heavy rule. Full frame: <a href="../templates/shell.html">templates/shell.html</a>.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-side__item</code><p>Numbered, mono, current = inversion. A count turns signal when it needs attention.</p></div>
+          <div style="max-width: 260px; border-right: var(--mn-stroke-hair) solid var(--mn-line-strong)">
+            <ul class="mn-side__group" style="margin: 0">
+              <li class="mn-side__group-label">Run</li>
+              <li><a class="mn-side__item" href="#nav"><span class="mn-side__n">01</span><span class="mn-side__label">Overview</span></a></li>
+              <li><a class="mn-side__item" href="#nav" aria-current="page"><span class="mn-side__n">02</span><span class="mn-side__label">Shards</span><span class="mn-side__count">24</span></a></li>
+              <li><a class="mn-side__item" href="#nav"><span class="mn-side__n">03</span><span class="mn-side__label">Incidents</span><span class="mn-side__count is-live">2</span></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-crumbs · .mn-initials</code></div>
+          <div class="mn-row" style="--mn-gap: var(--mn-space-8)">
+            <ol class="mn-crumbs" aria-label="Breadcrumb"><li><a href="#nav">Ops</a></li><li><a href="#nav">Asia</a></li><li aria-current="page">Shards</li></ol>
+            <div class="mn-row"><span class="mn-initials">JL</span><span class="mn-initials mn-initials--open">SK</span><span class="mn-initials mn-initials--sm">MH</span></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-tabs</code><p>Real tablist + panels. ← → Home End with minimal.js. Current tab = ink block standing on the rule.</p></div>
+          <div class="mn-tabs">
+            <div class="mn-tabs__list" role="tablist" aria-label="Demo">
+              <button class="mn-tabs__tab" role="tab" id="dt-a" aria-controls="dp-a" aria-selected="true">All<sup class="mn-count">24</sup></button>
+              <button class="mn-tabs__tab" role="tab" id="dt-b" aria-controls="dp-b" aria-selected="false">Incidents<sup class="mn-count is-live">2</sup></button>
+              <button class="mn-tabs__tab" role="tab" id="dt-c" aria-controls="dp-c" aria-selected="false">Settings</button>
+              <button class="mn-tabs__tab" role="tab" id="dt-d" aria-selected="false" disabled>Archive</button>
+            </div>
+            <div class="mn-tabs__panel" role="tabpanel" id="dp-a" aria-labelledby="dt-a"><p class="mn-hint mn-hint--sentence">Panel one — 24 shards.</p></div>
+            <div class="mn-tabs__panel" role="tabpanel" id="dp-b" aria-labelledby="dt-b" hidden><p class="mn-hint mn-hint--sentence">Panel two — 2 open incidents.</p></div>
+            <div class="mn-tabs__panel" role="tabpanel" id="dp-c" aria-labelledby="dt-c" hidden><p class="mn-hint mn-hint--sentence">Panel three — settings.</p></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-pager</code></div>
+          <nav class="mn-pager" aria-label="Pages">
+            <span>41–60 of 1,204</span>
+            <ul class="mn-pager__pages">
+              <li><button class="mn-pager__item" type="button" aria-label="Previous page">&lt;</button></li>
+              <li><a class="mn-pager__item" href="#nav">01</a></li>
+              <li><a class="mn-pager__item" href="#nav">02</a></li>
+              <li><a class="mn-pager__item" href="#nav" aria-current="page">03</a></li>
+              <li><a class="mn-pager__item" href="#nav">04</a></li>
+              <li class="mn-pager__gap">…</li>
+              <li><a class="mn-pager__item" href="#nav">61</a></li>
+              <li><button class="mn-pager__item" type="button" aria-label="Next page">&gt;</button></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-stages</code><p>Done = inversion. Current = signal outline (it is live). Upcoming = dashed. <code>--vertical</code> for side panels.</p></div>
+          <div class="spec__body">
+            <ol class="mn-stages" aria-label="Steps">
+              <li class="mn-stage is-done"><span class="mn-stage__mark"></span><span class="mn-stage__label">Build</span><span class="mn-stage__desc">4.13.0</span></li>
+              <li class="mn-stage" aria-current="step"><span class="mn-stage__mark"></span><span class="mn-stage__label">Targets</span><span class="mn-stage__desc">Shards and order</span></li>
+              <li class="mn-stage"><span class="mn-stage__mark"></span><span class="mn-stage__label">Guards</span><span class="mn-stage__desc">Stop conditions</span></li>
+              <li class="mn-stage"><span class="mn-stage__mark"></span><span class="mn-stage__label">Review</span></li>
+            </ol>
+            <ol class="mn-stages mn-stages--vertical" aria-label="Steps, vertical" style="max-width: 280px">
+              <li class="mn-stage is-done"><span class="mn-stage__mark"></span><span class="mn-stage__label">Upload</span><span class="mn-stage__desc">players.csv · 12,408 rows</span></li>
+              <li class="mn-stage is-error" aria-current="step"><span class="mn-stage__mark"></span><span class="mn-stage__label">Map columns</span><span class="mn-stage__desc">2 columns unmatched</span></li>
+              <li class="mn-stage"><span class="mn-stage__mark"></span><span class="mn-stage__label">Import</span></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="blocks">
+        <div class="chapter__head">
+          <span class="chapter__n">11</span>
+          <h2 class="chapter__title">Card · Form · Stat</h2>
+          <p class="chapter__lede">A card is content cut off by a rule, not a floating box. Frame it only when it is a tile you pick. Forms are sections under rules, finished by an action bar.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-card</code><p>Default: top rule, on paper.</p></div>
+          <div class="mn-cards" style="--mn-card-min: 220px">
+            <article class="mn-card"><div class="mn-card__head"><span class="mn-card__eyebrow">Release <span class="mn-sep">·</span> 4.13</span><span class="mn-card__meta">Oct 21</span></div><h3 class="mn-card__title">Ranked squad rebalance</h3><p class="mn-card__body">MMR spread widened to 240 for SEA. Party weight lowered to 0.6.</p></article>
+            <article class="mn-card"><div class="mn-card__head"><span class="mn-card__eyebrow">Release <span class="mn-sep">·</span> 4.12</span><span class="mn-card__meta">Oct 07</span></div><h3 class="mn-card__title">New anti-cheat rules</h3><p class="mn-card__body">Kick after 3 flags. Strict mode for tournaments only.</p></article>
+            <article class="mn-card"><div class="mn-card__head"><span class="mn-card__eyebrow">Release <span class="mn-sep">·</span> 4.11</span><span class="mn-card__meta">Sep 23</span></div><h3 class="mn-card__title">Tick rate 60 Hz</h3><p class="mn-card__body">All Asia shards moved from 30 to 60 Hz.</p></article>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-card--framed<br>--link · __media</code><p>Tiles you pick. Whole card is one target; focus ring on the card.</p></div>
+          <div class="mn-cards" style="--mn-card-min: 220px">
+            <article class="mn-card mn-card--framed mn-card--link">
+              <div class="mn-card__media"><svg viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true"><path class="mn-s-ink" d="M0 70 C 30 20, 50 80, 80 40 S 130 10, 160 30" stroke-width="1"/><path class="mn-s-signal" d="M0 80 C 40 60, 60 70, 90 50 S 140 60, 160 45" stroke-width="1.5"/></svg><span class="mn-tag mn-tag--solid">Live</span></div>
+              <div class="mn-card__head"><h3 class="mn-card__title"><a href="#blocks">Tide</a></h3><span class="mn-card__meta">FX · 24 lines</span></div>
+              <p class="mn-card__body mn-card__body--clamp">Replays a window of the last second as a stack of lines.</p>
+              <div class="mn-card__foot"><span>v1.0.0</span><span class="mn-spacer"></span><span>Updated 2 d</span></div>
+            </article>
+            <article class="mn-card mn-card--framed mn-card--link" aria-selected="true">
+              <div class="mn-card__media"><svg viewBox="0 0 160 90" aria-hidden="true"><circle class="mn-s-line" cx="80" cy="45" r="36"/><path class="mn-s-ink" d="M50 50 L70 30 L85 60 L100 35 L112 52" stroke-width="1"/><circle class="mn-f-signal" cx="112" cy="52" r="3"/></svg></div>
+              <div class="mn-card__head"><h3 class="mn-card__title"><a href="#blocks">Weft</a></h3><span class="mn-card__meta">Instrument</span></div>
+              <p class="mn-card__body mn-card__body--clamp">Orbit view of a phrase, woven back in fragments. Selected.</p>
+              <div class="mn-card__foot"><span>v1.0.1</span><span class="mn-spacer"></span><span>Updated 5 d</span></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-stats · .mn-stat</code><p>KPI = label · readout · meaning. Over the limit = <code>.is-live</code>.</p></div>
+          <div class="mn-stats" style="--mn-cols: 3">
+            <div class="mn-stat"><span class="mn-label">Players</span><p class="mn-readout"><span>12,408</span></p><svg class="mn-spark" data-values="9,10,10,11,12,11,12,13,12,12.4" role="img" aria-label="Rising"></svg></div>
+            <div class="mn-stat"><span class="mn-label">Peak CPU</span><p class="mn-readout is-live"><span>94</span><span class="mn-readout__unit">%</span></p><span class="mn-caption">Limit 85 % <span class="mn-sep">·</span> over</span></div>
+            <div class="mn-stat"><span class="mn-label">Build mix</span>
+              <div class="mn-ratio" style="margin-top: var(--mn-space-3)"><div class="mn-ratio__bar"><span class="mn-ratio__seg" style="--mn-share:.62"></span><span class="mn-ratio__seg is-focus" style="--mn-share:.25"></span><span class="mn-ratio__seg" style="--mn-share:.13"></span></div>
+              <ul class="mn-ratio__keys"><li class="mn-ratio__key"><i></i>4.12 <b>62%</b></li><li class="mn-ratio__key is-focus"><i></i>4.13 <b>25%</b></li><li class="mn-ratio__key"><i></i>4.11 <b>13%</b></li></ul></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-form · __section<br>__actions · .mn-form-error</code><p>Sections under rules, REQUIRED as a word, errors summarised first.</p></div>
+          <form class="mn-form" onsubmit="event.preventDefault()">
+            <fieldset class="mn-form__section">
+              <legend class="mn-form__legend"><span>Shard</span><span>2 fields</span></legend>
+              <div class="mn-form__grid">
+                <label class="mn-field mn-field--required"><span class="mn-field__label">Name</span><input class="mn-input" value="S-25"></label>
+                <label class="mn-field"><span class="mn-field__label">Capacity <span>players</span></span><input class="mn-input" value="120"></label>
+              </div>
+            </fieldset>
+            <div class="mn-form__actions"><p class="mn-form__actions-note">Unsaved</p><button class="mn-btn mn-btn--ghost" type="button">Cancel</button><button class="mn-btn mn-btn--solid" type="submit">Create shard</button></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- 12 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="manage">
+        <div class="chapter__head">
+          <span class="chapter__n">12</span>
+          <h2 class="chapter__title">List · Split</h2>
+          <p class="chapter__lede">Find, filter, select, act. Checked rows are a target (wash); the bulk bar is an inverse strip. Full screens: <a href="../templates/list.html">list.html</a>, <a href="../templates/master-detail.html">master-detail.html</a>.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-toolbar · .mn-chip</code><p>Off = outline, on = inversion, × clears, dashed = add.</p></div>
+          <div class="mn-toolbar">
+            <label class="mn-toolbar__search"><span class="mn-sr-only">Search</span><input class="mn-input mn-input--sm" type="search" placeholder="Name or ID"></label>
+            <div class="mn-toolbar__filters">
+              <button class="mn-chip" type="button" aria-pressed="true">KR<sup class="mn-count">412</sup></button>
+              <button class="mn-chip" type="button" aria-pressed="false">JP</button>
+              <span class="mn-chip is-on">Status <span class="mn-chip__value">Flagged</span><button class="mn-chip__clear" type="button" aria-label="Clear">×</button></span>
+              <button class="mn-chip mn-chip--add" type="button">+ Filter</button>
+            </div>
+            <div class="mn-toolbar__end">
+              <div class="mn-dropdown mn-dropdown--end">
+                <button class="mn-btn mn-btn--sm" type="button" data-mn-menu aria-controls="specCols">Columns</button>
+                <ul class="mn-menu" id="specCols" role="menu">
+                  <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="true">Region</button></li>
+                  <li role="none"><button class="mn-menu__item" role="menuitemcheckbox" aria-checked="false">Spend</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-bulkbar · table[data-mn-select]<br>.mn-sort · .mn-expand<br>.mn-table__actions</code><p>Select rows to see the bar. Sort by clicking a head. ▸ opens a detail row. ⋯ opens the row menu.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-2)">
+            <div class="mn-bulkbar" data-mn-bulk-for="specTable" hidden>
+              <span class="mn-bulkbar__count">0 selected</span>
+              <button class="mn-btn" type="button">Message</button>
+              <button class="mn-btn mn-btn--signal-line" type="button">Ban</button>
+              <span class="mn-bulkbar__end"><button class="mn-btn mn-btn--ghost" type="button" data-mn-bulk-clear>Clear</button></span>
+            </div>
+            <div class="mn-table-wrap">
+              <table class="mn-table mn-table--hover" id="specTable" data-mn-select data-mn-sort="local">
+                <thead><tr>
+                  <th class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select all"></label></th>
+                  <th class="mn-table__expand"><span class="mn-sr-only">Details</span></th>
+                  <th aria-sort="ascending"><button class="mn-sort" type="button">Player</button></th>
+                  <th>Status</th>
+                  <th class="is-num" aria-sort="none"><button class="mn-sort" type="button">Reports</button></th>
+                  <th class="mn-table__actions"><span class="mn-sr-only">Actions</span></th>
+                </tr></thead>
+                <tbody>
+                  <tr><td class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select dark_fox"></label></td><td class="mn-table__expand"><button class="mn-expand" type="button" aria-expanded="false" aria-controls="sd1" aria-label="Details"></button></td><td>dark_fox</td><td><span class="mn-tag mn-tag--signal-line">Flagged</span></td><td class="is-num">9</td>
+                    <td class="mn-table__actions"><div class="mn-dropdown mn-dropdown--end"><button class="mn-btn mn-btn--icon mn-btn--sm" type="button" data-mn-menu aria-controls="sm1" aria-label="Actions">⋯</button><ul class="mn-menu" id="sm1" role="menu"><li role="none"><button class="mn-menu__item" role="menuitem">View</button></li><li role="separator" class="mn-menu__sep"></li><li role="none"><button class="mn-menu__item mn-menu__item--danger" role="menuitem">Ban dark_fox</button></li></ul></div></td></tr>
+                  <tr class="mn-table__detail" id="sd1" hidden><td colspan="6">9 reports in 30 days · 3 for aimbot · last match 12 min ago.</td></tr>
+                  <tr><td class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select haru"></label></td><td class="mn-table__expand"><button class="mn-expand" type="button" aria-expanded="false" aria-controls="sd2" aria-label="Details"></button></td><td>haru</td><td><span class="mn-tag mn-tag--solid">Active</span></td><td class="is-num">1</td><td class="mn-table__actions"></td></tr>
+                  <tr class="mn-table__detail" id="sd2" hidden><td colspan="6">Clean record.</td></tr>
+                  <tr class="is-idle"><td class="mn-table__select"><label class="mn-check"><input type="checkbox" aria-label="Select mint"></label></td><td class="mn-table__expand"></td><td>mint</td><td><span class="mn-tag mn-tag--muted">Banned</span></td><td class="is-num">12</td><td class="mn-table__actions"></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mn-table-foot"><span>1–3 of 3</span><div class="mn-table-foot__end"><span>Rows</span><span class="mn-select-wrap"><select class="mn-select" aria-label="Rows per page"><option>20</option><option>50</option></select></span></div></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-skeleton</code><p>Pale bars that tick. No shimmer gradient.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-2); max-width: 420px">
+            <span class="mn-skeleton mn-skeleton--readout"></span>
+            <span class="mn-skeleton mn-skeleton--line" style="--mn-skel-w: 80%"></span>
+            <span class="mn-skeleton mn-skeleton--line" style="--mn-skel-w: 55%"></span>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-split · .mn-index</code><p>Two panes, each scrolls alone. Under 960px one at a time, with a back button.</p></div>
+          <div style="height: 260px; border: var(--mn-stroke-hair) solid var(--mn-line-strong)">
+            <div class="mn-split" style="--mn-split-list: 260px">
+              <section class="mn-split__list">
+                <div class="mn-split__scroll">
+                  <ul class="mn-index" role="listbox" aria-label="Cases">
+                    <li role="none"><button class="mn-index__item is-unread" role="option" aria-selected="false"><span class="mn-index__title">#4821 · Cheating</span><span class="mn-index__sub">dark_fox · 1 report</span><span class="mn-index__meta"><span>12 min</span><span class="mn-tag mn-tag--solid">Open</span></span></button></li>
+                    <li role="none"><button class="mn-index__item" role="option" aria-selected="true"><span class="mn-index__title">#4808 · Aimbot</span><span class="mn-index__sub">ghost.pepper · 3 reports</span><span class="mn-index__meta"><span>28 min</span><span class="mn-tag mn-tag--solid">Open</span></span></button></li>
+                    <li role="none"><button class="mn-index__item" role="option" aria-selected="false"><span class="mn-index__title">#4795 · Toxic chat</span><span class="mn-index__sub">lin.w · 6 reports</span><span class="mn-index__meta"><span>59 min</span><span class="mn-tag mn-tag--signal-line">Urgent</span></span></button></li>
+                  </ul>
+                </div>
+              </section>
+              <section class="mn-split__detail"><div class="mn-split__scroll"><div class="mn-page"><span class="mn-label">#4808 · Aimbot</span><h3 class="mn-page__title">ghost.pepper</h3><p class="mn-page__desc">The selected case. This pane scrolls on its own.</p></div></div></section>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="chat">
+        <div class="chapter__head">
+          <span class="chapter__n">13</span>
+          <h2 class="chapter__title">Agent chat</h2>
+          <p class="chapter__lede">The conversation is a log the instrument writes. The signal marks only what is live: the caret, a running tool, the active step, a pending approval. Full screen with a live run: <a href="../templates/agent.html">agent.html</a>.</p>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-turn --user / --agent<br>.mn-caret · .mn-working<br>.mn-turn__error</code><p>User = hairline box on sunken paper. Agent = prose on paper, no bubble. A whole answer that failed = signal note + RETRY.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-6); max-width: 680px">
+            <article class="mn-turn mn-turn--user"><div class="mn-turn__meta"><span class="mn-turn__who">You</span><span>14:02</span></div><div class="mn-turn__body"><p>Why did SEA queue times spike?</p><div class="mn-attachments"><span class="mn-attach"><span class="mn-attach__kind">CSV</span><span class="mn-attach__name"><span>wait-p95-sea.csv</span><span>48 KB</span></span><button class="mn-attach__remove" type="button" aria-label="Remove">×</button></span><span class="mn-attach is-uploading"><span class="mn-attach__kind">LOG</span><span class="mn-attach__name"><span>sea-mm-01.log</span><span>Uploading · 62%</span></span></span></div></div></article>
+            <article class="mn-turn mn-turn--agent"><div class="mn-turn__meta"><span class="mn-turn__who">Agent</span><span>Opus 5.5</span><span>14:02</span></div><div class="mn-turn__body"><p>A rule change halved the MMR spread at 13:46<a class="mn-cite" href="#chat">1</a>, so the pool got too narrow. Restoring <code>mmr_spread: 240</code><span class="mn-caret"></span></p></div><div class="mn-turn__actions mn-turn__actions--always"><button class="mn-btn mn-btn--ghost" type="button">Copy</button><button class="mn-btn mn-btn--ghost" type="button">Retry</button></div></article>
+            <span class="mn-working">Working</span>
+            <article class="mn-turn mn-turn--agent"><div class="mn-turn__meta"><span class="mn-turn__who">Agent</span><span>Opus 5.5</span><span>14:09</span></div>
+              <div class="mn-turn__error"><div class="mn-note mn-note--signal" role="alert"><span class="mn-note__kind">Failed</span><span class="mn-note__body">The model didn’t answer — overloaded (529) after 3 tries. Nothing was changed.</span><button class="mn-btn mn-btn--sm" type="button">Retry</button></div></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-reason (+ __snippet)</code><p>Collapsed by default. While streaming: live dot, last lines as a snippet under a left rule.</p></div>
+          <div class="mn-stack" style="max-width: 680px">
+            <details class="mn-reason is-live"><summary class="mn-reason__head">Thinking <span class="mn-reason__time">2.4 s</span></summary><div class="mn-reason__body">Check logs for shard events first, then compare queue sizes per region.</div></details>
+            <div class="mn-reason__snippet"><span>The CSV shows SEA p95 wait climbing from ~32 s to 58 s starting around 13:47. Two likely causes: a capacity drop or a rule change narrowing the pool. Check logs for shard events first, then compare queue sizes per region…</span></div>
+            <details class="mn-reason" open><summary class="mn-reason__head">Thought <span class="mn-reason__time">6.1 s</span></summary><div class="mn-reason__body">If the rule was tightened, widening MMR spread back is low-risk — but deploying touches production, so ask before running it.</div></details>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-tool · .mn-tools</code><p>■ done · blinking signal = running · dashed = waiting for you · signal outline = error · gray outline = denied.</p></div>
+          <div class="mn-tools" style="max-width: 680px">
+            <details class="mn-tool"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">search_logs</span><span class="mn-tool__arg">region:SEA level:warn since:-15m</span><span class="mn-tool__meta">0.8 s · 3 hits</span></summary><div class="mn-tool__body"><span class="mn-tool__label">Input</span><pre>{ "region": "SEA", "level": "warn", "since": "-15m" }</pre></div></details>
+            <details class="mn-tool is-running"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">query_db</span><span class="mn-tool__arg">select region, p95(wait) from queue …</span><span class="mn-tool__meta">Running</span></summary><div class="mn-tool__body"><span class="mn-meter is-busy" style="--mn-meter-h: 4px"></span></div></details>
+            <details class="mn-tool is-waiting"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">run_command</span><span class="mn-tool__arg">deploy-rules --region sea</span><span class="mn-tool__meta">Waiting · approval</span></summary></details>
+            <details class="mn-tool is-error"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">query_db</span><span class="mn-tool__arg">… group by region</span><span class="mn-tool__meta">Timeout · 10 s</span></summary></details>
+            <details class="mn-tool is-denied"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">delete_file</span><span class="mn-tool__arg">config/old-rules.yaml</span><span class="mn-tool__meta">Denied</span></summary></details>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-result · .mn-diff<br>.mn-hits</code><p>Tool output cards. Diffs speak in + and − and strike-through; added lines carry an ink bar so change blocks read down the left edge. Copy (button or selection) gives a unified diff. <code>data-diff="hue"</code> adds a faint green/red — only under the blue signal; with red or orange it stays monochrome.</p></div>
+          <div class="mn-stack" style="max-width: 680px">
+            <div class="mn-result"><div class="mn-result__head"><span>Diff · default</span><span class="mn-result__end"><span>+3 −1</span><button class="mn-btn mn-btn--ghost" type="button" data-mn-copy>Copy</button></span></div><div class="mn-result__body mn-result__body--flush"><div class="mn-diff">
+              <div class="mn-diff__hunk">@@ -1,6 +1,7 @@</div>
+              <div class="mn-diff__line"><span class="mn-diff__n">2</span><span class="mn-diff__sign"></span><span class="mn-diff__code">max_wait_s: 45</span></div>
+              <div class="mn-diff__line mn-diff__line--del"><span class="mn-diff__n">3</span><span class="mn-diff__sign">−</span><span class="mn-diff__code">mmr_spread: 120</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">3</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">mmr_spread: 240</span></div>
+              <div class="mn-diff__line"><span class="mn-diff__n">4</span><span class="mn-diff__sign"></span><span class="mn-diff__code">party_weight: 0.6</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">5</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">guards:</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">6</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">  min_mmr_spread: 200</span></div>
+              <div class="mn-diff__line"><span class="mn-diff__n">7</span><span class="mn-diff__sign"></span><span class="mn-diff__code">region_blend: 0.3</span></div>
+            </div></div></div>
+            <div class="mn-result" data-signal="blue" data-diff="hue"><div class="mn-result__head"><span>Diff · data-diff="hue" · blue signal</span><span class="mn-result__end"><span>+3 −1</span><button class="mn-btn mn-btn--ghost" type="button" data-mn-copy>Copy</button></span></div><div class="mn-result__body mn-result__body--flush"><div class="mn-diff">
+              <div class="mn-diff__hunk">@@ -1,6 +1,7 @@</div>
+              <div class="mn-diff__line"><span class="mn-diff__n">2</span><span class="mn-diff__sign"></span><span class="mn-diff__code">max_wait_s: 45</span></div>
+              <div class="mn-diff__line mn-diff__line--del"><span class="mn-diff__n">3</span><span class="mn-diff__sign">−</span><span class="mn-diff__code">mmr_spread: 120</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">3</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">mmr_spread: 240</span></div>
+              <div class="mn-diff__line"><span class="mn-diff__n">4</span><span class="mn-diff__sign"></span><span class="mn-diff__code">party_weight: 0.6</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">5</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">guards:</span></div>
+              <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">6</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">  min_mmr_spread: 200</span></div>
+              <div class="mn-diff__line"><span class="mn-diff__n">7</span><span class="mn-diff__sign"></span><span class="mn-diff__code">region_blend: 0.3</span></div>
+            </div></div></div>
+            <div class="mn-result"><div class="mn-result__head"><span>2 hits</span><span>ops wiki</span></div><ul class="mn-hits"><li class="mn-hit"><a class="mn-hit__title" href="#chat">Runbook · matchmaking rules</a><span class="mn-hit__where">wiki/ops/matchmaking</span><span class="mn-hit__text">Changing <mark>mmr_spread</mark> below 200 shrinks the pool sharply.</span></li></ul><button class="mn-result__more" type="button">Show 12 more</button></div>
+            <div class="mn-result mn-result--error"><div class="mn-result__head"><span>Error</span><span>retrying</span></div><div class="mn-result__body"><pre>QueryTimeout: statement exceeded 10000 ms</pre></div></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-approve · .mn-plan</code><p>A pending approval is live (signal border); once decided it goes quiet and records who and when.</p></div>
+          <div class="mn-stack" style="max-width: 680px">
+            <div class="mn-approve"><div class="mn-approve__head"><span>Permission · run_command</span><span>Production · SEA</span></div><p class="mn-approve__what">Deploy the edited rule to the live SEA matchmaker.</p><div class="mn-code"><pre>deploy-rules --region sea --rule sea-ranked-squad</pre></div><div class="mn-approve__actions"><button class="mn-btn mn-btn--solid" type="button">Allow once</button><button class="mn-btn" type="button">Always allow in this chat</button><button class="mn-btn mn-btn--ghost" type="button">Deny</button></div></div>
+            <div class="mn-approve is-decided"><div class="mn-approve__head"><span>Allowed once · 14:06 · J. Lee</span><span>Production · SEA</span></div><p class="mn-approve__what">Deploy the edited rule to the live SEA matchmaker.</p><div class="mn-approve__actions"></div></div>
+            <div class="mn-plan"><div class="mn-plan__head"><span>Plan</span><span>2 / 4</span></div><ol class="mn-plan__list"><li class="mn-plan__item is-done">Search SEA logs</li><li class="mn-plan__item is-done">Compare regions</li><li class="mn-plan__item" aria-current="step">Read the SEA rule</li><li class="mn-plan__item">Deploy (needs approval)</li></ol></div>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-code · .mn-sources</code></div>
+          <div class="mn-stack" style="max-width: 680px">
+            <div class="mn-code"><div class="mn-code__head"><span>yaml</span><button class="mn-btn mn-btn--ghost" type="button">Copy</button></div><pre><span class="c-key">guards</span>:
+  - <span class="c-key">field</span>: mmr_spread
+    <span class="c-key">below</span>: 200   <span class="c-comment"># needs a second approver</span></pre></div>
+            <ol class="mn-sources"><li><a class="mn-source" href="#chat"><span class="mn-source__n">1</span><span class="mn-source__title">matchmaker log · rule reloaded 13:46:58</span><span class="mn-source__where">sea-mm-01</span></a></li><li><a class="mn-source" href="#chat"><span class="mn-source__n">2</span><span class="mn-source__title">queue_events · p95 by region</span><span class="mn-source__where">analytics db</span></a></li></ol>
+          </div>
+        </div>
+
+        <div class="spec">
+          <div class="spec__name"><code>.mn-composer · __menu · .mn-model<br>.mn-context · .mn-starters</code><p>Typing "/" opens the command list above the field. Model picker opens upward. Over 80% context turns the meter signal. While running, Send becomes a signal STOP.</p></div>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-4); max-width: 680px">
+            <div class="mn-starters"><button class="mn-starter" type="button"><span class="mn-starter__title">Investigate</span><span class="mn-starter__desc">Why did SEA queue times spike?</span></button><button class="mn-starter" type="button"><span class="mn-starter__title">Write</span><span class="mn-starter__desc">Draft patch notes for 4.13.</span></button></div>
+            <form class="mn-composer" onsubmit="event.preventDefault()" style="margin-top: 200px">
+              <ul class="mn-menu mn-composer__menu" role="listbox" aria-label="Commands">
+                <li class="mn-menu__label" role="presentation">Commands</li>
+                <li class="mn-menu__item mn-menu__item--rich" role="option" aria-selected="true"><span class="mn-menu__name">/logs</span><span class="mn-menu__desc">Search ops logs</span><span class="mn-menu__meta">Tool</span></li>
+                <li class="mn-menu__item mn-menu__item--rich" role="option" aria-selected="false"><span class="mn-menu__name">/deploy</span><span class="mn-menu__desc">Deploy a rule — asks first</span><span class="mn-menu__meta">Prod</span></li>
+              </ul>
+              <textarea class="mn-composer__field" rows="1" aria-label="Message">/</textarea>
+              <div class="mn-composer__bar">
+                <button class="mn-btn mn-btn--icon mn-btn--sm mn-btn--ghost" type="button" aria-label="Attach">+</button>
+                <div class="mn-dropdown mn-dropdown--up">
+                  <button class="mn-model" type="button" data-mn-menu aria-controls="specModel"><span class="mn-model__label">Model</span><span>Opus 5.5</span></button>
+                  <ul class="mn-menu" id="specModel" role="menu" style="min-width: 280px">
+                    <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="true"><span class="mn-menu__name">Opus 5.5</span><span class="mn-menu__desc">Most capable.</span><span class="mn-menu__meta">1M</span></button></li>
+                    <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="false"><span class="mn-menu__name">Haiku 5.5</span><span class="mn-menu__desc">Fast and cheap.</span><span class="mn-menu__meta">200K</span></button></li>
+                  </ul>
+                </div>
+                <div class="mn-composer__end">
+                  <span class="mn-context is-live"><span>Context</span><span class="mn-meter" style="--mn-value:.86"></span><span>172K / 200K</span></span>
+                  <button class="mn-btn mn-btn--signal mn-btn--sm" type="button"><span class="mn-glyph"></span> Stop</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14 ─────────────────────────────────────────────── -->
+      <section class="chapter" id="templates">
+        <div class="chapter__head">
+          <span class="chapter__n">14</span>
+          <h2 class="chapter__title">Templates</h2>
+          <p class="chapter__lede">Full screens built only from system classes.</p>
+        </div>
+        <div class="spec">
+          <div class="spec__name"><code>templates/</code></div>
+          <div class="mn-table-wrap"><table class="mn-table mn-table--hover">
+            <thead><tr><th>Screen</th><th>Shows</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Instrument</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">The canonical layout: field + param panel + status line. Blue signal.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/instrument.html">Open →</a></td></tr>
+              <tr><td>Shell</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">Multi-page tool frame: sidebar index, breadcrumbs, tabs, table + pager, incident cards, rollout form with stages.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/shell.html">Open →</a></td></tr>
+              <tr><td>List</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">List management: tabs + counts, search, filter chips, bulk bar, sort, expand, row menu, skeleton, confirmed bans.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/list.html">Open →</a></td></tr>
+              <tr><td>Master-detail</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">Moderation queue: index list on the left, case with tabs + decision form on the right, each pane scrolls alone.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/master-detail.html">Open →</a></td></tr>
+              <tr><td>Agent</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">Agent chat with a live run: reasoning, plan, tool calls and results, approval, streaming answer, model picker, run panel.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/agent.html">Open →</a></td></tr>
+              <tr><td>Charts</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">ECharts and Recharts themes from one source: focus + context, one bar, map, heat.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="charts.html">Open →</a></td></tr>
+              <tr><td>Console</td><td style="text-transform:none; letter-spacing:0; font-family: var(--mn-font-family-sans)">The same grammar on a live-ops tool: KPIs as readouts, region table, heat grid.</td><td class="is-num"><a class="mn-btn mn-btn--sm" href="../templates/console.html">Open →</a></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="mn-footer">
+    <span>Minimal 0.1.0</span>
+    <span class="mn-footer__hints">Drag a number up or down <span class="mn-sep">·</span> Shift = fine <span class="mn-sep">·</span> Double-click = default <span class="mn-sep">·</span> Switch theme / signal / paper / dialect above</span>
+    <span class="mn-footer__end">Components 18 <span class="mn-sep">·</span> Templates 6 <span class="mn-sep">·</span> Charts 11</span>
+  </footer>
+</div>
+
+<dialog class="mn-dialog" id="dlg" aria-labelledby="dlg-t">
+  <div class="mn-dialog__head"><h3 class="mn-dialog__title" id="dlg-t">Export</h3><button class="mn-btn mn-btn--sm" type="button" onclick="this.closest('dialog').close()">Close</button></div>
+  <div class="mn-dialog__body">
+    <label class="mn-field"><span class="mn-field__label">File name</span><input class="mn-input" value="field-drone-0019"></label>
+    <fieldset class="mn-seg mn-seg--sm" aria-label="Format">
+      <label class="mn-seg__item"><input type="radio" name="fmt" checked><span class="mn-seg__face">WAV</span></label>
+      <label class="mn-seg__item"><input type="radio" name="fmt"><span class="mn-seg__face">FLAC</span></label>
+      <label class="mn-seg__item"><input type="radio" name="fmt"><span class="mn-seg__face">MIDI</span></label>
+    </fieldset>
+  </div>
+  <div class="mn-dialog__foot"><button class="mn-btn mn-btn--ghost" type="button" onclick="this.closest('dialog').close()">Cancel</button><button class="mn-btn mn-btn--solid" type="button" onclick="this.closest('dialog').close()">Export</button></div>
+</dialog>
+
+<script src="../js/minimal.js"></script>
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  // deterministic noise so screenshots are stable
+  let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+
+  // heat grid
+  const heat = document.getElementById("heat");
+  ["Pluck", "Resonance", "Contact", "Fragment", "Circuit", "Texture"].forEach((name, r) => {
+    const row = document.createElement("div"); row.className = "mn-heat__row";
+    row.innerHTML = `<span class="mn-heat__label">${name}</span>`;
+    const cells = document.createElement("div"); cells.className = "mn-cells"; cells.style.setProperty("--mn-cols", 12);
+    const n = 12 - (r % 3);
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement("span"); c.className = "mn-cell";
+      c.style.setProperty("--mn-heat", (rnd() ** 2.2).toFixed(2));
+      if (r === 0 && i === 0) c.classList.add("is-current");
+      cells.appendChild(c);
+    }
+    row.appendChild(cells); heat.appendChild(row);
+  });
+
+  // steps
+  const steps = document.getElementById("steps"), steps2 = document.getElementById("steps2");
+  for (let i = 1; i <= 16; i++) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "mn-step";
+    if ([1, 5, 9, 13].includes(i)) b.classList.add("is-empty");
+    if (i === 14) b.classList.add("is-accent");
+    if (i === 6) b.classList.add("is-current");
+    b.setAttribute("aria-pressed", String([3, 7, 11].includes(i)));
+    b.innerHTML = `<span class="mn-step__n">${i}</span><span>+</span>`;
+    b.addEventListener("click", () => b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")));
+    steps.appendChild(b);
+    const c = document.createElement("button"); c.type = "button"; c.className = "mn-step";
+    c.setAttribute("aria-pressed", String([1, 5, 9, 13].includes(i)));
+    c.innerHTML = `<span class="mn-step__n">${i}</span>`;
+    steps2.appendChild(c);
+  }
+
+  // scatter / timbre map
+  const sc = document.getElementById("scatter");
+  const sounds = Array.from({ length: 420 }, () => {
+    const x = 60 + (rnd() * 0.5 + rnd() * 0.5) * 880, y = 30 + rnd() * 200;
+    const base = x > 520 && x < 660 ? "mn-f-ink" : "mn-f-mute";
+    return { x, base, c: base, hit: -9, el: sc.appendChild(svgEl("rect", { x, y, width: 3, height: 3, class: base })) };
+  });
+  [[590, 110, "01 Wood click"], [700, 70, "02 Balafon"], [640, 160, "03 Guiro long"]].forEach(([x, y, t]) => {
+    sc.appendChild(svgEl("rect", { x: x - 4, y: y - 4, width: 8, height: 8, class: "mn-f-ink" }));
+    const tx = svgEl("text", { x: x + 10, y: y + 4, class: "mn-t-ink" }); tx.textContent = t; sc.appendChild(tx);
+  });
+  sc.appendChild(svgEl("path", { d: "M 360 125 L 590 110 L 700 70", class: "mn-s-signal", "stroke-width": 1.5, "vector-effect": "non-scaling-stroke" }));
+
+  // scopes — live monitors, redrawn by MN.monitor (stand-in signals; an app passes its own data)
+  const fix = (n) => n.toFixed(2);
+  // sand: grains on a vibrating plate — they breathe and the lobes turn slowly
+  const sand = document.getElementById("sand");
+  const grains = Array.from({ length: 700 }, () => {
+    const g = { a: rnd() * Math.PI * 2, r: 46 * Math.sqrt(rnd()), p: rnd() * Math.PI * 2, w: 0.2 + rnd() * 0.5 };
+    g.el = sand.appendChild(svgEl("rect", { width: 0.8, height: 0.8, class: rnd() > 0.93 ? "mn-f-signal" : "mn-f-ink" }));
+    return g;
+  });
+  MN.monitor(sand, (t) => {
+    for (const g of grains) {
+      const a = g.a + Math.sin(t * g.w + g.p) * 0.08;
+      const r = g.r * (0.93 + 0.07 * Math.sin(t * 0.9 + g.p));
+      g.el.setAttribute("x", fix(50 + Math.cos(a) * r));
+      g.el.setAttribute("y", fix(50 + Math.sin(a) * r * (0.6 + 0.4 * Math.abs(Math.cos(a * 3 + t * 0.3)))));
+    }
+  }, { fps: 24 });
+  // V × I: Lissajous trace with phosphor — older segments fade ink → gray → faint; the signal dot is now
+  const vxi = document.getElementById("vxi");
+  const AGES = ["mn-s-grid", "mn-s-grid", "mn-s-grid", "mn-s-mute", "mn-s-mute", "mn-s-mute", "mn-s-ink", "mn-s-ink"];
+  const trail = AGES.map((c) => vxi.appendChild(svgEl("polyline", { class: c, "stroke-width": 0.6, "stroke-linejoin": "round" })));
+  const head = vxi.appendChild(svgEl("circle", { r: 2.2, class: "mn-f-signal" }));
+  const lj = (u) => [50 + 40 * Math.sin(3 * u + 0.6) * (0.85 + 0.15 * Math.sin(u * 0.21)), 50 + 40 * Math.sin(2 * u)];
+  MN.monitor(vxi, (t) => {
+    const u = t * 1.1, seg = 0.6;
+    trail.forEach((pl, i) => {
+      const from = u - (trail.length - i) * seg;
+      pl.setAttribute("points", Array.from({ length: 13 }, (_, k) => lj(from + (k / 12) * seg).map(fix).join(",")).join(" "));
+    });
+    const [x, y] = lj(u);
+    head.setAttribute("cx", fix(x));
+    head.setAttribute("cy", fix(y));
+  });
+  // spectrum: bars move every frame; an ink peak tick holds 0.6 s, then falls. The watched band is signal.
+  const sp = document.getElementById("spectrum");
+  const bands = Array.from({ length: 40 }, (_, i) => ({
+    bar: sp.appendChild(svgEl("rect", { x: 6 + i * 2.2, width: 1.1, class: i > 9 && i < 15 ? "mn-f-signal" : "mn-f-ink" })),
+    tick: sp.appendChild(svgEl("rect", { x: 6 + i * 2.2, width: 1.1, height: 0.9, class: "mn-f-ink" })),
+    peak: 0, hold: 0, n: rnd(),
+  }));
+  MN.monitor(sp, (t, dt) => {
+    bands.forEach((b, i) => {
+      b.n += (rnd() - 0.5) * 0.5; b.n = Math.min(1, Math.max(0, b.n));
+      const env = 62 * Math.exp(-((i - 10 - 2.5 * Math.sin(t * 0.5)) ** 2) / 140);
+      const h = Math.max(3, env * (0.72 + 0.28 * Math.sin(t * 6 + i * 1.7)) + b.n * 8); // ≤ 70: clear of the label
+      if (h >= b.peak) { b.peak = h; b.hold = 0.6; }
+      else if (b.hold > 0) b.hold -= dt;
+      else b.peak = Math.max(h, b.peak - 50 * dt);
+      b.bar.setAttribute("y", fix(96 - h));
+      b.bar.setAttribute("height", fix(h));
+      b.tick.setAttribute("y", fix(96 - b.peak - 2));
+    });
+  });
+  // time: the input (signal) scrolls left against an ink reference
+  const time = document.getElementById("time");
+  const line = (c) => time.appendChild(svgEl("polyline", { class: c, "stroke-width": 0.8, "vector-effect": "non-scaling-stroke" }));
+  const ref = line("mn-s-ink"), sig = line("mn-s-signal");
+  MN.monitor(time, (t) => {
+    const pts = (f) => Array.from({ length: 61 }, (_, i) => `${fix(i * (100 / 60))},${fix(f(i))}`).join(" ");
+    ref.setAttribute("points", pts((i) => 58 + 14 * Math.sin(i * 0.3 + t * 3)));
+    sig.setAttribute("points", pts((i) => 50 + 20 * Math.sin(i * 0.3 + t * 3 - 0.5) + 9 * Math.sin(i * 0.83 + t * 5.1)));
+  });
+  // timbre map playback: the playhead sweeps; a sound it crosses is signal for 0.25 s, ink until 0.7 s, then its own gray/ink.
+  // Stepped, not faded — the instrument redraws, it does not tween.
+  const playhead = sc.parentElement.querySelector(".mn-playhead");
+  MN.monitor(sc, (t) => {
+    const pos = (0.3 + t / 6) % 1, px = pos * 1000;
+    playhead.style.setProperty("--mn-pos", pos.toFixed(4));
+    for (const d of sounds) {
+      if (Math.abs(d.x - px) < 7) d.hit = t;
+      const age = t - d.hit;
+      const c = age < 0.25 ? "mn-f-signal" : age < 0.7 ? "mn-f-ink" : d.base;
+      if (c !== d.c) d.el.setAttribute("class", (d.c = c));
+    }
+  });
+
+  // wave playback: the 4-bar signal window advances one bar per tick; the minimap viewport follows
+  const wave = document.getElementById("wave");
+  const bars = Array.from({ length: 110 }, (_, i) => {
+    const b = wave.appendChild(document.createElement("i"));
+    b.style.setProperty("--h", (0.15 + 0.85 * Math.abs(Math.sin(i / 7)) * (0.5 + rnd() * 0.5)).toFixed(2));
+    return b;
+  });
+  const view = document.querySelector(".mn-minimap > .mn-wash");
+  MN.monitor(wave, (t) => {
+    const head = (74 + Math.floor(t * 12)) % bars.length;
+    bars.forEach((b, i) => {
+      const c = i >= head && i < head + 4 ? "is-live" : i < head ? "" : "is-dim";
+      if (b.className !== c) b.className = c;
+    });
+    view.style.setProperty("--mn-x", ((head / bars.length) * 0.45).toFixed(3));
+  }, { fps: 12 });
+})();
+</script>
+</body>
+</html>

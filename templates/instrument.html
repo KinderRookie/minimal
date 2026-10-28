@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en" data-signal="blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Current · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+  <style>
+    /* template-only layout — tokens only, no raw values that the system already names */
+    .stage { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: var(--mn-space-3); flex: 1 1 auto; min-height: 520px; }
+    .stage .mn-plot { cursor: crosshair; }
+  </style>
+</head>
+<body class="mn">
+<div class="mn-app">
+
+  <header class="mn-header">
+    <div class="mn-header__brand">
+      <h1 class="mn-wordmark">Current</h1>
+      <span class="mn-vrule" aria-hidden="true"></span>
+      <p class="mn-subtitle">Minimal <span class="mn-sep">/</span> Effect</p>
+    </div>
+
+    <div class="mn-header__center">
+      <div class="mn-stepper" data-items="LOW WATER|SLACK TIDE|UNDERTOW|RIP|SPRING TIDE|STILL POOL" aria-label="Preset">
+        <button class="mn-btn" type="button" aria-label="Previous preset">&lt;</button>
+        <span class="mn-stepper__name" aria-live="polite">LOW WATER</span>
+        <button class="mn-btn" type="button" aria-label="Next preset">&gt;</button>
+      </div>
+    </div>
+
+    <div class="mn-header__end">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+      <button class="mn-btn" type="button" id="undo">Undo</button>
+      <button class="mn-btn" type="button" disabled>Redo</button>
+      <button class="mn-btn mn-btn--icon" type="button" aria-label="More">…</button>
+    </div>
+  </header>
+
+  <div class="mn-body">
+    <main class="mn-main">
+      <div class="stage">
+        <div class="mn-plot" id="plot" role="img" aria-label="Stacked waveform history; the highlighted window is replayed">
+          <div class="mn-wash" id="wash"></div>
+          <svg id="lines" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+            <defs><clipPath id="win"><rect id="winRect" x="0" y="0" width="0" height="700"/></clipPath></defs>
+            <g id="ink"></g>
+            <g id="sig" clip-path="url(#win)"></g>
+          </svg>
+          <span class="mn-marker" id="marker"></span>
+          <span class="mn-plot__label mn-plot__label--tr" id="plotMeta">24 LINES</span>
+        </div>
+        <div class="mn-axis">
+          <div class="mn-axis__scale"></div>
+          <div class="mn-axis__labels">
+            <span>-0.80 s</span>
+            <span class="mn-axis__mid">Press a line to play it again <span class="mn-sep">/</span> left = earlier <span class="mn-sep">/</span> up = higher</span>
+            <span>Now</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="mn-panel" aria-label="Controls">
+      <div class="mn-params" style="--mn-cols: 2">
+        <div class="mn-param">
+          <label class="mn-param__label" for="reach">Reach</label>
+          <output class="mn-readout" for="reach" data-drag><span class="mn-readout__num">0.80</span><span class="mn-readout__unit">s</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="reach" type="range" min="0.05" max="1.6" step="0.01" value="0.80"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="flow">Flow</label>
+          <output class="mn-readout" for="flow" data-drag><span class="mn-readout__num">55</span><span class="mn-readout__unit">%</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="flow" type="range" min="0" max="100" value="55" data-default="50"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="blur">Blur</label>
+          <output class="mn-readout" for="blur" data-drag><span class="mn-readout__num">30</span><span class="mn-readout__unit">%</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="blur" type="range" min="0" max="100" value="30" data-default="20"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="width">Width</label>
+          <output class="mn-readout" for="width" data-drag><span class="mn-readout__num">45</span><span class="mn-readout__unit">%</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="width" type="range" min="5" max="100" value="45" data-default="40"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="mix">Mix</label>
+          <output class="mn-readout" for="mix" data-drag><span class="mn-readout__num">85</span><span class="mn-readout__unit">%</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="mix" type="range" min="0" max="100" value="85" data-default="100"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="output">Output</label>
+          <output class="mn-readout" for="output" data-drag><span class="mn-readout__num">0.0</span><span class="mn-readout__unit">dB</span></output>
+          <div class="mn-ruler mn-ruler--center"><input class="mn-ruler__input" id="output" type="range" min="-12" max="12" step="0.1" value="0" data-signed></div>
+        </div>
+      </div>
+
+      <section class="mn-section">
+        <div class="mn-section__head">
+          <h2 class="mn-section__title">Grid</h2>
+          <span class="mn-section__meta" id="bpm">96.0 BPM</span>
+        </div>
+        <fieldset class="mn-seg" aria-label="Grid">
+          <label class="mn-seg__item"><input type="radio" name="grid" value="free"><span class="mn-seg__face">Free</span></label>
+          <label class="mn-seg__item"><input type="radio" name="grid" value="16" checked><span class="mn-seg__face">1/16</span></label>
+          <label class="mn-seg__item"><input type="radio" name="grid" value="8"><span class="mn-seg__face">1/8</span></label>
+          <label class="mn-seg__item"><input type="radio" name="grid" value="4"><span class="mn-seg__face">1/4</span></label>
+        </fieldset>
+      </section>
+
+      <section class="mn-section mn-section--bare">
+        <div class="mn-section__head"><h2 class="mn-section__title">Motion</h2></div>
+        <fieldset class="mn-seg" aria-label="Motion">
+          <label class="mn-seg__item"><input type="radio" name="motion" value="off"><span class="mn-seg__face">Off</span></label>
+          <label class="mn-seg__item"><input type="radio" name="motion" value="cycle"><span class="mn-seg__face">Cycle</span></label>
+          <label class="mn-seg__item"><input type="radio" name="motion" value="drift" checked><span class="mn-seg__face">Drift</span></label>
+        </fieldset>
+      </section>
+
+      <div class="mn-params" style="--mn-cols: 2">
+        <div class="mn-param">
+          <label class="mn-param__label" for="tide">Tide</label>
+          <output class="mn-readout" for="tide" data-drag><span class="mn-readout__num">55</span><span class="mn-readout__unit">%</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="tide" type="range" min="0" max="100" value="55" data-default="50"></div>
+        </div>
+        <div class="mn-param">
+          <label class="mn-param__label" for="rate">Rate</label>
+          <output class="mn-readout" for="rate" data-drag><span class="mn-readout__num">0.15</span><span class="mn-readout__unit">Hz</span></output>
+          <div class="mn-ruler"><input class="mn-ruler__input" id="rate" type="range" min="0.01" max="1" step="0.01" value="0.15"></div>
+        </div>
+      </div>
+
+      <button class="mn-btn mn-btn--lg mn-btn--block" type="button" id="freeze" aria-pressed="false">Freeze</button>
+    </aside>
+  </div>
+
+  <footer class="mn-footer">
+    <span>Current 0.1.0</span>
+    <span class="mn-footer__hints">Drag a number up or down <span class="mn-sep">·</span> Shift = fine <span class="mn-sep">·</span> Double-click = default <span class="mn-sep">·</span> Click the field to move the window</span>
+    <span class="mn-footer__end"><span id="dsp">DSP 1%</span></span>
+  </footer>
+</div>
+
+<script src="../js/minimal.js"></script>
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const W = 1000, H = 700, ROWS = 24, STEP = 8;
+  const $ = (id) => document.getElementById(id);
+  const val = (id) => Number($(id).value);
+
+  // window position (0–1) — moved by clicking the plot
+  let win = { x: 0.48, row: 0.62 };
+  let t = 0, frozen = false, motion = "drift", last = performance.now();
+
+  // fixed "events" every line responds to, like transients in an audio history
+  const bumps = [
+    { x: 0.22, w: 0.025, h: 0.6 },
+    { x: 0.42, w: 0.03, h: 1.0 },
+    { x: 0.62, w: 0.02, h: 0.55 },
+    { x: 0.81, w: 0.035, h: 0.9 },
+  ];
+  const seeds = Array.from({ length: ROWS }, (_, r) => [Math.sin(r * 12.9898) * 43758.5453 % 1, Math.sin(r * 78.233) * 12345.678 % 1]);
+
+  function row(r) {
+    const flow = val("flow") / 100;
+    const blur = val("blur") / 100;
+    const gap = (H - 60) / ROWS;
+    const base = 40 + r * gap;
+    const depth = Math.sin((r / ROWS) * Math.PI); // middle rows move most
+    const pts = [];
+    for (let x = 0; x <= W; x += STEP) {
+      const u = x / W;
+      let y = 0;
+      for (const b of bumps) y -= b.h * depth * Math.exp(-((u - b.x) ** 2) / (2 * b.w ** 2)) * gap * 1.6;
+      const [a, c] = seeds[r];
+      y += flow * gap * 0.45 * (Math.sin(u * 23 + a * 9 + t) * 0.6 + Math.sin(u * 61 + c * 7 - t * 1.7) * 0.4);
+      pts.push(y);
+    }
+    // blur = moving average
+    const k = Math.round(blur * 6);
+    const sm = pts.map((_, i) => {
+      let s = 0, n = 0;
+      for (let j = -k; j <= k; j++) { const v = pts[i + j]; if (v !== undefined) { s += v; n++; } }
+      return s / n;
+    });
+    return "M" + sm.map((y, i) => `${i * STEP},${(base + y).toFixed(1)}`).join("L");
+  }
+
+  const ink = $("ink"), sig = $("sig");
+  const inkPaths = [], sigPaths = [];
+  for (let r = 0; r < ROWS; r++) {
+    const a = document.createElementNS(NS, "path");
+    a.setAttribute("class", "mn-s-ink");
+    a.setAttribute("vector-effect", "non-scaling-stroke");
+    a.setAttribute("stroke-width", "1.25");
+    ink.appendChild(a); inkPaths.push(a);
+    const b = document.createElementNS(NS, "path");
+    b.setAttribute("class", "mn-s-signal");
+    b.setAttribute("vector-effect", "non-scaling-stroke");
+    b.setAttribute("stroke-width", "1.6");
+    sig.appendChild(b); sigPaths.push(b);
+  }
+
+  function layout() {
+    const width = val("width") / 100 * 0.32 + 0.04;
+    const span = Math.max(3, Math.round(val("tide") / 100 * ROWS * 0.6));
+    const center = Math.round(win.row * (ROWS - 1));
+    const r0 = Math.max(0, Math.min(ROWS - span, center - Math.floor(span / 2)));
+    const gap = (H - 60) / ROWS;
+    const y0 = (40 + r0 * gap - gap * 0.9) / H;
+    const y1 = (40 + (r0 + span - 1) * gap + gap * 0.6) / H;
+    const x0 = Math.max(0, Math.min(1 - width, win.x - width / 2));
+    const wash = $("wash").style;
+    wash.setProperty("--mn-x", x0); wash.setProperty("--mn-w", width);
+    wash.setProperty("--mn-y", y0); wash.setProperty("--mn-h", y1 - y0);
+    const rect = $("winRect");
+    rect.setAttribute("x", x0 * W); rect.setAttribute("width", width * W);
+    rect.setAttribute("y", y0 * H); rect.setAttribute("height", (y1 - y0) * H);
+    const m = $("marker").style;
+    m.setProperty("--mn-x", x0 + width / 2);
+    m.setProperty("--mn-y", (y0 + y1) / 2);
+    sigPaths.forEach((p, r) => p.style.display = r >= r0 && r < r0 + span ? "" : "none");
+    $("plotMeta").textContent = `${span} of ${ROWS} lines · ${(val("reach") * width / 0.36).toFixed(2)} s window`;
+  }
+
+  function draw() {
+    for (let r = 0; r < ROWS; r++) {
+      const d = row(r);
+      inkPaths[r].setAttribute("d", d);
+      sigPaths[r].setAttribute("d", d);
+    }
+    ink.style.opacity = 0.35 + val("mix") / 100 * 0.65;
+  }
+
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!frozen && motion !== "off") {
+      const speed = val("rate") * 6;
+      t += (motion === "cycle" ? Math.sign(Math.sin(now / 2000)) : 1) * dt * speed;
+      draw();
+      $("dsp").textContent = `DSP ${Math.round(1 + val("flow") / 60)}%`;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  $("plot").addEventListener("pointerdown", (e) => {
+    const b = e.currentTarget.getBoundingClientRect();
+    win = { x: (e.clientX - b.left) / b.width, row: (e.clientY - b.top) / b.height };
+    layout();
+  });
+
+  document.querySelectorAll('input[name="motion"]').forEach((r) => r.addEventListener("change", () => motion = r.value));
+  document.querySelectorAll('input[name="grid"]').forEach((r) => r.addEventListener("change", () => {
+    $("bpm").textContent = r.value === "free" ? "Unsynced" : `96.0 BPM · 1/${r.value}`;
+  }));
+  document.querySelector(".mn-panel").addEventListener("input", () => { layout(); draw(); });
+  document.querySelector(".mn-stepper").addEventListener("mn:preset", (e) => {
+    const presets = [[0.8, 55, 30, 45], [0.4, 20, 60, 30], [1.2, 80, 10, 60], [1.5, 95, 0, 25], [0.6, 65, 45, 80], [0.2, 5, 90, 20]];
+    const p = presets[e.detail.index % presets.length];
+    ["reach", "flow", "blur", "width"].forEach((id, i) => MN.setValue($(id), p[i]));
+    document.querySelector(".mn-stepper__name").removeAttribute("data-dirty");
+  });
+  document.querySelector(".mn-panel").addEventListener("change", () => {
+    document.querySelector(".mn-stepper__name").setAttribute("data-dirty", "");
+  });
+
+  const freeze = $("freeze");
+  freeze.addEventListener("click", () => {
+    frozen = !frozen;
+    freeze.setAttribute("aria-pressed", String(frozen));
+    freeze.classList.toggle("mn-btn--signal", frozen);
+    freeze.innerHTML = frozen ? 'Freeze on <span class="mn-sep">/</span> Pressed lines hold' : "Freeze";
+  });
+
+  $("undo").addEventListener("click", () => MN.toast("Undo", "Nothing to undo yet"));
+
+  layout(); draw();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

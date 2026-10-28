@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+  <style>
+    /* template layout only — chat | run panel */
+    .agent { display: grid; grid-template-columns: minmax(0, 1fr) 300px; height: 100%; min-height: 0; }
+    .run { display: flex; flex-direction: column; gap: var(--mn-space-6); min-height: 0; overflow-y: auto; padding: var(--mn-space-5); border-left: var(--mn-stroke-hair) solid var(--mn-line-strong); }
+    .run .mn-stats { --mn-cols: 2; row-gap: var(--mn-space-4); }
+    .run .mn-stat > .mn-readout { font-size: var(--mn-font-readout-sm); }
+    .new-chat { margin: 0 var(--mn-space-3) var(--mn-space-4); width: calc(100% - var(--mn-space-6)); }
+    @media (max-width: 1200px) { .agent { grid-template-columns: minmax(0, 1fr); } .run { display: none; } }
+  </style>
+</head>
+<body class="mn">
+<div class="mn-shell">
+
+  <nav class="mn-side" aria-label="Conversations">
+    <div class="mn-side__head">
+      <span class="mn-wordmark">Agent</span>
+      <span class="mn-subtitle">Ops copilot <span class="mn-sep">/</span> Asia</span>
+    </div>
+    <div class="mn-side__nav">
+      <button class="mn-btn mn-btn--sm new-chat" type="button" id="newChat">+ New chat</button>
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Today</li>
+        <li><a class="mn-side__item" href="#" aria-current="page"><span class="mn-side__n">14:02</span><span class="mn-side__label">SEA wait spike</span><span class="mn-side__count is-live" id="sideLive">●</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">11:40</span><span class="mn-side__label">Crash rate by device</span></a></li>
+      </ul>
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Yesterday</li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">18:15</span><span class="mn-side__label">Patch 4.13 notes</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">09:02</span><span class="mn-side__label">Ban wave review</span></a></li>
+      </ul>
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Earlier</li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">10/18</span><span class="mn-side__label">Tick rate test plan</span></a></li>
+      </ul>
+    </div>
+    <div class="mn-side__foot">
+      <span class="mn-initials">JL</span>
+      <span class="mn-side__who"><span>J. Lee</span><span>Can deploy · Asia</span></span>
+    </div>
+  </nav>
+
+  <header class="mn-top">
+    <div class="mn-top__start">
+      <button class="mn-btn mn-btn--icon mn-btn--sm mn-shell__toggle" type="button" data-mn-nav-toggle aria-label="Conversations">≡</button>
+      <ol class="mn-crumbs" aria-label="Breadcrumb"><li><a href="#">Agent</a></li><li aria-current="page" id="title">SEA wait spike</li></ol>
+    </div>
+    <div class="mn-top__end">
+      <span class="mn-tag mn-tag--signal-line" id="runTag">Waiting · approval</span>
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+    </div>
+  </header>
+
+  <main class="mn-shell__content" style="overflow: hidden">
+    <div class="agent">
+      <div class="mn-chat">
+        <div class="mn-chat__thread" id="thread">
+          <div class="mn-chat__inner" id="inner">
+
+            <div class="mn-chat__day">Today · 14:02</div>
+
+            <!-- user -->
+            <article class="mn-turn mn-turn--user">
+              <div class="mn-turn__meta"><span class="mn-turn__who">You</span><span>14:02</span></div>
+              <div class="mn-turn__body">
+                <p>SEA queue times jumped in the last 15 minutes. Find out why, and fix the matchmaking rule if it’s safe.</p>
+                <div class="mn-attachments"><span class="mn-attach"><span class="mn-attach__kind">CSV</span><span class="mn-attach__name"><span>wait-p95-sea.csv</span><span>48 KB · 1,440 rows</span></span></span></div>
+              </div>
+            </article>
+
+            <!-- agent -->
+            <article class="mn-turn mn-turn--agent" id="turn1">
+              <div class="mn-turn__meta"><span class="mn-turn__who">Agent</span><span class="js-model">Opus 5.5</span><span>14:02</span></div>
+
+              <details class="mn-reason">
+                <summary class="mn-reason__head">Thought <span class="mn-reason__time">6.1 s</span></summary>
+                <div class="mn-reason__body">The CSV shows SEA p95 wait climbing from ~32 s to 58 s starting around 13:47. Two likely causes: a capacity drop (a shard went down) or a rule change narrowing the match pool. Check logs for shard events first, then compare queue sizes per region, then read the current SEA rule file. If the rule was tightened, widening MMR spread back is low-risk — but deploying touches production, so ask before running it.</div>
+              </details>
+
+              <div class="mn-plan" id="plan">
+                <div class="mn-plan__head"><span>Plan</span><span id="planCount">4 / 5</span></div>
+                <ol class="mn-plan__list">
+                  <li class="mn-plan__item is-done">Search SEA logs since 13:45</li>
+                  <li class="mn-plan__item is-done">Compare queue size and wait by region</li>
+                  <li class="mn-plan__item is-done">Read the SEA matchmaking rule</li>
+                  <li class="mn-plan__item is-done">Widen MMR spread back to 240</li>
+                  <li class="mn-plan__item" aria-current="step" id="planLast">Deploy the rule to SEA (needs approval)</li>
+                </ol>
+              </div>
+
+              <div class="mn-tools" id="tools1">
+                <details class="mn-tool">
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">search_logs</span><span class="mn-tool__arg">region:SEA level:warn since:-15m</span><span class="mn-tool__meta">0.8 s · 3 hits</span></summary>
+                  <div class="mn-tool__body">
+                    <div class="mn-result">
+                      <div class="mn-result__head"><span>3 hits</span><span>logs · sea-mm-01</span></div>
+                      <ul class="mn-hits">
+                        <li class="mn-hit"><span class="mn-hit__where">13:46:58 · matchmaker · WARN</span><span class="mn-hit__text">rule <mark>sea-ranked-squad</mark> reloaded: mmr_spread 240 → <mark>120</mark></span></li>
+                        <li class="mn-hit"><span class="mn-hit__where">13:51:12 · matchmaker · WARN</span><span class="mn-hit__text">queue backlog 1,920 &gt; soft limit 1,500</span></li>
+                        <li class="mn-hit"><span class="mn-hit__where">13:58:40 · matchmaker · WARN</span><span class="mn-hit__text">p95 wait 51 s over target 35 s for 10 min</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="mn-tool is-error">
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">query_db</span><span class="mn-tool__arg">select region, count(*), p95(wait) from queue … group by region</span><span class="mn-tool__meta">Timeout · 10 s</span></summary>
+                  <div class="mn-tool__body">
+                    <div class="mn-result mn-result--error"><div class="mn-result__head"><span>Error</span><span>retried with a 15-min window</span></div><div class="mn-result__body"><pre>QueryTimeout: statement exceeded 10000 ms (scanned 48.2M rows)</pre></div></div>
+                  </div>
+                </details>
+
+                <details class="mn-tool" open>
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">query_db</span><span class="mn-tool__arg">… where ts &gt; now() - interval '15 min' group by region</span><span class="mn-tool__meta">1.4 s · 5 rows</span></summary>
+                  <div class="mn-tool__body">
+                    <div class="mn-result">
+                      <div class="mn-result__head"><span>Result · 5 rows</span><span>queue_events</span></div>
+                      <div class="mn-result__body mn-result__body--flush">
+                        <table class="mn-table mn-table--dense">
+                          <thead><tr><th>Region</th><th class="is-num">In queue</th><th class="is-num">P95 wait</th><th class="is-num">Δ 15 min</th></tr></thead>
+                          <tbody>
+                            <tr><td>KR</td><td class="is-num">4,812</td><td class="is-num">28 s</td><td class="is-num">+1 s</td></tr>
+                            <tr><td>JP</td><td class="is-num">2,190</td><td class="is-num">31 s</td><td class="is-num">0 s</td></tr>
+                            <tr aria-selected="true"><td>SEA</td><td class="is-num">3,604</td><td class="is-num">58 s</td><td class="is-num">+26 s</td></tr>
+                            <tr><td>TW</td><td class="is-num">1,402</td><td class="is-num">34 s</td><td class="is-num">+2 s</td></tr>
+                            <tr class="is-idle"><td>OCE</td><td class="is-num">400</td><td class="is-num">22 s</td><td class="is-num">0 s</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="mn-tool">
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">read_file</span><span class="mn-tool__arg">config/matchmaking/sea-ranked-squad.yaml</span><span class="mn-tool__meta">0.1 s · 24 lines</span></summary>
+                  <div class="mn-tool__body">
+                    <div class="mn-code">
+                      <div class="mn-code__head"><span>yaml · sea-ranked-squad.yaml</span><button class="mn-btn mn-btn--ghost" type="button" data-mn-copy>Copy</button></div>
+<pre><span class="c-key">rule</span>: sea-ranked-squad
+<span class="c-key">max_wait_s</span>: 45
+<span class="c-key">mmr_spread</span>: 120      <span class="c-comment"># changed 13:46 by deploy #8812</span>
+<span class="c-key">party_weight</span>: 0.6
+<span class="c-key">region_blend</span>: 0.3</pre>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="mn-tool" open>
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">edit_file</span><span class="mn-tool__arg">config/matchmaking/sea-ranked-squad.yaml</span><span class="mn-tool__meta">+1 −1</span></summary>
+                  <div class="mn-tool__body">
+                    <div class="mn-result">
+                      <div class="mn-result__head"><span>Diff</span><span class="mn-result__end"><span>1 change</span><button class="mn-btn mn-btn--ghost" type="button" data-mn-copy>Copy</button></span></div>
+                      <div class="mn-result__body mn-result__body--flush">
+                        <div class="mn-diff">
+                          <div class="mn-diff__hunk">@@ -1,5 +1,5 @@</div>
+                          <div class="mn-diff__line"><span class="mn-diff__n">2</span><span class="mn-diff__sign"></span><span class="mn-diff__code">max_wait_s: 45</span></div>
+                          <div class="mn-diff__line mn-diff__line--del"><span class="mn-diff__n">3</span><span class="mn-diff__sign">−</span><span class="mn-diff__code">mmr_spread: 120      # changed 13:46 by deploy #8812</span></div>
+                          <div class="mn-diff__line mn-diff__line--add"><span class="mn-diff__n">3</span><span class="mn-diff__sign">+</span><span class="mn-diff__code">mmr_spread: 240      # restored, see INC-2044</span></div>
+                          <div class="mn-diff__line"><span class="mn-diff__n">4</span><span class="mn-diff__sign"></span><span class="mn-diff__code">party_weight: 0.6</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="mn-tool is-waiting" id="deployTool">
+                  <summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">run_command</span><span class="mn-tool__arg">deploy-rules --region sea --rule sea-ranked-squad</span><span class="mn-tool__meta" id="deployMeta">Waiting · approval</span></summary>
+                  <div class="mn-tool__body" id="deployBody"><span class="mn-tool__label">Not run yet</span></div>
+                </details>
+              </div>
+
+              <div class="mn-turn__body">
+                <p>The spike lines up with a rule change, not capacity: at 13:46 deploy #8812 halved SEA’s MMR spread from 240 to 120<a class="mn-cite" href="#src-1">1</a>. The pool got too narrow, so the backlog grew past its soft limit and p95 wait went from 32 s to 58 s<a class="mn-cite" href="#src-2">2</a>. Other regions are flat.</p>
+                <p>I restored <code>mmr_spread: 240</code> in the rule file. Deploying it changes live matchmaking for SEA, so I need your go-ahead.</p>
+              </div>
+
+              <div class="mn-approve" id="approve">
+                <div class="mn-approve__head"><span>Permission · run_command</span><span>Production · SEA</span></div>
+                <p class="mn-approve__what">Deploy the edited rule to the live SEA matchmaker. Takes effect for the next match; reversible with <code>deploy-rules --rollback</code>.</p>
+                <div class="mn-code"><pre>deploy-rules --region sea --rule sea-ranked-squad</pre></div>
+                <div class="mn-approve__actions">
+                  <button class="mn-btn mn-btn--solid" type="button" data-allow="once">Allow once</button>
+                  <button class="mn-btn" type="button" data-allow="always">Always allow in this chat</button>
+                  <button class="mn-btn mn-btn--ghost" type="button" data-allow="deny">Deny</button>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <div class="mn-chat__dock" style="position: relative">
+          <button class="mn-btn mn-btn--sm mn-chat__jump" type="button" id="jump" hidden>↓ Latest</button>
+          <form class="mn-composer" id="composer" onsubmit="event.preventDefault()">
+            <ul class="mn-menu mn-composer__menu" id="slash" role="listbox" aria-label="Commands" hidden>
+              <li class="mn-menu__label" role="presentation">Commands</li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-logs" data-cmd="/logs" aria-selected="false"><span class="mn-menu__name">/logs</span><span class="mn-menu__desc">Search ops logs</span><span class="mn-menu__meta">Tool</span></li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-db" data-cmd="/db" aria-selected="false"><span class="mn-menu__name">/db</span><span class="mn-menu__desc">Query the analytics DB</span><span class="mn-menu__meta">Tool</span></li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-deploy" data-cmd="/deploy" aria-selected="false"><span class="mn-menu__name">/deploy</span><span class="mn-menu__desc">Deploy a rule — asks first</span><span class="mn-menu__meta">Prod</span></li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-summary" data-cmd="/summarize" aria-selected="false"><span class="mn-menu__name">/summarize</span><span class="mn-menu__desc">Summarise this chat for handover</span><span class="mn-menu__meta"></span></li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-clear" data-cmd="/clear" aria-selected="false"><span class="mn-menu__name">/clear</span><span class="mn-menu__desc">Start a new chat</span><span class="mn-menu__meta"></span></li>
+              <li class="mn-menu__item mn-menu__item--rich" role="option" id="cmd-fail" data-cmd="/fail" aria-selected="false"><span class="mn-menu__name">/fail</span><span class="mn-menu__desc">Show what a failed answer looks like</span><span class="mn-menu__meta">Demo</span></li>
+            </ul>
+            <div class="mn-attachments" id="atts"></div>
+            <label class="mn-sr-only" for="field">Message</label>
+            <textarea class="mn-composer__field" id="field" rows="1" placeholder="Ask, or type / for commands" role="combobox" aria-controls="slash" aria-autocomplete="list" aria-expanded="false"></textarea>
+            <div class="mn-composer__bar">
+              <button class="mn-btn mn-btn--icon mn-btn--sm mn-btn--ghost" type="button" id="attach" aria-label="Attach file" data-mn-tip="Attach">+</button>
+              <div class="mn-dropdown mn-dropdown--up">
+                <button class="mn-model" type="button" data-mn-menu aria-controls="modelMenu"><span class="mn-model__label">Model</span><span id="modelName">Opus 5.5</span></button>
+                <ul class="mn-menu" id="modelMenu" role="menu" style="min-width: 300px">
+                  <li class="mn-menu__label" role="presentation">Model</li>
+                  <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="true" data-value="Opus 5.5" data-ctx="1000"><span class="mn-menu__name">Opus 5.5</span><span class="mn-menu__desc">Most capable. Long investigations.</span><span class="mn-menu__meta">1M</span></button></li>
+                  <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="false" data-value="Sonnet 5.5" data-ctx="1000"><span class="mn-menu__name">Sonnet 5.5</span><span class="mn-menu__desc">Balanced speed and depth.</span><span class="mn-menu__meta">1M</span></button></li>
+                  <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="false" data-value="Haiku 5.5" data-ctx="200"><span class="mn-menu__name">Haiku 5.5</span><span class="mn-menu__desc">Fast lookups and summaries.</span><span class="mn-menu__meta">200K</span></button></li>
+                  <li role="none"><button class="mn-menu__item mn-menu__item--rich" role="menuitemradio" aria-checked="false" data-value="Fable 5.1" data-ctx="1000"><span class="mn-menu__name">Fable 5.1</span><span class="mn-menu__desc">Writing and tone.</span><span class="mn-menu__meta">1M</span></button></li>
+                </ul>
+              </div>
+              <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Effort">
+                <label class="mn-seg__item"><input type="radio" name="effort" value="low"><span class="mn-seg__face">Low</span></label>
+                <label class="mn-seg__item"><input type="radio" name="effort" value="med"><span class="mn-seg__face">Med</span></label>
+                <label class="mn-seg__item"><input type="radio" name="effort" value="high" checked><span class="mn-seg__face">High</span></label>
+              </fieldset>
+              <div class="mn-composer__end">
+                <span class="mn-context" id="ctx"><span>Context</span><span class="mn-meter" style="--mn-value:.08"></span><span id="ctxText">84K / 1M</span></span>
+                <button class="mn-btn mn-btn--solid mn-btn--sm" type="submit" id="send">Send ↵</button>
+              </div>
+            </div>
+          </form>
+          <p class="mn-hint mn-composer__hint">Enter = send <span class="mn-sep">·</span> Shift+Enter = new line <span class="mn-sep">·</span> The agent asks before touching production</p>
+        </div>
+      </div>
+
+      <!-- run panel: the status line, in full -->
+      <aside class="run" aria-label="Run">
+        <section class="mn-section mn-section--bare">
+          <div class="mn-section__head"><h2 class="mn-section__title">Run</h2><span class="mn-section__meta" id="runState">Waiting</span></div>
+          <div class="mn-stats" style="border: 0; padding: 0">
+            <div class="mn-stat"><span class="mn-label">Elapsed</span><p class="mn-readout"><span id="rElapsed">0:42</span></p></div>
+            <div class="mn-stat"><span class="mn-label">Tools</span><p class="mn-readout"><span id="rTools">6</span></p></div>
+            <div class="mn-stat"><span class="mn-label">Tokens</span><p class="mn-readout"><span id="rTokens">18.4</span><span class="mn-readout__unit">K</span></p></div>
+            <div class="mn-stat"><span class="mn-label">Cost</span><p class="mn-readout"><span id="rCost">0.21</span><span class="mn-readout__unit">$</span></p></div>
+          </div>
+        </section>
+        <section class="mn-section">
+          <div class="mn-section__head"><h2 class="mn-section__title">Context</h2><span class="mn-section__meta" id="rCtx">84K / 1M</span></div>
+          <span class="mn-meter" id="rCtxMeter" style="--mn-value:.084"></span>
+          <svg class="mn-spark mn-spark--block" data-values="12,18,21,30,44,52,61,70,84" role="img" aria-label="Context growing over the run"></svg>
+        </section>
+        <section class="mn-section">
+          <div class="mn-section__head"><h2 class="mn-section__title">Touched</h2><span class="mn-section__meta">2 files</span></div>
+          <ul class="mn-list">
+            <li class="mn-list__item" style="min-height: 36px">sea-ranked-squad.yaml<span class="mn-list__meta">Edited</span></li>
+            <li class="mn-list__item" style="min-height: 36px">wait-p95-sea.csv<span class="mn-list__meta">Read</span></li>
+          </ul>
+        </section>
+        <section class="mn-section">
+          <div class="mn-section__head"><h2 class="mn-section__title">Permissions</h2></div>
+          <ul class="mn-list">
+            <li class="mn-list__item" style="min-height: 36px">Read logs · DB · files<span class="mn-list__meta">Always</span></li>
+            <li class="mn-list__item" style="min-height: 36px">Edit files<span class="mn-list__meta">Always</span></li>
+            <li class="mn-list__item" style="min-height: 36px">Deploy<span class="mn-list__meta" id="permDeploy">Ask</span></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<template id="emptyTpl">
+  <div class="mn-chat__empty">
+    <span class="mn-label">Ops copilot <span class="mn-sep">·</span> Asia</span>
+    <h2 class="mn-chat__greeting">What should we look at?</h2>
+    <div class="mn-starters">
+      <button class="mn-starter" type="button" data-prompt="Why did SEA queue times spike in the last 15 minutes?"><span class="mn-starter__title">Investigate</span><span class="mn-starter__desc">Why did SEA queue times spike?</span></button>
+      <button class="mn-starter" type="button" data-prompt="Summarise open incidents for the on-call handover."><span class="mn-starter__title">Handover</span><span class="mn-starter__desc">Summarise open incidents for on-call.</span></button>
+      <button class="mn-starter" type="button" data-prompt="Which devices crash most since patch 4.13?"><span class="mn-starter__title">Crashes</span><span class="mn-starter__desc">Which devices crash most since 4.13?</span></button>
+      <button class="mn-starter" type="button" data-prompt="Draft patch notes for 4.13 from the merged changes."><span class="mn-starter__title">Write</span><span class="mn-starter__desc">Draft patch notes for 4.13.</span></button>
+    </div>
+  </div>
+</template>
+
+<script src="../js/minimal.js" data-manual></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const thread = $("thread"), inner = $("inner");
+  const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const now = () => new Date().toTimeString().slice(0, 5);
+  let model = "Opus 5.5", ctxMax = 1000, ctxUsed = 84, running = false, stopFlag = false;
+  let tools = 6, tokens = 18.4, cost = 0.21, elapsed = 42;
+
+  // ---- run panel + composer state ----------------------------------------
+  function setRun(state) {
+    running = state === "running";
+    $("runState").textContent = state === "running" ? "Running" : state === "waiting" ? "Waiting" : "Done";
+    $("runTag").className = "mn-tag " + (state === "running" ? "mn-tag--signal" : state === "waiting" ? "mn-tag--signal-line" : "mn-tag--muted");
+    $("runTag").textContent = state === "running" ? "Running" : state === "waiting" ? "Waiting · approval" : "Idle";
+    $("sideLive").style.display = state === "done" ? "none" : "";
+    const send = $("send");
+    send.classList.toggle("mn-btn--signal", running);
+    send.classList.toggle("mn-btn--solid", !running);
+    send.innerHTML = running ? '<span class="mn-glyph"></span> Stop' : "Send ↵";
+    send.type = running ? "button" : "submit";
+  }
+  function bump(t = 0.6, c = 0.01, ctx = 3) {
+    tokens += t; cost += c; ctxUsed += ctx;
+    $("rTokens").textContent = tokens.toFixed(1);
+    $("rCost").textContent = cost.toFixed(2);
+    renderCtx();
+  }
+  function renderCtx() {
+    const v = Math.min(1, ctxUsed / ctxMax);
+    const label = `${ctxUsed}K / ${ctxMax >= 1000 ? ctxMax / 1000 + "M" : ctxMax + "K"}`;
+    $("ctxText").textContent = label; $("rCtx").textContent = label;
+    $("ctx").querySelector(".mn-meter").style.setProperty("--mn-value", v.toFixed(3));
+    $("rCtxMeter").style.setProperty("--mn-value", v.toFixed(3));
+    $("ctx").classList.toggle("is-live", v > 0.8); // over budget = signal
+  }
+  setInterval(() => { if (running) { elapsed++; $("rElapsed").textContent = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`; } }, 1000);
+
+  // ---- scrolling ---------------------------------------------------------
+  // stick to the bottom unless the reader scrolled up to read something
+  const atBottom = () => thread.scrollHeight - thread.scrollTop - thread.clientHeight < 80;
+  let stick = true;
+  const follow = () => { if (stick) thread.scrollTop = thread.scrollHeight; };
+  thread.addEventListener("scroll", () => { stick = atBottom(); $("jump").hidden = stick; });
+  $("jump").addEventListener("click", () => { stick = true; thread.scrollTop = thread.scrollHeight; });
+
+  // ---- streaming ---------------------------------------------------------
+  async function stream(el, text, cps = 90) {
+    const caret = document.createElement("span");
+    caret.className = "mn-caret";
+    el.appendChild(caret);
+    for (let i = 0; i < text.length; i += 3) {
+      if (stopFlag) break;
+      caret.before(text.slice(i, i + 3));
+      if (i % 30 === 0) { bump(0.05, 0.001, 0); follow(); }
+      await sleep(3000 / cps);
+    }
+    caret.remove();
+  }
+
+  function addTurn(role, metaExtra = "") {
+    const t = document.createElement("article");
+    t.className = `mn-turn mn-turn--${role}`;
+    t.innerHTML = `<div class="mn-turn__meta"><span class="mn-turn__who">${role === "user" ? "You" : "Agent"}</span>${role === "agent" ? `<span>${esc(model)}</span>` : ""}<span>${now()}</span>${metaExtra}</div>`;
+    inner.appendChild(t);
+    follow();
+    return t;
+  }
+  function turnActions(turn) {
+    const a = document.createElement("div");
+    a.className = "mn-turn__actions";
+    a.innerHTML = '<button class="mn-btn mn-btn--ghost" type="button" data-copy-turn>Copy</button><button class="mn-btn mn-btn--ghost" type="button">Retry</button><button class="mn-btn mn-btn--ghost" type="button" aria-label="Good answer">↑</button><button class="mn-btn mn-btn--ghost" type="button" aria-label="Bad answer">↓</button>';
+    turn.appendChild(a);
+  }
+
+  // ---- approval → deploy → final answer ----------------------------------
+  $("approve").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-allow]"); if (!b) return;
+    const card = $("approve"), tool = $("deployTool");
+    card.classList.add("is-decided");
+    const who = b.dataset.allow;
+    card.querySelector(".mn-approve__head span").textContent =
+      who === "deny" ? `Denied · ${now()} · J. Lee` : `Allowed ${who === "always" ? "for this chat" : "once"} · ${now()} · J. Lee`;
+    if (who === "always") $("permDeploy").textContent = "This chat";
+
+    const turn = $("turn1");
+    if (who === "deny") {
+      tool.classList.replace("is-waiting", "is-denied");
+      $("deployMeta").textContent = "Denied";
+      $("deployBody").innerHTML = '<span class="mn-tool__label">Not run · denied by J. Lee</span>';
+      $("planLast").removeAttribute("aria-current");
+      setRun("running");
+      const body = document.createElement("div"); body.className = "mn-turn__body"; turn.appendChild(body);
+      const p = document.createElement("p"); body.appendChild(p);
+      await stream(p, "Understood — I won’t deploy. The edited rule file is ready in config/matchmaking. To ship it yourself: deploy-rules --region sea --rule sea-ranked-squad. Until then SEA waits will stay near 58 s.");
+      turnActions(turn); setRun("done");
+      return;
+    }
+
+    setRun("running");
+    tool.classList.replace("is-waiting", "is-running");
+    $("deployMeta").textContent = "Running";
+    tool.open = true;
+    $("deployBody").innerHTML = '<span class="mn-meter is-busy" style="--mn-meter-h:4px"></span>';
+    follow();
+    await sleep(1800);
+    tool.classList.remove("is-running");
+    $("deployMeta").textContent = "2.1 s · ok";
+    $("deployBody").innerHTML = `<div class="mn-result"><div class="mn-result__head"><span>Output</span><span>exit 0</span></div><div class="mn-result__body"><pre>validating sea-ranked-squad.yaml … ok
+diff: mmr_spread 120 → 240
+pushing to sea-mm-01, sea-mm-02 … ok
+rule live at 14:06:31 · version 8813</pre></div></div>`;
+    tools++; $("rTools").textContent = tools; bump(1.1, 0.02, 4);
+    $("planLast").classList.add("is-done"); $("planLast").removeAttribute("aria-current");
+    $("planCount").textContent = "5 / 5";
+
+    const body = document.createElement("div"); body.className = "mn-turn__body"; turn.appendChild(body);
+    const h = document.createElement("h3"); h.textContent = "Done"; body.appendChild(h);
+    const p1 = document.createElement("p"); body.appendChild(p1);
+    await stream(p1, "The restored rule is live on both SEA matchmakers (version 8813). New matches use a 240 MMR spread again.");
+    if (stopFlag) return finishStopped(turn);
+    const ul = document.createElement("ul"); body.appendChild(ul);
+    for (const line of ["Expect p95 wait back under 35 s within ~10 minutes as the backlog drains.", "I opened INC-2044 and linked deploy #8812 as the cause.", "If waits stay high, roll back with deploy-rules --rollback."]) {
+      const li = document.createElement("li"); ul.appendChild(li);
+      await stream(li, line, 120);
+      if (stopFlag) return finishStopped(turn);
+    }
+    const src = document.createElement("ol");
+    src.className = "mn-sources";
+    src.innerHTML = `
+      <li><a class="mn-source" id="src-1" href="#"><span class="mn-source__n">1</span><span class="mn-source__title">matchmaker log · rule reloaded 13:46:58</span><span class="mn-source__where">sea-mm-01</span></a></li>
+      <li><a class="mn-source" id="src-2" href="#"><span class="mn-source__n">2</span><span class="mn-source__title">queue_events · p95 by region, last 15 min</span><span class="mn-source__where">analytics db</span></a></li>`;
+    body.appendChild(src);
+    turnActions(turn);
+    setRun("done");
+    follow();
+  });
+
+  function finishStopped(turn) {
+    stopFlag = false;
+    turn.querySelector(".mn-turn__meta").insertAdjacentHTML("beforeend", '<span class="mn-tag mn-tag--muted">Stopped</span>');
+    turnActions(turn); setRun("done");
+  }
+
+  // ---- a new question: live reasoning → tool → answer ----------------------
+  async function ask(text) {
+    if (!text.trim() || running) return;
+    if (text.trim() === "/clear") { $("field").value = ""; return $("newChat").click(); }
+    const empty = inner.querySelector(".mn-chat__empty"); if (empty) empty.remove();
+    const u = addTurn("user");
+    const ub = document.createElement("div"); ub.className = "mn-turn__body";
+    ub.innerHTML = `<p>${esc(text)}</p>`;
+    u.appendChild(ub);
+    const atts = $("atts"); if (atts.children.length) { ub.appendChild(atts.cloneNode(true)); atts.textContent = ""; }
+    $("field").value = ""; $("field").dispatchEvent(new Event("input"));
+    stick = true;
+    return text.trim().startsWith("/fail") ? failRun(text) : agentRun(text);
+  }
+
+  // the whole answer failed (not a single tool): signal note + RETRY
+  async function failRun(text) {
+    setRun("running");
+    const t = addTurn("agent");
+    const working = document.createElement("span"); working.className = "mn-working"; working.textContent = "Working"; t.appendChild(working);
+    await sleep(1200); working.remove();
+    const err = document.createElement("div");
+    err.className = "mn-turn__error";
+    err.innerHTML = `<div class="mn-note mn-note--signal" role="alert"><span class="mn-note__kind">Failed</span><span class="mn-note__body">The model didn’t answer — overloaded (529) after 3 tries. Nothing was changed.</span><button class="mn-btn mn-btn--sm" type="button">Retry</button></div>`;
+    t.appendChild(err);
+    setRun("done"); follow();
+    err.querySelector("button").addEventListener("click", () => { if (running) return; t.remove(); agentRun(text.replace(/^\/fail\s*/, "") || "Try again"); });
+  }
+
+  async function agentRun(text) {
+    setRun("running");
+    stick = true;
+
+    const t = addTurn("agent");
+    const working = document.createElement("span"); working.className = "mn-working"; working.textContent = "Working"; t.appendChild(working);
+    await sleep(600); working.remove();
+
+    // reasoning, collapsed, streaming its last lines as a snippet
+    const r = document.createElement("details");
+    r.className = "mn-reason is-live";
+    r.innerHTML = `<summary class="mn-reason__head">Thinking <span class="mn-reason__time">0.0 s</span></summary><div class="mn-reason__body"></div>`;
+    const snipBox = document.createElement("div");
+    snipBox.className = "mn-reason__snippet";
+    snipBox.innerHTML = "<span></span>";
+    t.append(r, snipBox);
+    const thought = "The question is about recent behaviour, so start from the last hour of data. I should check whether anything changed (deploys, rule reloads) before blaming load. Search the ops docs and recent deploy log, then answer with the cause, the evidence and the next step.";
+    const snip = snipBox.firstChild, full = r.querySelector(".mn-reason__body");
+    const t0 = performance.now();
+    for (let i = 0; i < thought.length; i += 4) {
+      if (stopFlag) break;
+      snip.textContent += thought.slice(i, i + 4); full.textContent = snip.textContent;
+      r.querySelector(".mn-reason__time").textContent = ((performance.now() - t0) / 1000).toFixed(1) + " s";
+      follow(); await sleep(28);
+    }
+    r.classList.remove("is-live");
+    r.querySelector(".mn-reason__head").firstChild.textContent = "Thought ";
+    snipBox.remove();
+    if (stopFlag) return finishStopped(t);
+    bump(0.9, 0.01, 2);
+
+    // a tool call
+    const tw = document.createElement("div"); tw.className = "mn-tools"; t.appendChild(tw);
+    tw.innerHTML = `<details class="mn-tool is-running"><summary class="mn-tool__head"><span class="mn-tool__status"></span><span class="mn-tool__name">search_docs</span><span class="mn-tool__arg">${esc(text.slice(0, 60))}</span><span class="mn-tool__meta">Running</span></summary><div class="mn-tool__body"><span class="mn-meter is-busy" style="--mn-meter-h:4px"></span></div></details>`;
+    follow(); await sleep(1300);
+    const tool = tw.firstElementChild;
+    tool.classList.remove("is-running");
+    tool.querySelector(".mn-tool__meta").textContent = "1.3 s · 2 hits";
+    tool.querySelector(".mn-tool__body").innerHTML = `<div class="mn-result"><div class="mn-result__head"><span>2 hits</span><span>ops wiki</span></div><ul class="mn-hits">
+      <li class="mn-hit"><a class="mn-hit__title" href="#">Runbook · matchmaking rules</a><span class="mn-hit__where">wiki/ops/matchmaking</span><span class="mn-hit__text">Changing <mark>mmr_spread</mark> below 200 shrinks the pool sharply in low-population regions.</span></li>
+      <li class="mn-hit"><a class="mn-hit__title" href="#">Deploy log · last 24 h</a><span class="mn-hit__where">deploys/sea</span><span class="mn-hit__text">#8812 · 13:46 · sea-ranked-squad · <mark>mmr_spread 240 → 120</mark></span></li></ul></div>`;
+    tools++; $("rTools").textContent = tools; bump(0.7, 0.01, 3);
+    if (stopFlag) return finishStopped(t);
+
+    const b = document.createElement("div"); b.className = "mn-turn__body"; t.appendChild(b);
+    const p = document.createElement("p"); b.appendChild(p);
+    await stream(p, `Short answer: the same root cause — deploy #8812 narrowed SEA's MMR spread to 120 at 13:46, and the runbook warns that anything below 200 starves low-population regions. It's been restored to 240 (version 8813), so waits should keep falling. I'd add a guard so rule deploys under 200 need a second approver.`);
+    if (stopFlag) return finishStopped(t);
+    const code = document.createElement("div");
+    code.className = "mn-code";
+    code.innerHTML = `<div class="mn-code__head"><span>yaml · guard proposal</span><button class="mn-btn mn-btn--ghost" type="button" data-mn-copy>Copy</button></div><pre><span class="c-key">guards</span>:
+  - <span class="c-key">field</span>: mmr_spread
+    <span class="c-key">below</span>: 200
+    <span class="c-key">require</span>: second_approver   <span class="c-comment"># ops-lead</span></pre>`;
+    b.appendChild(code);
+    turnActions(t); setRun("done"); follow();
+  }
+
+  // ---- "/" commands ---------------------------------------------------------
+  const field = $("field"), slash = $("slash");
+  const options = () => [...slash.querySelectorAll('[role="option"]')].filter((o) => !o.hidden);
+  const showSlash = (open) => {
+    slash.hidden = !open;
+    field.setAttribute("aria-expanded", String(open));
+    if (!open) field.removeAttribute("aria-activedescendant");
+  };
+  const mark = (o) => {
+    options().forEach((x) => x.setAttribute("aria-selected", String(x === o)));
+    if (o) field.setAttribute("aria-activedescendant", o.id);
+  };
+  const pick = (o) => {
+    showSlash(false);
+    if (o.dataset.cmd === "/clear" || o.dataset.cmd === "/fail") return ask(o.dataset.cmd);
+    field.value = o.dataset.cmd + " ";
+    field.focus();
+  };
+  field.addEventListener("input", () => {
+    const v = field.value;
+    if (!/^\/\S*$/.test(v)) return showSlash(false);
+    slash.querySelectorAll('[role="option"]').forEach((o) => (o.hidden = !o.dataset.cmd.startsWith(v)));
+    const list = options();
+    showSlash(list.length > 0);
+    mark(list[0]);
+  });
+  // registered before minimal.js binds Enter-to-send, so an open menu gets Enter first
+  field.addEventListener("keydown", (e) => {
+    if (slash.hidden) return;
+    const list = options(), i = list.findIndex((o) => o.getAttribute("aria-selected") === "true");
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      mark(list[(i + (e.key === "ArrowDown" ? 1 : -1) + list.length) % list.length]);
+    } else if (e.key === "Enter" || e.key === "Tab") {
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (list[i]) pick(list[i]);
+    } else if (e.key === "Escape") {
+      showSlash(false);
+    }
+  });
+  slash.addEventListener("mousedown", (e) => { const o = e.target.closest('[role="option"]'); if (o) { e.preventDefault(); pick(o); } });
+  field.addEventListener("blur", () => setTimeout(() => showSlash(false), 100));
+
+  // ---- composer ------------------------------------------------------------
+  const composer = $("composer");
+  composer.addEventListener("mn:send", (e) => ask(e.detail.text));
+  $("send").addEventListener("click", () => { if (running) { stopFlag = true; } else ask($("field").value); });
+  $("modelMenu").closest(".mn-dropdown").addEventListener("mn:select", (e) => {
+    model = e.detail.value; $("modelName").textContent = model;
+    ctxMax = Number(e.detail.item.dataset.ctx); renderCtx();
+    document.querySelectorAll(".js-model").forEach((m) => (m.textContent = model));
+    MN.toast("Model", `${model} for the next message`);
+  });
+  $("attach").addEventListener("click", () => {
+    $("atts").innerHTML = `<span class="mn-attach is-uploading"><span class="mn-attach__kind">LOG</span><span class="mn-attach__name"><span>sea-mm-01.log</span><span>Uploading · 62%</span></span><button class="mn-attach__remove" type="button" aria-label="Remove">×</button></span>`;
+    setTimeout(() => { const a = $("atts").querySelector(".mn-attach"); if (!a) return; a.classList.remove("is-uploading"); a.querySelector(".mn-attach__name > :last-child").textContent = "212 KB"; }, 900);
+  });
+  $("atts").addEventListener("click", (e) => { if (e.target.closest(".mn-attach__remove")) e.target.closest(".mn-attach").remove(); });
+  document.addEventListener("click", (e) => {
+    const s = e.target.closest("[data-prompt]");
+    if (s) { $("field").value = s.dataset.prompt; ask(s.dataset.prompt); }
+  });
+
+  // new chat → empty state with starters
+  $("newChat").addEventListener("click", () => {
+    if (running) return;
+    inner.textContent = "";
+    inner.appendChild($("emptyTpl").content.cloneNode(true));
+    $("title").textContent = "New chat";
+    tools = 0; tokens = 0; cost = 0; elapsed = 0; ctxUsed = 2;
+    ["rTools", "rTokens", "rCost"].forEach((id) => ($(id).textContent = "0"));
+    $("rElapsed").textContent = "0:00"; renderCtx(); setRun("done");
+    document.querySelectorAll(".mn-side__item").forEach((i) => i.removeAttribute("aria-current"));
+  });
+
+  MN.init();
+  renderCtx();
+  setRun("waiting");
+  $("send").classList.add("mn-btn--solid");
+  requestAnimationFrame(() => (thread.scrollTop = thread.scrollHeight));
+})();
+</script>
+</body>
+</html>

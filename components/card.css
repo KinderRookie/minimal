@@ -1,0 +1,153 @@
+/**
+ * MINIMAL — card: a block of content cut off by a rule, not a floating box.
+ *
+ *   .mn-card            top rule · head (title, meta, actions) · body · foot   (default — on paper)
+ *   .mn-card--framed    hairline box all round (tiles in a grid, things you pick)
+ *   .mn-card--link      the whole card is one link/button: hover = bg-hover, focus = ring
+ *   .mn-card__media     a figure/thumbnail framed in hairline, never a bleed photo
+ *   .mn-cards           auto-fill grid of cards
+ * No shadow, no gray card background, no rounded corners (soft dialect aside).
+ * Selection of a card = inversion of its head, or aria-selected → strong frame.
+ */
+
+.mn-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--mn-card-min, 240px), 1fr));
+  gap: var(--mn-space-6);
+}
+
+.mn-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mn-space-3);
+  min-width: 0;
+  padding-top: var(--mn-space-3);
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-panel);
+  color: var(--mn-ink-primary);
+  text-decoration: none;
+}
+.mn-card--framed {
+  padding: var(--mn-space-4);
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+  background: var(--mn-bg-panel);
+}
+.mn-card--framed.mn-card--strong,
+.mn-card[aria-selected="true"],
+.mn-card[aria-current="true"] {
+  border-color: var(--mn-line-strong);
+}
+.mn-card--framed[aria-selected="true"] {
+  outline: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  outline-offset: -2px;
+}
+
+.mn-card--link {
+  cursor: pointer;
+}
+.mn-card--link:hover {
+  background: var(--mn-bg-hover);
+}
+/* stretch the first link inside to cover the card, so the whole card is one target */
+.mn-card--link .mn-card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.mn-card--link .mn-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+.mn-card--link:focus-within {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 2px;
+}
+.mn-card--link :focus-visible {
+  outline: none;
+}
+
+.mn-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--mn-space-3);
+  min-width: 0;
+}
+.mn-card__eyebrow {
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-card__title {
+  margin: 0;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-lg);
+  font-weight: var(--mn-font-weight-medium);
+  line-height: var(--mn-font-leading-tight);
+  min-width: 0;
+}
+.mn-card__meta {
+  flex: none;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.mn-card__body {
+  margin: 0;
+  font-size: var(--mn-font-size-sm);
+  line-height: var(--mn-font-leading-normal);
+  color: var(--mn-ink-secondary);
+  min-width: 0;
+}
+.mn-card__body--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--mn-lines, 2);
+  overflow: hidden;
+}
+.mn-card__media {
+  position: relative;
+  aspect-ratio: var(--mn-media-ratio, 16 / 9);
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+  background: var(--mn-bg-sunken);
+  overflow: hidden;
+}
+.mn-card__media > img,
+.mn-card__media > svg,
+.mn-card__media > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mn-card__media > .mn-tag {
+  position: absolute;
+  top: var(--mn-space-2);
+  left: var(--mn-space-2);
+}
+.mn-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-2) var(--mn-space-4);
+  margin-top: auto;
+  padding-top: var(--mn-space-2);
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-card__foot > .mn-spacer {
+  flex: 1 1 auto;
+}

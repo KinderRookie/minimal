@@ -1,0 +1,305 @@
+/**
+ * MINIMAL — choices.
+ *
+ *   .mn-seg      boxed options in a row: FREE | 1/16 | 1/8 | 1/4   (spaced, or --joined: A|B, EN|日本語)
+ *   .mn-words    unboxed words: TOUCH GROW STIR / CORE OCTAVE FINE — selected word becomes an ink chip
+ *   .mn-check    square checkbox (■ / □)
+ *   .mn-switch   ON / OFF chip
+ *
+ * All of them accept either native inputs (<input type=radio|checkbox> + face span)
+ * or buttons with aria-pressed / aria-selected / aria-checked. State styles are identical.
+ */
+
+/* ---- segmented ----------------------------------------------------------- */
+.mn-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--mn-space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.mn-seg--fit {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+}
+.mn-seg--joined {
+  gap: 0;
+}
+.mn-seg--joined > * + * {
+  margin-left: calc(var(--mn-stroke-hair) * -1);
+}
+
+.mn-seg__item {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+.mn-seg__item > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.mn-seg__face {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mn-space-2);
+  height: var(--mn-size-control-md);
+  min-width: var(--mn-size-control-md);
+  padding: 0 var(--mn-space-3);
+  margin: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-control);
+  font-size: var(--mn-font-size-sm);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-control-tracking);
+  text-transform: var(--mn-font-control-case);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: none; /* the input on top takes the click */
+}
+button.mn-seg__face {
+  pointer-events: auto;
+}
+.mn-seg--sm .mn-seg__face {
+  height: var(--mn-size-control-sm);
+  min-width: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-2);
+  font-size: var(--mn-font-size-2xs);
+}
+
+.mn-seg__item:hover > .mn-seg__face,
+button.mn-seg__face:hover {
+  background: var(--mn-bg-hover);
+}
+.mn-seg__item > input:checked + .mn-seg__face,
+.mn-seg__face[aria-pressed="true"],
+.mn-seg__face[aria-selected="true"],
+.mn-seg__face[aria-checked="true"] {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  position: relative;
+  z-index: 1;
+}
+.mn-seg__item > input:focus-visible + .mn-seg__face {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 2px;
+  z-index: 2;
+}
+.mn-seg__item > input:disabled + .mn-seg__face,
+.mn-seg__face:disabled {
+  border-color: var(--mn-ink-disabled);
+  color: var(--mn-ink-disabled);
+  background: var(--mn-bg-canvas);
+  cursor: not-allowed;
+}
+
+/* ---- words --------------------------------------------------------------- */
+.mn-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mn-space-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  min-width: 0;
+}
+.mn-words--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--mn-space-2);
+  row-gap: var(--mn-space-1);
+}
+
+.mn-word {
+  position: relative;
+  display: inline-flex;
+}
+.mn-word > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.mn-word__face {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  padding: 3px var(--mn-space-2);
+  margin: 0;
+  border: var(--mn-stroke-hair) solid transparent;
+  border-radius: var(--mn-radius-control);
+  background: transparent;
+  color: var(--mn-ink-secondary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: none;
+}
+button.mn-word__face,
+a.mn-word__face {
+  pointer-events: auto;
+  text-decoration: none;
+}
+.mn-words--ink .mn-word__face {
+  color: var(--mn-ink-primary);
+}
+.mn-words--lg .mn-word__face {
+  font-size: var(--mn-font-size-md);
+}
+.mn-word:hover > .mn-word__face,
+button.mn-word__face:hover {
+  color: var(--mn-ink-primary);
+}
+
+/* selected → ink chip */
+.mn-word > input:checked + .mn-word__face,
+.mn-word__face[aria-selected="true"],
+.mn-word__face[aria-pressed="true"],
+.mn-word__face[aria-checked="true"],
+.mn-word__face[aria-current="page"] {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+/* second selection (B of an A→B blend, or a pinned alternative) → outline */
+.mn-word__face.is-alt {
+  border-color: var(--mn-line-strong);
+  color: var(--mn-ink-primary);
+}
+/* playing / modulated → signal underline; width = --mn-amount (0–1) */
+.mn-word__face.is-live::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--mn-stroke-mark) * -1 - 1px);
+  width: calc(var(--mn-amount, 1) * 100%);
+  height: var(--mn-stroke-mark);
+  background: var(--mn-signal-mark);
+}
+.mn-word > input:focus-visible + .mn-word__face {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 2px;
+}
+.mn-word > input:disabled + .mn-word__face,
+.mn-word__face:disabled {
+  color: var(--mn-ink-disabled);
+  cursor: not-allowed;
+}
+
+/* ---- checkbox ------------------------------------------------------------ */
+.mn-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-2);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-primary);
+  cursor: pointer;
+  user-select: none;
+}
+.mn-check > input {
+  appearance: none;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 2px;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: 0;
+  background: transparent;
+  background-clip: content-box;
+  cursor: pointer;
+}
+.mn-check > input:checked {
+  background-color: var(--mn-ink-primary);
+}
+.mn-check > input:indeterminate {
+  background: linear-gradient(var(--mn-ink-primary), var(--mn-ink-primary)) center / 6px 1.5px no-repeat;
+}
+.mn-check > input:disabled {
+  border-color: var(--mn-ink-disabled);
+}
+.mn-check:has(> input:disabled) {
+  color: var(--mn-ink-disabled);
+  cursor: not-allowed;
+}
+
+/* ---- switch: ON / OFF chip ---------------------------------------------- */
+.mn-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-3);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+.mn-switch > input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+.mn-switch__face {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-2);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  color: var(--mn-ink-primary);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-label);
+}
+.mn-switch__face::before {
+  content: attr(data-off);
+}
+.mn-switch > input:checked + .mn-switch__face {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-switch > input:checked + .mn-switch__face::before {
+  content: attr(data-on);
+}
+.mn-switch > input:focus-visible + .mn-switch__face {
+  outline: var(--mn-stroke-rule) solid var(--mn-focus-ring);
+  outline-offset: 2px;
+}
+.mn-switch:has(> input:disabled) {
+  color: var(--mn-ink-disabled);
+  cursor: not-allowed;
+}
+.mn-switch > input:disabled + .mn-switch__face {
+  border-color: var(--mn-ink-disabled);
+  color: var(--mn-ink-disabled);
+}

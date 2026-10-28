@@ -1,0 +1,353 @@
+/**
+ * MINIMAL — list management: find, filter, select, act.
+ *
+ *   .mn-toolbar     [SEARCH……] [STATUS · ACTIVE ×] [OWNER ▾] ……… [COLUMNS] [EXPORT]
+ *   .mn-chip        filter chip: outline = off, inversion = on, × to clear, count superscript
+ *   .mn-bulkbar     ■ 3 SELECTED  [PAUSE] [REMOVE] ……… [CLEAR]   (inverse strip, appears on selection)
+ *   .mn-table-foot  1–20 OF 128   [20 / PAGE ▾]  < 01 02 03 >
+ *   .mn-index       the master list of a master-detail screen: title · sub · meta per row
+ *   .mn-dropdown    a button + .mn-menu that opens under it (minimal.js: [data-mn-menu])
+ */
+
+/* ---- toolbar ------------------------------------------------------------- */
+.mn-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-2);
+  min-width: 0;
+}
+.mn-toolbar__search {
+  position: relative;
+  flex: 0 1 280px;
+  min-width: 160px;
+}
+.mn-toolbar__search > .mn-input {
+  padding-left: calc(var(--mn-space-3) + 1.4em);
+}
+.mn-toolbar__search::before {
+  content: "⌕";
+  position: absolute;
+  left: var(--mn-space-3);
+  top: 50%;
+  transform: translateY(-52%);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-md);
+  color: var(--mn-ink-tertiary);
+  pointer-events: none;
+}
+.mn-toolbar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-1);
+  min-width: 0;
+}
+.mn-toolbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-2);
+  margin-left: auto;
+}
+
+/* ---- chip ---------------------------------------------------------------- */
+.mn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-1);
+  height: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-2);
+  margin: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-secondary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mn-chip:hover {
+  border-color: var(--mn-line-strong);
+  color: var(--mn-ink-primary);
+}
+.mn-chip[aria-pressed="true"],
+.mn-chip.is-on {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+/* the value part of "STATUS · ACTIVE" */
+.mn-chip__value {
+  color: var(--mn-ink-primary);
+}
+.mn-chip[aria-pressed="true"] .mn-chip__value,
+.mn-chip.is-on .mn-chip__value {
+  color: inherit;
+}
+.mn-chip__clear {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  margin: 0 -2px 0 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.mn-chip__clear:hover {
+  outline: var(--mn-stroke-hair) solid currentColor;
+}
+.mn-chip--add {
+  border-style: dashed;
+}
+
+/* ---- bulk bar ------------------------------------------------------------ */
+.mn-bulkbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-2) var(--mn-space-3);
+  min-height: var(--mn-size-control-lg);
+  padding: var(--mn-space-1) var(--mn-space-3);
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+}
+.mn-bulkbar[hidden] {
+  display: none;
+}
+.mn-bulkbar__count {
+  font-weight: var(--mn-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  margin-right: var(--mn-space-2);
+}
+.mn-bulkbar__end {
+  margin-left: auto;
+  display: flex;
+  gap: var(--mn-space-2);
+}
+/* buttons inside the inverse strip are drawn in the strip's ink */
+.mn-bulkbar .mn-btn {
+  height: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-3);
+  font-size: var(--mn-font-size-2xs);
+  background: transparent;
+  border-color: var(--mn-inverse-ink);
+  color: var(--mn-inverse-ink);
+}
+.mn-bulkbar .mn-btn:hover {
+  background: var(--mn-inverse-ink);
+  color: var(--mn-inverse-bg);
+}
+.mn-bulkbar .mn-btn--ghost {
+  border-color: transparent;
+}
+.mn-bulkbar .mn-btn--signal-line {
+  border-color: var(--mn-signal-mark);
+}
+
+/* ---- table footer -------------------------------------------------------- */
+.mn-table-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mn-space-3) var(--mn-space-5);
+  padding-top: var(--mn-space-3);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-table-foot__end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-4);
+}
+.mn-table-foot .mn-select {
+  height: var(--mn-size-control-sm);
+  font-size: var(--mn-font-size-2xs);
+  width: auto;
+}
+
+/* ---- index (master list) ------------------------------------------------- */
+.mn-index {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mn-index__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title meta"
+    "sub   meta";
+  column-gap: var(--mn-space-3);
+  row-gap: 2px;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: var(--mn-space-3) var(--mn-space-4);
+  border: 0;
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+  background: transparent;
+  color: var(--mn-ink-primary);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mn-index__item:hover {
+  background: var(--mn-bg-hover);
+}
+.mn-index__item[aria-selected="true"],
+.mn-index__item[aria-current="true"],
+.mn-index__item[aria-current="page"] {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-index__item:focus-visible {
+  outline-offset: -3px;
+}
+.mn-index__title {
+  grid-area: title;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+}
+.mn-index__sub {
+  grid-area: sub;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--mn-font-size-sm);
+  color: var(--mn-ink-tertiary);
+}
+.mn-index__meta {
+  grid-area: meta;
+  display: grid;
+  justify-items: end;
+  gap: var(--mn-space-1);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-index__item[aria-selected="true"] .mn-index__sub,
+.mn-index__item[aria-selected="true"] .mn-index__meta,
+.mn-index__item[aria-current] .mn-index__sub,
+.mn-index__item[aria-current] .mn-index__meta {
+  color: inherit;
+  opacity: 0.7;
+}
+/* a solid tag would vanish into the inverted row — outline it in the row's ink */
+.mn-index__item[aria-selected="true"] .mn-tag--solid,
+.mn-index__item[aria-current] .mn-tag--solid {
+  border-color: var(--mn-inverse-ink);
+}
+.mn-index__item.is-unread .mn-index__title::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--mn-space-2);
+  vertical-align: middle;
+  background: var(--mn-signal-mark);
+}
+
+/* ---- dropdown ------------------------------------------------------------ */
+.mn-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+.mn-dropdown > .mn-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 4px);
+  left: 0;
+}
+.mn-dropdown--end > .mn-menu {
+  left: auto;
+  right: 0;
+}
+.mn-dropdown--up > .mn-menu {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+.mn-dropdown > .mn-menu[hidden] {
+  display: none;
+}
+/* menu rows with two lines (model picker) */
+.mn-menu__item--rich {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name meta"
+    "desc meta";
+  row-gap: 2px;
+  min-height: 44px;
+  padding: var(--mn-space-2) var(--mn-space-3);
+  white-space: normal;
+}
+.mn-menu__item--rich .mn-menu__name {
+  grid-area: name;
+}
+.mn-menu__item--rich .mn-menu__desc {
+  grid-area: desc;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--mn-ink-tertiary);
+}
+.mn-menu__item--rich .mn-menu__meta {
+  grid-area: meta;
+  align-self: start;
+}
+.mn-menu__item--rich:hover .mn-menu__desc,
+.mn-menu__item--rich:focus-visible .mn-menu__desc,
+.mn-menu__item--rich[aria-checked="true"] .mn-menu__desc {
+  color: inherit;
+  opacity: 0.7;
+}
+.mn-menu__item[aria-checked="true"] .mn-menu__meta {
+  color: inherit;
+}
+/* [hidden] must win over the display set on (rich) items, e.g. filtered command lists */
+.mn-menu [hidden] {
+  display: none;
+}
+.mn-menu__item--danger {
+  color: var(--mn-signal-text);
+}
+.mn-menu__label {
+  padding: var(--mn-space-2) var(--mn-space-3) var(--mn-space-1);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}

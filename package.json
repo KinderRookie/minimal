@@ -1,0 +1,44 @@
+{
+  "name": "minimal-design",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MINIMAL — an instrument-panel design grammar: hairline ink on paper, one signal color, big numerals, ruler controls. Tokens, token-only CSS components, behaviors, specimen and mockups.",
+  "type": "module",
+  "files": [
+    "dist",
+    "tokens",
+    "components",
+    "js",
+    "charts",
+    "scripts",
+    "skills",
+    "templates",
+    "DESIGN.md",
+    "COMPONENTS.md",
+    "CHARTS.md"
+  ],
+  "exports": {
+    "./minimal.css": "./dist/minimal.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./components.css": "./dist/components.css",
+    "./minimal.js": "./js/minimal.js",
+    "./tokens": "./dist/tokens.js",
+    "./design.md": "./DESIGN.md",
+    "./charts/theme.js": "./charts/theme.js",
+    "./charts/echarts.js": "./charts/echarts.js",
+    "./charts/recharts.js": "./charts/recharts.js",
+    "./charts.md": "./CHARTS.md",
+    "./components.md": "./COMPONENTS.md"
+  },
+  "scripts": {
+    "build": "node scripts/build-tokens.mjs && node scripts/build-components.mjs && node scripts/check-contrast.mjs",
+    "build:tokens": "node scripts/build-tokens.mjs",
+    "build:components": "node scripts/build-components.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "serve": "python3 -m http.server 4173",
+    "check:usage": "node scripts/check-usage.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

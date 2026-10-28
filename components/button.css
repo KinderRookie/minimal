@@ -1,0 +1,226 @@
+/**
+ * MINIMAL — buttons and the preset stepper.
+ *
+ * Grammar: a button is a hairline box with a mono uppercase word.
+ *   default            outline — an available action
+ *   pressed / --solid  ink-filled — "this is on" / the primary action
+ *   --signal           signal-filled — an engaged *mode* that changes behavior (FREEZE ON)
+ *   --signal-line      signal outline — a destructive or exceptional action (REMOVE)
+ *   --ghost            no box — a word you can click (tabs, inline actions)
+ *   disabled           everything goes disabled-gray, outline stays
+ * Selection is inversion, never a tint.
+ */
+
+.mn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mn-space-2);
+  height: var(--mn-size-control-md);
+  min-width: var(--mn-size-control-md);
+  padding: 0 var(--mn-space-4);
+  margin: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-control);
+  font-size: var(--mn-font-size-sm);
+  font-weight: var(--mn-font-weight-medium);
+  line-height: 1;
+  letter-spacing: var(--mn-font-control-tracking);
+  text-transform: var(--mn-font-control-case);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--mn-motion-duration-quick) linear,
+    color var(--mn-motion-duration-quick) linear;
+}
+.mn-btn:hover {
+  background: var(--mn-bg-hover);
+}
+.mn-btn:active,
+.mn-btn[aria-pressed="true"],
+.mn-btn[aria-expanded="true"],
+.mn-btn.is-on,
+.mn-btn--solid {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-btn--solid:hover {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+
+/* .mn-btn.mn-btn--signal: must outrank [aria-pressed] — an engaged mode is both pressed and signal */
+.mn-btn.mn-btn--signal,
+.mn-btn.mn-btn--signal:hover,
+.mn-btn.mn-btn--signal:active {
+  background: var(--mn-signal-fill);
+  border-color: var(--mn-signal-fill);
+  color: var(--mn-signal-on);
+}
+
+.mn-btn--signal-line {
+  border-color: var(--mn-signal-mark);
+  color: var(--mn-signal-text);
+}
+.mn-btn--signal-line:hover {
+  /* not the wash: small signal text on a signal wash drops below 4.5:1 on warm paper */
+  background: var(--mn-bg-hover);
+}
+.mn-btn--signal-line:active {
+  background: var(--mn-signal-fill);
+  border-color: var(--mn-signal-fill);
+  color: var(--mn-signal-on);
+}
+
+.mn-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mn-ink-secondary);
+}
+.mn-btn--ghost:hover {
+  background: transparent;
+  color: var(--mn-ink-primary);
+}
+
+/* separators inside a label follow the label (they'd vanish on a filled button) */
+.mn-btn .mn-sep {
+  color: inherit;
+  opacity: 0.55;
+}
+
+/* [ MORE ] */
+.mn-btn--bracket::before {
+  content: "[";
+  margin-right: 0.4em;
+}
+.mn-btn--bracket::after {
+  content: "]";
+  margin-left: 0.4em;
+}
+
+/* Square: < > … + − */
+.mn-btn--icon {
+  padding: 0;
+  width: var(--mn-size-control-md);
+}
+
+.mn-btn--sm {
+  height: var(--mn-size-control-sm);
+  min-width: var(--mn-size-control-sm);
+  padding: 0 var(--mn-space-2);
+  font-size: var(--mn-font-size-2xs);
+}
+.mn-btn--sm.mn-btn--icon {
+  width: var(--mn-size-control-sm);
+  padding: 0;
+}
+.mn-btn--lg {
+  height: var(--mn-size-control-lg);
+  min-width: var(--mn-size-control-lg);
+  padding: 0 var(--mn-space-6);
+}
+.mn-btn--lg.mn-btn--icon {
+  width: var(--mn-size-control-lg);
+  padding: 0;
+}
+.mn-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.mn-btn:disabled,
+.mn-btn[aria-disabled="true"] {
+  background: var(--mn-bg-canvas);
+  border-color: var(--mn-ink-disabled);
+  color: var(--mn-ink-disabled);
+  cursor: not-allowed;
+}
+
+/* Small glyphs used inside buttons: ■ LOOPING  □ STOP  ● REC */
+.mn-glyph {
+  display: inline-block;
+  flex: none;
+  width: 0.7em;
+  height: 0.7em;
+  background: currentColor;
+}
+.mn-glyph--open {
+  background: transparent;
+  border: var(--mn-stroke-hair) solid currentColor;
+}
+.mn-glyph--dot {
+  border-radius: 50%;
+}
+.mn-glyph--signal {
+  background: var(--mn-signal-mark);
+}
+
+/* A row of buttons that share a baseline */
+.mn-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mn-space-2);
+}
+
+/* ---- preset stepper: [<] [   NIGHT CROSSING *   ] [>] ------------------- */
+.mn-stepper {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "meta meta meta"
+    "prev name next";
+  column-gap: var(--mn-space-2);
+  row-gap: var(--mn-space-1);
+  width: min(100%, var(--mn-stepper-width, 420px));
+}
+.mn-stepper__meta {
+  grid-area: meta;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.mn-stepper > .mn-btn:first-of-type {
+  grid-area: prev;
+}
+.mn-stepper > .mn-btn:last-of-type {
+  grid-area: next;
+}
+.mn-stepper .mn-btn {
+  height: var(--mn-size-control-lg);
+  width: var(--mn-size-control-lg);
+  padding: 0;
+}
+.mn-stepper__name {
+  grid-area: name;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--mn-size-control-lg);
+  min-width: 0;
+  padding: 0 var(--mn-space-4);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* edited since load: NAME * */
+.mn-stepper__name[data-dirty]::after {
+  content: "*";
+  margin-left: 0.6em;
+}

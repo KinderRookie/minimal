@@ -1,0 +1,345 @@
+/**
+ * MINIMAL — tags, notes, toasts, tooltips, dialogs, sheets, menus, meters.
+ *
+ * Status rule: there is no green/amber/red palette. Status is a WORD
+ * (OK · WAIT · WARN · ERROR · OFF) in a chip, plus at most the one signal color
+ * for "needs your attention now". Everything else stays ink.
+ */
+
+/* ---- tag ----------------------------------------------------------------- */
+.mn-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mn-space-1);
+  height: 20px;
+  padding: 0 var(--mn-space-2);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-control);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.mn-tag--solid {
+  background: var(--mn-inverse-bg);
+  border-color: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+}
+.mn-tag--muted {
+  border-color: var(--mn-line-default);
+  color: var(--mn-ink-secondary);
+}
+.mn-tag--signal {
+  background: var(--mn-signal-fill);
+  border-color: var(--mn-signal-fill);
+  color: var(--mn-signal-on);
+}
+.mn-tag--signal-line {
+  border-color: var(--mn-signal-mark);
+  color: var(--mn-signal-text);
+}
+/* tinted label chip — a modified row/track name (mosaic "01  5 HITS → WOOD CLICK") */
+.mn-tag--wash {
+  border-color: transparent;
+  background: var(--mn-signal-wash);
+  color: var(--mn-ink-primary);
+}
+
+/* ---- note (inline alert) ------------------------------------------------- */
+.mn-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--mn-space-3);
+  padding: var(--mn-space-2) var(--mn-space-3);
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-panel);
+  background: var(--mn-bg-canvas);
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: 0.02em;
+}
+.mn-note__kind {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--mn-space-2);
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-semibold);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+}
+.mn-note__body {
+  min-width: 0;
+}
+.mn-note--signal {
+  border-color: var(--mn-signal-mark);
+}
+.mn-note--signal .mn-note__kind {
+  background: var(--mn-signal-fill);
+  color: var(--mn-signal-on);
+}
+.mn-note--quiet {
+  border-color: var(--mn-line-default);
+}
+.mn-note--quiet .mn-note__kind {
+  background: transparent;
+  color: var(--mn-ink-secondary);
+  border: var(--mn-stroke-hair) solid var(--mn-line-default);
+}
+
+/* ---- toast --------------------------------------------------------------- */
+.mn-toaster {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  bottom: var(--mn-space-12);
+  display: grid;
+  gap: var(--mn-space-2);
+  width: min(520px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.mn-toast {
+  pointer-events: auto;
+  animation: mn-toast-in var(--mn-motion-duration-base) var(--mn-motion-ease-out);
+}
+@keyframes mn-toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+}
+
+/* ---- tooltip: [data-mn-tip="DOUBLE-CLICK = DEFAULT"] ------------------------- */
+[data-mn-tip] {
+  position: relative;
+}
+[data-mn-tip]::after {
+  content: attr(data-mn-tip);
+  position: absolute;
+  z-index: 40;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 3px var(--mn-space-2);
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-regular);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  /* display:none, not opacity:0 — an invisible tooltip would still widen the page */
+  display: none;
+}
+[data-mn-tip]:hover::after,
+[data-mn-tip]:focus-visible::after {
+  display: block;
+  animation: mn-tip-in var(--mn-motion-duration-quick) linear 300ms both;
+}
+@keyframes mn-tip-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---- dialog -------------------------------------------------------------- */
+.mn-dialog {
+  width: min(var(--mn-dialog-w, 560px), calc(100vw - 32px));
+  max-height: calc(100dvh - 64px);
+  margin: auto;
+  padding: 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-panel);
+  background: var(--mn-bg-panel);
+  color: var(--mn-ink-primary);
+  overflow: auto;
+}
+.mn-dialog::backdrop {
+  background: var(--mn-bg-scrim);
+}
+.mn-dialog__head,
+.mn-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mn-space-4);
+  padding: var(--mn-space-3) var(--mn-space-4);
+  border-bottom: var(--mn-stroke-rule) solid var(--mn-line-strong);
+}
+.mn-dialog__title,
+.mn-sheet__title {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  font-weight: var(--mn-font-weight-medium);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+}
+.mn-dialog__body {
+  display: grid;
+  gap: var(--mn-space-4);
+  padding: var(--mn-space-5) var(--mn-space-4);
+  font-size: var(--mn-font-size-md);
+}
+.mn-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--mn-space-2);
+  padding: var(--mn-space-3) var(--mn-space-4);
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+}
+
+/* sheet: a panel that *replaces* the control panel in place (MOD / MOVES BY ITSELF) */
+.mn-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mn-space-4);
+  min-width: 0;
+}
+.mn-sheet__head {
+  padding: 0 0 var(--mn-space-3);
+}
+
+/* ---- menu ---------------------------------------------------------------- */
+.mn-menu {
+  display: grid;
+  align-content: start;
+  align-self: start;
+  min-width: 200px;
+  margin: 0;
+  padding: var(--mn-space-1) 0;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  border-radius: var(--mn-radius-panel);
+  background: var(--mn-bg-panel);
+  list-style: none;
+}
+.mn-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--mn-space-3);
+  width: 100%;
+  min-height: 30px;
+  padding: 0 var(--mn-space-3);
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--mn-ink-primary);
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-sm);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.mn-menu__item:hover,
+.mn-menu__item:focus-visible,
+.mn-menu__item[aria-checked="true"] {
+  background: var(--mn-inverse-bg);
+  color: var(--mn-inverse-ink);
+  outline: none;
+}
+.mn-menu__item:disabled {
+  color: var(--mn-ink-disabled);
+  background: transparent;
+  cursor: not-allowed;
+}
+.mn-menu__meta {
+  margin-left: auto;
+  color: var(--mn-ink-tertiary);
+  font-size: var(--mn-font-size-2xs);
+}
+.mn-menu__item:hover .mn-menu__meta,
+.mn-menu__item:focus-visible .mn-menu__meta {
+  color: inherit;
+}
+.mn-menu__sep {
+  height: 0;
+  margin: var(--mn-space-1) 0;
+  border-top: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+}
+
+/* ---- meter / progress ---------------------------------------------------- */
+.mn-meter {
+  --mn-value: 0;
+  position: relative;
+  display: block;
+  height: var(--mn-meter-h, 8px);
+  min-width: 48px;
+  border: var(--mn-stroke-hair) solid var(--mn-line-strong);
+  overflow: hidden;
+}
+.mn-meter::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--mn-value) * 100%);
+  background: var(--mn-inverse-bg);
+}
+.mn-meter--signal::before {
+  background: var(--mn-signal-mark);
+}
+.mn-meter.is-busy::before {
+  width: 24%;
+  animation: mn-busy 1.2s steps(12) infinite;
+}
+@keyframes mn-busy {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(420%); }
+}
+
+/* ---- empty state --------------------------------------------------------- */
+.mn-empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--mn-space-2);
+  min-height: 160px;
+  padding: var(--mn-space-6);
+  border: var(--mn-stroke-hair) dashed var(--mn-line-default);
+  border-radius: var(--mn-radius-panel);
+  text-align: center;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+
+/* ---- skeleton: loading placeholders -------------------------------------
+   Pale bars that tick (stepped), never a gradient shimmer. Give each a width. */
+.mn-skeleton {
+  display: block;
+  height: 0.9em;
+  width: var(--mn-skel-w, 100%);
+  background: var(--mn-bg-hover);
+  animation: mn-skel 1.4s steps(2, jump-none) infinite;
+}
+.mn-skeleton--line {
+  height: 10px;
+}
+.mn-skeleton--block {
+  height: var(--mn-skel-h, 64px);
+}
+.mn-skeleton--readout {
+  height: var(--mn-font-readout-md);
+  width: var(--mn-skel-w, 3.5ch);
+}
+@keyframes mn-skel {
+  from { opacity: 1; }
+  to   { opacity: 0.45; }
+}
+[aria-busy="true"] {
+  cursor: progress;
+}

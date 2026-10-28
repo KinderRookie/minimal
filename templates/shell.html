@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shard Ops · MINIMAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../dist/minimal.css">
+</head>
+<body class="mn">
+<div class="mn-shell">
+
+  <nav class="mn-side" aria-label="Main">
+    <div class="mn-side__head">
+      <span class="mn-wordmark">Shard</span>
+      <span class="mn-subtitle">Ops <span class="mn-sep">/</span> Asia</span>
+    </div>
+    <div class="mn-side__nav">
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Run</li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">01</span><span class="mn-side__label">Overview</span></a></li>
+        <li><a class="mn-side__item" href="#" aria-current="page"><span class="mn-side__n">02</span><span class="mn-side__label">Shards</span><span class="mn-side__count">24</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">03</span><span class="mn-side__label">Incidents</span><span class="mn-side__count is-live">2</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">04</span><span class="mn-side__label">Rollouts</span></a></li>
+      </ul>
+      <ul class="mn-side__group">
+        <li class="mn-side__group-label">Tune</li>
+        <li><a class="mn-side__item" href="instrument.html"><span class="mn-side__n">05</span><span class="mn-side__label">Matchmaking</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">06</span><span class="mn-side__label">Anti-cheat</span></a></li>
+        <li><a class="mn-side__item" href="#"><span class="mn-side__n">07</span><span class="mn-side__label">Settings</span></a></li>
+      </ul>
+    </div>
+    <div class="mn-side__foot">
+      <span class="mn-initials">JL</span>
+      <span class="mn-side__who"><span>J. Lee</span><span>On call · until 18:00</span></span>
+    </div>
+  </nav>
+
+  <header class="mn-top">
+    <div class="mn-top__start">
+      <button class="mn-btn mn-btn--icon mn-btn--sm mn-shell__toggle" type="button" data-mn-nav-toggle aria-label="Menu">≡</button>
+      <ol class="mn-crumbs" aria-label="Breadcrumb">
+        <li><a href="#">Ops</a></li>
+        <li><a href="#">Asia</a></li>
+        <li aria-current="page">Shards</li>
+      </ol>
+    </div>
+    <div class="mn-top__end">
+      <input class="mn-input mn-input--sm" type="search" placeholder="Search · ⌘K" aria-label="Search" style="width: 200px">
+      <fieldset class="mn-seg mn-seg--joined mn-seg--fit mn-seg--sm" aria-label="Theme">
+        <label class="mn-seg__item"><input type="radio" name="theme" value="light" data-mn-attr="theme" checked><span class="mn-seg__face">A</span></label>
+        <label class="mn-seg__item"><input type="radio" name="theme" value="dark" data-mn-attr="theme"><span class="mn-seg__face">B</span></label>
+      </fieldset>
+    </div>
+  </header>
+
+  <main class="mn-shell__content">
+    <div class="mn-page">
+      <div class="mn-page__head">
+        <div class="mn-page__heading">
+          <span class="mn-label">Asia <span class="mn-sep">·</span> Ranked squad</span>
+          <h1 class="mn-page__title">Shards</h1>
+          <p class="mn-page__desc">Game servers in this region. Restart, drain or roll out a new build shard by shard.</p>
+        </div>
+        <div class="mn-page__actions">
+          <button class="mn-btn" type="button">Export</button>
+          <button class="mn-btn mn-btn--solid" type="button" id="toRollout">New rollout →</button>
+        </div>
+      </div>
+
+      <div class="mn-stats">
+        <div class="mn-stat">
+          <span class="mn-label">Players</span>
+          <p class="mn-readout"><span>12,408</span></p>
+          <svg class="mn-spark" data-values="9,10,10,11,12,11,12,13,12,12.4" role="img" aria-label="Players, last 10 hours, rising"></svg>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">Peak CPU</span>
+          <p class="mn-readout is-live"><span>94</span><span class="mn-readout__unit">%</span></p>
+          <svg class="mn-spark" data-values="61,64,62,70,74,79,85,88,91,94" role="img" aria-label="Peak CPU, last 10 minutes, climbing to 94%"></svg>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">Tick</span>
+          <p class="mn-readout"><span>59.6</span><span class="mn-readout__unit">Hz</span></p>
+          <span class="mn-caption">Target 60 <span class="mn-sep">·</span> steady</span>
+        </div>
+        <div class="mn-stat">
+          <span class="mn-label">Build mix</span>
+          <div class="mn-ratio" style="margin-top: var(--mn-space-3)">
+            <div class="mn-ratio__bar">
+              <span class="mn-ratio__seg" style="--mn-share:.62"></span>
+              <span class="mn-ratio__seg is-focus" style="--mn-share:.25"></span>
+              <span class="mn-ratio__seg" style="--mn-share:.13"></span>
+            </div>
+            <ul class="mn-ratio__keys">
+              <li class="mn-ratio__key"><i></i>4.12 <b>62%</b></li>
+              <li class="mn-ratio__key is-focus"><i></i>4.13 <b>25%</b></li>
+              <li class="mn-ratio__key"><i></i>4.11 <b>13%</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mn-tabs">
+        <div class="mn-tabs__list" role="tablist" aria-label="Shard views">
+          <button class="mn-tabs__tab" role="tab" id="t-all" aria-controls="p-all" aria-selected="true">All shards<sup class="mn-count">24</sup></button>
+          <button class="mn-tabs__tab" role="tab" id="t-inc" aria-controls="p-inc" aria-selected="false">Incidents<sup class="mn-count is-live">2</sup></button>
+          <button class="mn-tabs__tab" role="tab" id="t-roll" aria-controls="p-roll" aria-selected="false">New rollout</button>
+          <button class="mn-tabs__tab" role="tab" id="t-arch" aria-controls="p-arch" aria-selected="false" disabled>Archive</button>
+        </div>
+
+        <!-- all shards -->
+        <section class="mn-tabs__panel" role="tabpanel" id="p-all" aria-labelledby="t-all">
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-4)">
+            <div class="mn-table-wrap">
+              <table class="mn-table mn-table--hover">
+                <thead><tr><th>Shard</th><th>State</th><th>Build</th><th class="is-num">Players</th><th class="is-num">CPU</th><th>Last hour</th></tr></thead>
+                <tbody id="rows"></tbody>
+              </table>
+            </div>
+            <nav class="mn-pager" aria-label="Pages">
+              <span>11–20 of 24</span>
+              <ul class="mn-pager__pages">
+                <li><button class="mn-pager__item" type="button" aria-label="Previous page">&lt;</button></li>
+                <li><a class="mn-pager__item" href="#">01</a></li>
+                <li><a class="mn-pager__item" href="#" aria-current="page">02</a></li>
+                <li><a class="mn-pager__item" href="#">03</a></li>
+                <li class="mn-pager__gap">…</li>
+                <li><a class="mn-pager__item" href="#">12</a></li>
+                <li><button class="mn-pager__item" type="button" aria-label="Next page">&gt;</button></li>
+              </ul>
+            </nav>
+          </div>
+        </section>
+
+        <!-- incidents -->
+        <section class="mn-tabs__panel" role="tabpanel" id="p-inc" aria-labelledby="t-inc" hidden>
+          <div class="mn-cards">
+            <article class="mn-card mn-card--framed mn-card--link mn-card--strong">
+              <div class="mn-card__head"><span class="mn-card__eyebrow">INC-2041 <span class="mn-sep">·</span> S-04</span><span class="mn-tag mn-tag--signal-line">Open</span></div>
+              <h3 class="mn-card__title"><a href="#">CPU above 90% for 6 min</a></h3>
+              <p class="mn-card__body mn-card__body--clamp">Tick dropped to 47 Hz during the evening peak. Players are being moved to S-02 and S-05 before a restart.</p>
+              <svg class="mn-spark mn-spark--block" data-values="61,64,62,70,74,79,85,88,91,94,96,95" role="img" aria-label="CPU climbing to 96%"></svg>
+              <div class="mn-card__foot"><span>Opened 18:02</span><span class="mn-spacer"></span><span class="mn-initials mn-initials--sm">JL</span></div>
+            </article>
+            <article class="mn-card mn-card--framed mn-card--link">
+              <div class="mn-card__head"><span class="mn-card__eyebrow">INC-2040 <span class="mn-sep">·</span> S-11</span><span class="mn-tag mn-tag--signal-line">Open</span></div>
+              <h3 class="mn-card__title"><a href="#">Packet loss spike, SEA edge</a></h3>
+              <p class="mn-card__body mn-card__body--clamp">Loss went from 0.2% to 3.1% on one edge node. Rerouting through SG-2.</p>
+              <svg class="mn-spark mn-spark--block" data-values="0.2,0.2,0.3,0.2,1.4,3.1,2.8,2.2" data-focus="max" role="img" aria-label="Packet loss peaking at 3.1%"></svg>
+              <div class="mn-card__foot"><span>Opened 17:41</span><span class="mn-spacer"></span><span class="mn-initials mn-initials--sm mn-initials--open">SK</span></div>
+            </article>
+            <article class="mn-card mn-card--framed mn-card--link">
+              <div class="mn-card__head"><span class="mn-card__eyebrow">INC-2037 <span class="mn-sep">·</span> S-02</span><span class="mn-tag mn-tag--solid">Closed</span></div>
+              <h3 class="mn-card__title"><a href="#">Login queue stalled</a></h3>
+              <p class="mn-card__body mn-card__body--clamp">Auth tokens expired early after a clock skew. Fixed by resyncing NTP on the auth pool.</p>
+              <svg class="mn-spark mn-spark--block" data-values="4,4,5,18,22,9,4,4" data-focus="none" role="img" aria-label="Queue length, resolved"></svg>
+              <div class="mn-card__foot"><span>Closed 14:20 · 38 min</span><span class="mn-spacer"></span><span class="mn-initials mn-initials--sm mn-initials--open">MH</span></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- new rollout -->
+        <section class="mn-tabs__panel" role="tabpanel" id="p-roll" aria-labelledby="t-roll" hidden>
+          <div class="mn-stack" style="--mn-gap: var(--mn-space-8); max-width: 880px">
+            <ol class="mn-stages" aria-label="Rollout steps">
+              <li class="mn-stage is-done"><span class="mn-stage__mark"></span><span class="mn-stage__label">Build</span><span class="mn-stage__desc">4.13.0</span></li>
+              <li class="mn-stage" aria-current="step"><span class="mn-stage__mark"></span><span class="mn-stage__label">Targets</span><span class="mn-stage__desc">Shards and order</span></li>
+              <li class="mn-stage"><span class="mn-stage__mark"></span><span class="mn-stage__label">Guards</span><span class="mn-stage__desc">Stop conditions</span></li>
+              <li class="mn-stage"><span class="mn-stage__mark"></span><span class="mn-stage__label">Review</span><span class="mn-stage__desc">Confirm and start</span></li>
+            </ol>
+
+            <form class="mn-form" onsubmit="event.preventDefault(); MN.toast('Saved', 'Draft rollout saved')">
+              <div class="mn-form-error" role="alert">
+                <p class="mn-form-error__title">2 fields need attention</p>
+                <ul class="mn-form-error__list">
+                  <li><a href="#f-batch">Batch size · must be 1–6</a></li>
+                  <li><a href="#f-window">Window · pick a start time</a></li>
+                </ul>
+              </div>
+
+              <fieldset class="mn-form__section">
+                <legend class="mn-form__legend"><span>Targets</span><span>Step 02 / 04</span></legend>
+                <p class="mn-form__hint">Shards are updated in batches. Players on a shard are moved before it restarts.</p>
+                <div class="mn-form__grid">
+                  <label class="mn-field mn-field--required">
+                    <span class="mn-field__label">Region</span>
+                    <span class="mn-select-wrap"><select class="mn-select"><option>Asia · all</option><option>Asia · KR only</option><option>Asia · SEA only</option></select></span>
+                  </label>
+                  <label class="mn-field mn-field--required">
+                    <span class="mn-field__label">Batch size</span>
+                    <input class="mn-input" id="f-batch" value="12" aria-invalid="true">
+                    <span class="mn-field__error">Out of range · 1–6 shards</span>
+                  </label>
+                  <div class="mn-field mn-field--full">
+                    <span class="mn-field__label">Order</span>
+                    <fieldset class="mn-seg" aria-label="Order">
+                      <label class="mn-seg__item"><input type="radio" name="order" checked><span class="mn-seg__face">Least players first</span></label>
+                      <label class="mn-seg__item"><input type="radio" name="order"><span class="mn-seg__face">By ID</span></label>
+                      <label class="mn-seg__item"><input type="radio" name="order"><span class="mn-seg__face">Manual</span></label>
+                    </fieldset>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="mn-form__section">
+                <legend class="mn-form__legend"><span>Window</span></legend>
+                <div class="mn-form__grid">
+                  <label class="mn-field mn-field--required">
+                    <span class="mn-field__label">Start</span>
+                    <input class="mn-input" id="f-window" placeholder="HH:MM KST" aria-invalid="true">
+                    <span class="mn-field__error">Required</span>
+                  </label>
+                  <label class="mn-field">
+                    <span class="mn-field__label">Pause between batches <span>min</span></span>
+                    <input class="mn-input" value="5">
+                  </label>
+                  <label class="mn-field mn-field--full">
+                    <span class="mn-field__label">Note for on-call</span>
+                    <textarea class="mn-textarea" placeholder="What to watch"></textarea>
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="mn-form__actions mn-form__actions--sticky">
+                <p class="mn-form__actions-note">Draft · not started</p>
+                <button class="mn-btn mn-btn--ghost" type="button">Back</button>
+                <button class="mn-btn" type="submit">Save draft</button>
+                <button class="mn-btn mn-btn--solid" type="button">Next: guards →</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="mn-tabs__panel" role="tabpanel" id="p-arch" aria-labelledby="t-arch" hidden></section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/minimal.js" data-manual></script>
+<script>
+(() => {
+  // table rows (fake data, deterministic)
+  let s = 3; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const rows = document.getElementById("rows");
+  const data = [
+    ["S-01", "OK", "4.12", 104, 56], ["S-02", "OK", "4.12", 92, 52], ["S-03", "OK", "4.13", 110, 69],
+    ["S-04", "WARN", "4.13", 118, 94], ["S-05", "OK", "4.12", 88, 52], ["S-06", "DRAIN", "4.11", 12, 9],
+    ["S-07", "OK", "4.12", 101, 61], ["S-08", "OK", "4.12", 97, 58], ["S-09", "OK", "4.13", 99, 63], ["S-10", "OK", "4.11", 95, 55],
+  ];
+  for (const [id, st, build, players, cpu] of data) {
+    const tag = st === "OK" ? "mn-tag--solid" : st === "WARN" ? "mn-tag--signal-line" : "mn-tag--muted";
+    const spark = Array.from({ length: 12 }, (_, i) => Math.round(cpu * (0.7 + 0.3 * (i / 11)) + (rnd() - 0.5) * 8));
+    const tr = document.createElement("tr");
+    if (st === "DRAIN") tr.className = "is-idle";
+    if (st === "WARN") tr.setAttribute("aria-selected", "true");
+    tr.innerHTML = `<td>${id}</td><td><span class="mn-tag ${tag}">${st}</span></td><td>${build}</td>` +
+      `<td class="is-num">${players}</td><td class="is-num">${cpu} %</td>` +
+      `<td><svg class="mn-spark" data-values="${spark}" data-focus="${st === "WARN" ? "last" : "none"}" role="img" aria-label="${id} CPU trend"></svg></td>`;
+    rows.appendChild(tr);
+  }
+  MN.init();
+  document.getElementById("toRollout").addEventListener("click", () => document.getElementById("t-roll").click());
+})();
+</script>
+</body>
+</html>

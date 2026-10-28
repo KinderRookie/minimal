@@ -1,0 +1,195 @@
+/**
+ * MINIMAL — type roles.
+ * Three voices only:
+ *   1. label   — mono, uppercase, tracked, small (the instrument speaking)
+ *   2. readout — sans, light, huge, tabular (the value)
+ *   3. mark    — sans, uppercase, extreme tracking (the product's name)
+ * Everything else (captions, hints, units, counts) is a size/color step of the label voice.
+ */
+
+/* ---- mark ---------------------------------------------------------------- */
+.mn-wordmark {
+  margin: 0;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-2xl);
+  font-weight: var(--mn-font-weight-regular);
+  line-height: var(--mn-font-leading-none);
+  letter-spacing: var(--mn-font-tracking-mark);
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* tracking adds trailing space after the last letter — pull it back */
+  margin-right: calc(var(--mn-font-tracking-mark) * -1);
+}
+.mn-wordmark--mono {
+  font-family: var(--mn-font-family-mono);
+  font-weight: var(--mn-font-weight-semibold);
+}
+
+/* Large sans title — for a document-like page (sixmaterials "Strata") */
+.mn-title {
+  margin: 0;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-readout-md);
+  font-weight: var(--mn-font-weight-regular);
+  line-height: var(--mn-font-leading-tight);
+  letter-spacing: var(--mn-font-tracking-tight);
+}
+
+/* ---- label --------------------------------------------------------------- */
+.mn-label {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  font-weight: var(--mn-font-weight-regular);
+  line-height: var(--mn-font-leading-tight);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+}
+.mn-label--strong {
+  color: var(--mn-ink-primary);
+  font-weight: var(--mn-font-weight-medium);
+}
+.mn-label--signal {
+  color: var(--mn-signal-text);
+}
+
+/* Breadcrumb-ish subtitle next to the wordmark: FROND GRID / EFFECT */
+.mn-subtitle {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+  white-space: nowrap;
+}
+
+/* Caption under a ruler: STEADY / WARM / EACH NOTE A LITTLE */
+.mn-caption {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-wide);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+
+/* One-line instructions: DRAG A NUMBER · DOUBLE-CLICK = DEFAULT */
+.mn-hint {
+  margin: 0;
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-tertiary);
+}
+.mn-hint--sentence {
+  text-transform: none;
+  letter-spacing: var(--mn-font-tracking-none);
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-size-sm);
+}
+
+/* Separators inside labels and hints. Always spaced, always dimmer. */
+.mn-sep {
+  display: inline-block;
+  margin-inline: 0.6em;
+  color: var(--mn-ink-disabled);
+}
+
+/* Superscript count: WOOD¹⁰⁵⁰ */
+.mn-count {
+  margin-left: 0.25em;
+  font-family: var(--mn-font-family-mono);
+  font-size: 0.7em;
+  letter-spacing: 0;
+  vertical-align: super;
+  line-height: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keyboard key: drawn as a hairline box, never a 3D cap */
+.mn-kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.35em;
+  border: var(--mn-stroke-hair) solid currentColor;
+  font-family: var(--mn-font-family-mono);
+  font-size: 0.9em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ---- readout ------------------------------------------------------------- */
+.mn-readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--mn-space-2);
+  margin: 0;
+  font-family: var(--mn-font-family-sans);
+  font-size: var(--mn-font-readout-md);
+  font-weight: var(--mn-font-weight-light);
+  line-height: var(--mn-font-leading-none);
+  letter-spacing: var(--mn-font-tracking-tight);
+  font-variant-numeric: tabular-nums;
+  color: var(--mn-ink-primary);
+  white-space: nowrap;
+}
+.mn-readout--sm { font-size: var(--mn-font-readout-sm); }
+.mn-readout--lg { font-size: var(--mn-font-readout-lg); }
+.mn-readout--xl { font-size: var(--mn-font-readout-xl); }
+
+.mn-readout__unit {
+  font-family: var(--mn-font-family-mono);
+  font-size: var(--mn-font-size-2xs);
+  font-weight: var(--mn-font-weight-regular);
+  letter-spacing: var(--mn-font-tracking-label);
+  text-transform: uppercase;
+  color: var(--mn-ink-secondary);
+}
+
+/* A value that is moving / modulated / differs from what you set turns signal. */
+.mn-readout.is-live,
+.mn-readout[data-live] {
+  color: var(--mn-signal-mark);
+}
+
+/* Draggable number (behavior from js/minimal.js) */
+.mn-readout[data-drag] {
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+.mn-readout[data-drag]:hover .mn-readout__num {
+  text-decoration: underline;
+  text-decoration-thickness: var(--mn-stroke-hair);
+  text-underline-offset: 0.12em;
+  text-decoration-color: var(--mn-line-default);
+}
+
+/* ---- stat: a KPI is a readout with a label and a meaning ------------------ */
+.mn-stats {
+  display: grid;
+  grid-template-columns: repeat(var(--mn-cols, 4), minmax(0, 1fr));
+  gap: var(--mn-space-6);
+  padding-bottom: var(--mn-space-5);
+  border-bottom: var(--mn-stroke-hair) solid var(--mn-line-subtle);
+}
+@media (max-width: 960px) {
+  .mn-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.mn-stat {
+  display: grid;
+  gap: var(--mn-space-2);
+  align-content: start;
+  min-width: 0;
+}
+.mn-stat > .mn-readout {
+  font-size: var(--mn-font-readout-lg);
+}
+.mn-stats--sm .mn-stat > .mn-readout {
+  font-size: var(--mn-font-readout-md);
+}
